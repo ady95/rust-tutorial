@@ -8,6 +8,7 @@
 
 | 폴더 | 장 | 내용 |
 |---|---|---|
+| `ch01/run_time` | 01-2 | wordfreq의 Python·Rust 실행 시간 측정 |
 | `ch02/hello_python` | 02-1 | uv 프로젝트, pytest 첫 테스트 |
 | `ch02/hello_rust` | 02-2 | Cargo 첫 프로젝트 |
 | `ch03/` | 03장 | Python·Rust 동작 차이, 타입 힌트 비교, 테스트 강도 실험 |
