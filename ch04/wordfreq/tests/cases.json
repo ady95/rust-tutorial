@@ -1,0 +1,19 @@
+[
+  {"name": "basic", "args": ["tests/fixtures/basic.txt"]},
+  {"name": "basic-top2", "args": ["tests/fixtures/basic.txt", "--top", "2"]},
+  {"name": "basic-json", "args": ["tests/fixtures/basic.txt", "--json"]},
+  {"name": "korean", "args": ["tests/fixtures/korean.txt"]},
+  {"name": "korean-json", "args": ["tests/fixtures/korean.txt", "--json", "--top", "3"]},
+  {"name": "punctuation", "args": ["tests/fixtures/punctuation.txt", "--top", "20"]},
+  {"name": "ties", "args": ["tests/fixtures/ties.txt"]},
+  {"name": "crlf-case", "args": ["tests/fixtures/crlf_case.txt", "--json"]},
+  {"name": "empty", "args": ["tests/fixtures/empty.txt"]},
+  {"name": "empty-json", "args": ["tests/fixtures/empty.txt", "--json"]},
+  {"name": "missing-file", "args": ["tests/fixtures/no_such_file.txt"]},
+  {"name": "invalid-utf8", "args": ["tests/fixtures/invalid_utf8.txt"]},
+  {"name": "directory", "args": ["tests/fixtures"]},
+  {"name": "usage-no-file", "args": [], "usage_error": true},
+  {"name": "usage-top-zero", "args": ["tests/fixtures/basic.txt", "--top", "0"], "usage_error": true},
+  {"name": "usage-top-abc", "args": ["tests/fixtures/basic.txt", "--top", "abc"], "usage_error": true},
+  {"name": "usage-unknown-option", "args": ["tests/fixtures/basic.txt", "--bogus"], "usage_error": true}
+]
