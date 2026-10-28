@@ -1,0 +1,25 @@
+error[E0382]: borrow of moved value: `words`
+ --> broken/e0382_use_after_move.rs:9:18
+  |
+7 |     let words: Vec<String> = text.split_whitespace().map(|w| w.to_lowercase()).collect();
+  |         ----- move occurs because `words` has type `Vec<String>`, which does not implement the `Copy` trait
+8 |     let total = count_words(words);
+  |                             ----- value moved here
+9 |     let first = &words[0];
+  |                  ^^^^^ value borrowed here after move
+  |
+note: consider changing this parameter type in function `count_words` to borrow instead if owning the value isn't necessary
+ --> broken/e0382_use_after_move.rs:2:23
+  |
+2 | fn count_words(words: Vec<String>) -> usize {
+  |    -----------        ^^^^^^^^^^^ this parameter takes ownership of the value
+  |    |
+  |    in this function
+help: consider cloning the value if the performance cost is acceptable
+  |
+8 |     let total = count_words(words.clone());
+  |                                  ++++++++
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0382`.

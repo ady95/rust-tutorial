@@ -1,0 +1,15 @@
+error[E0106]: missing lifetime specifier
+ --> broken/e0106_missing_lifetime.rs:2:36
+  |
+2 | pub fn longer(a: &str, b: &str) -> &str {
+  |                  ----     ----     ^ expected named lifetime parameter
+  |
+  = help: this function's return type contains a borrowed value, but the signature does not say whether it is borrowed from `a` or `b`
+help: consider introducing a named lifetime parameter
+  |
+2 | pub fn longer<'a>(a: &'a str, b: &'a str) -> &'a str {
+  |              ++++     ++          ++          ++
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0106`.

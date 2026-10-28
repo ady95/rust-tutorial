@@ -1,0 +1,21 @@
+error[E0502]: cannot borrow `*counts` as mutable because it is also borrowed as immutable
+ --> broken/e0502_mutate_while_iterating.rs:7:13
+  |
+5 |       for (word, n) in counts.iter() {
+  |       -                -------------
+  |       |                |
+  |       |                immutable borrow occurs here
+  |  _____|                immutable borrow later used here
+  | |
+6 | |         if *n < min {
+7 | |             counts.remove(word);
+  | |             ^^^^^^^^^^^^^^^^^^^ mutable borrow occurs here
+8 | |         }
+9 | |     }
+  | |_____- this for loop borrows `*counts` immutably, preventing mutation within its body
+  |
+  = help: consider using an index-based loop instead, or collecting modifications into a separate collection
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0502`.

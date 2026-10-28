@@ -1,0 +1,21 @@
+error[E0597]: `lower` does not live long enough
+ --> broken/e0597_not_live_long_enough.rs:6:18
+  |
+3 |     let mut out: Vec<&str> = Vec::new();
+  |         ------- variable `out` declared here
+4 |     for line in lines {
+5 |         let lower = line.to_lowercase();
+  |             ----- binding `lower` declared here
+6 |         out.push(lower.as_str());
+  |         ---      ^^^^^ borrowed value does not live long enough
+  |         |
+  |         borrow later used here
+7 |     }
+  |     - `lower` dropped here while still borrowed
+  |
+  = note: `out` is a collection that stores borrowed references, but `lower` does not live long enough to be stored in it
+  = help: buffer reuse with borrowed references requires unsafe code or restructuring
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0597`.

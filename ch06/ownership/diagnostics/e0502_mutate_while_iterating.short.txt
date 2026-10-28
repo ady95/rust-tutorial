@@ -1,0 +1,2 @@
+broken/e0502_mutate_while_iterating.rs:7:13: error[E0502]: cannot borrow `*counts` as mutable because it is also borrowed as immutable: mutable borrow occurs here
+error: aborting due to 1 previous error

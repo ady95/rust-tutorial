@@ -1,0 +1,44 @@
+{
+  "name": "runC_haiku",
+  "settings": "hooks",
+  "model_arg": "haiku",
+  "allowed": [],
+  "max_turns": 40,
+  "max_budget_usd": 4.0,
+  "extra_test": null,
+  "claude_exit": 0,
+  "claude_stderr_tail": "",
+  "wall_s": 47.2,
+  "models": [
+    "claude-haiku-5-5"
+  ],
+  "subtype": "success",
+  "is_error": false,
+  "num_turns": 8,
+  "duration_s": 45.6,
+  "cost_usd_estimate": 0.0112,
+  "permission_denials": 0,
+  "denied_tools": [],
+  "tool_uses": {
+    "Read": 5,
+    "Write": 2
+  },
+  "cargo_commands": 0,
+  "compile_failures_seen": 0,
+  "error_codes_seen": [],
+  "bash_commands": [],
+  "hook_check_failures": 0,
+  "stop_blocks": 0,
+  "stop_gave_up": 0,
+  "protected_digest_same_as_start": true,
+  "grade": {
+    "fmt": 0,
+    "clippy": 0,
+    "test": 0,
+    "spec_passed": 11,
+    "spec_failed": 0,
+    "failed_tests": [],
+    "cli_same_as_python": "4/5",
+    "protected_unchanged": true
+  }
+}

@@ -15,6 +15,7 @@
 | `tools/baseline.py` | 03-4 | 승인한 기준 구현(Python·테스트·계약)을 해시로 고정하고 검사 |
 | `ch04/wordfreq` | 04장 | 단어 빈도 CLI — Python 기준 구현과 Claude Code가 만든 Rust 구현 |
 | `ch05/` | 05장 | 같은 wordfreq를 지침(AGENTS.md·CLAUDE.md)·권한·훅으로 다시 변환, 사람 리뷰 기록 |
+| `ch06/` | 06장 | 소유권·빌림·수명 오류 예제, 에이전트 수정 실험(훅·모델·종료 조건), 재시도 루프 (WSL2 Ubuntu에서 측정) |
 
 실습 프로젝트는 같은 폴더 구조를 따릅니다.
 
@@ -33,6 +34,7 @@
 - Python 3.12 (uv가 `.python-version`에 맞춰 설치), uv 0.13 이상
 - Rust stable (rustup), Windows는 Visual Studio Build Tools(C++ 워크로드) 필요
 - Claude Code
+- 06장부터의 실험 스크립트는 Linux·macOS 셸(또는 WSL2) 기준입니다
 
 ```bash
 cd ch04/wordfreq

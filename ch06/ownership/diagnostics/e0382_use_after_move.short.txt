@@ -1,0 +1,2 @@
+broken/e0382_use_after_move.rs:9:18: error[E0382]: borrow of moved value: `words`: value borrowed here after move
+error: aborting due to 1 previous error

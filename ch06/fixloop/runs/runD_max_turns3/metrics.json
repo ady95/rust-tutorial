@@ -1,0 +1,62 @@
+{
+  "name": "runD_max_turns3",
+  "settings": "no_hooks",
+  "model_arg": null,
+  "allowed": [
+    "Bash(cargo *)"
+  ],
+  "max_turns": 3,
+  "max_budget_usd": null,
+  "extra_test": null,
+  "claude_exit": 1,
+  "claude_stderr_tail": "",
+  "wall_s": 23.2,
+  "models": [
+    "claude-opus-5-5"
+  ],
+  "subtype": "error_max_turns",
+  "is_error": true,
+  "num_turns": 4,
+  "duration_s": 20.7,
+  "cost_usd_estimate": 0.1772,
+  "permission_denials": 1,
+  "denied_tools": [
+    "Bash"
+  ],
+  "tool_uses": {
+    "Bash": 3,
+    "Write": 1
+  },
+  "cargo_commands": 3,
+  "compile_failures_seen": 2,
+  "error_codes_seen": [
+    "E0499",
+    "E0382",
+    "E0597",
+    "E0106",
+    "E0515",
+    "E0502",
+    "E0499",
+    "E0382",
+    "E0597"
+  ],
+  "bash_commands": [
+    "find . -type f -not -path './target/*' | head -50 && cat src/*.rs python_src/wordstats.py tests/spec.rs Cargo.toml; cargo build 2>&1 | tail -60",
+    "cargo build 2>&1 | grep -E '^(error|warning)' ; cat .claude/settings.json",
+    "cargo fmt --check; echo \"fmt exit=$?\"; cargo clippy --all-targets -- -D warnings 2>&1 | tail -20; echo \"clippy exit=${PIPESTATUS[0]}\"; cargo test 2>&1 | tail -30; echo \"test exit=${PIPESTATUS[0]}\""
+  ],
+  "hook_check_failures": 0,
+  "stop_blocks": 0,
+  "stop_gave_up": 0,
+  "protected_digest_same_as_start": true,
+  "grade": {
+    "fmt": 0,
+    "clippy": 0,
+    "test": 0,
+    "spec_passed": 11,
+    "spec_failed": 0,
+    "failed_tests": [],
+    "cli_same_as_python": "4/5",
+    "protected_unchanged": true
+  }
+}

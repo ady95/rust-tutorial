@@ -1,0 +1,57 @@
+{
+  "name": "runB_budget010",
+  "settings": "no_hooks",
+  "model_arg": null,
+  "allowed": [
+    "Bash(cargo *)"
+  ],
+  "max_turns": 40,
+  "max_budget_usd": 0.1,
+  "extra_test": null,
+  "claude_exit": 1,
+  "claude_stderr_tail": "",
+  "wall_s": 17.2,
+  "models": [
+    "claude-opus-5-5"
+  ],
+  "subtype": "error_max_budget_usd",
+  "is_error": true,
+  "num_turns": 3,
+  "duration_s": 14.8,
+  "cost_usd_estimate": 0.1286,
+  "permission_denials": 1,
+  "denied_tools": [
+    "Bash"
+  ],
+  "tool_uses": {
+    "Bash": 2
+  },
+  "cargo_commands": 2,
+  "compile_failures_seen": 1,
+  "error_codes_seen": [
+    "E0106",
+    "E0515",
+    "E0502",
+    "E0499",
+    "E0382",
+    "E0597"
+  ],
+  "bash_commands": [
+    "ls -R src python_src tests reports 2>/dev/null; cat src/*.rs python_src/wordstats.py; cargo build 2>&1 | grep -E '^(error|warning)|-->' | head -40",
+    "python3 - <<'EOF'\np='src/lib.rs';s=open(p).read()\nR=[(\"pub fn normalize(word: &str) -> &str {\\n    let lower = word.to_lowercase();\\n    lower.trim_matches(|c: char| c.is_ascii_punctuation())\\n}\",\"pub fn normalize(word: &str) -> String {\\n    word.to_lowercase()\\n        .trim_matches(|c: char| c.is_ascii_punctuation())\\n        .to_string()\\n}\"),\n(\"        .filter(|w| !w.is_empty())\\n        .map(str::to_string)\\n\",\"        .filter(|w| !w.is_empty())\\n\"),\n(\"    for (word, n) in counts.iter() {\\n        if *n < min {\\n            counts.remove(word);\\n        }\\n    }\",\"    counts.retain(|_, n| *n >= min);\"),\n(\"    if let Some(src) = counts.get_mut(source) {\\n        let dst = counts.entry(target.to_string()).or_insert(0);\\n        *dst += *src;\\n        *src = 0;\\n    }\",\"    if source == target {\\n        return;\\n    }\\n    if let Some(src) = counts.remove(source) {\\n        *counts.entry(target.to_string()).or_insert(0) += src;\\n    }\"),\n(\"pub fn longer(a: &str, b: &str) -> &str\",\"pub fn longer<'a>(a: &'a str, b: &'a str) -> &'a str\"),\n(\"    if words.len() == 0 {\\n        return None;\\n    }\\n    let mut best: &str = &words[0];\\n    for i in 1..words.len() {\\n        best = longer(best, &words[i]);\\n    }\\n    Some(best)\",\"    let (first, rest) = words.split_first()?;\\n    let mut best: &str = first;\\n    for w in rest {\\n        best = longer(best, w);\\n    }\\n    Some(best)\"),\n(\"then_with(|| b.0.cmp(&a.0))\",\"then_with(|| a.0.cmp(&b.0))\"),\n(\"    return items;\\n\",\"    items\\n\"),\n(\"    let mut counts = count(words);\",\"    let mut counts = count(words.clone());\"),\n(\"    let mut lines: Vec<&str> = vec![header.as_str()];\\n    for (w, n) in top_n(&counts, top) {\\n        let line = format!(\\\"{n}\\\\t{w}\\\");\\n        lines.push(line.as_str());\\n    }\",\"    let mut lines: Vec<String> = vec![header];\\n    for (w, n) in top_n(&counts, top) {\\n        lines.push(format!(\\\"{n}\\\\t{w}\\\"));\\n    }\")]\nfor a,b in R:\n    assert a in s,a; s=s.replace(a,b)\nopen(p,'w').write(s)\nEOF\ncargo fmt && cargo fmt --check && echo FMT_OK; cargo clippy --all-targets -- -D warnings 2>&1 | grep -E '^(error|warning)|-->|Finished' | head; cargo test 2>&1 | grep -E 'test result|FAILED|panicked|error' | head"
+  ],
+  "hook_check_failures": 0,
+  "stop_blocks": 0,
+  "stop_gave_up": 0,
+  "protected_digest_same_as_start": true,
+  "grade": {
+    "fmt": 1,
+    "clippy": 101,
+    "test": 101,
+    "spec_passed": null,
+    "spec_failed": null,
+    "failed_tests": [],
+    "cli_same_as_python": "0/5",
+    "protected_unchanged": true
+  }
+}

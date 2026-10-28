@@ -1,0 +1,47 @@
+{
+  "name": "runE_retry_contradiction",
+  "extra_test": "extra/contradiction.rs",
+  "stop_reason": "no_progress",
+  "attempts": [
+    {
+      "attempt": 1,
+      "claude_exit": 0,
+      "wall_s": 66.5,
+      "subtype": "success",
+      "num_turns": 16,
+      "duration_s": 63.9,
+      "cost_usd_estimate": 0.3644,
+      "permission_denials": 5,
+      "checks_ok": false,
+      "signature": {
+        "failed_checks": [
+          "test"
+        ],
+        "failed_tests": [
+          "normalize_removes_inner_apostrophe"
+        ]
+      }
+    },
+    {
+      "attempt": 2,
+      "claude_exit": 0,
+      "wall_s": 28.9,
+      "subtype": "success",
+      "num_turns": 9,
+      "duration_s": 27.2,
+      "cost_usd_estimate": 0.2041,
+      "permission_denials": 2,
+      "checks_ok": false,
+      "signature": {
+        "failed_checks": [
+          "test"
+        ],
+        "failed_tests": [
+          "normalize_removes_inner_apostrophe"
+        ]
+      }
+    }
+  ],
+  "total_cost_usd_estimate": 0.5685,
+  "protected_unchanged": true
+}

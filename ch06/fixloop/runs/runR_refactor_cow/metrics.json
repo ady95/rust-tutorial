@@ -1,0 +1,58 @@
+{
+  "name": "runR_refactor_cow",
+  "settings": "no_hooks",
+  "allowed": [
+    "Bash(cargo *)"
+  ],
+  "max_turns": 40,
+  "max_budget_usd": 4.0,
+  "extra_test": null,
+  "claude_exit": 0,
+  "claude_stderr_tail": "",
+  "wall_s": 123.8,
+  "subtype": "success",
+  "is_error": false,
+  "num_turns": 16,
+  "duration_s": 121.5,
+  "cost_usd_estimate": 0.544,
+  "permission_denials": 5,
+  "denied_tools": [
+    "Bash",
+    "Write"
+  ],
+  "tool_uses": {
+    "Bash": 11,
+    "Read": 1,
+    "Write": 3
+  },
+  "cargo_commands": 8,
+  "compile_failures_seen": 0,
+  "error_codes_seen": [],
+  "bash_commands": [
+    "find . -path ./target -prune -o -type f -print | head -50 && cat Cargo.toml src/*.rs python_src/wordstats.py tests/spec.rs; ls reports 2>/dev/null",
+    "cargo fmt --check; cargo clippy --all-targets -- -D warnings 2>&1 | tail -5; cargo test 2>&1 | grep -E \"test result|FAILED|error\" ",
+    "cp src/lib.rs /tmp/lib.rs.orig && python3 - <<'EOF'\np='src/lib.rs'; s=open(p).read()\nrep=[\n(\"use std::collections::HashMap;\\n\\npub fn normalize(word: &str) -> String {\\n    word.to_lowercase()\\n        .trim_matches(|c: char| c.is_ascii_punctuation())\\n        .to_string()\\n}\",\n\"\"\"use std::borrow::Cow;\nuse std::collections::HashMap;\n\n/// 앞뒤 ASCII 문장부호를 떼고 소문자로 바꾼다. 바꿀 글자가 없으면 입력을 빌려 쓴다.\n/// 소문자 변환은 문장부호를 만들거나 없애지 않으므로 Python 과 순서가 달라도 결과가 같다.\npub fn normalize(word: &str) -> Cow<'_, str> {\n    let trimmed = word.trim_matches(|c: char| c.is_ascii_punctuation());\n    if trimmed.chars().all(|c| c.to_lowercase().eq([c])) {\n        Cow::Borrowed(trimmed)\n    } else {\n        Cow::Owned(trimmed.to_lowercase())\n    }\n}\"\"\"),\n(\"pub fn tokenize(text: &str) -> Vec<String> {\", \"pub fn tokenize(text: &str) -> Vec<Cow<'_, str>> {\"),\n(\"\"\"pub fn count(words: &[String]) -> HashMap<String, usize> {\n    let mut counts = HashMap::new();\n    for w in words {\n        *counts.entry(w.clone()).or_insert(0) += 1;\n    }\n    counts\n}\"\"\",\n\"\"\"/// 키 String 은 처음 나온 단어에만 만든다.\npub fn count<S: AsRef<str>>(words: &[S]) -> HashMap<String, usize> {\n    let mut counts: HashMap<String, usize> = HashMap::new();\n    for w in words {\n        let w = w.as_ref();\n        match counts.get_mut(w) {\n            Some(n) => *n += 1,\n            None => {\n                counts.insert(w.to_string(), 1);\n            }\n        }\n    }\n    counts\n}\"\"\"),\n(\"\"\"pub fn longest(words: &[String]) -> Option<&str> {\n    let mut best\"\"\",\n\"\"\"pub fn longest(words: &[String]) -> Option<&str> {\n    longest_of(words)\n}\n\n/// `longest` 의 본체. `tokenize` 결과(`Cow`)에도 쓰려고 나눴다.\n/// 공개 `longest` 를 제네릭으로 바꾸면 `longest(&[])` 의 타입을 추론할 수 없다.\nfn longest_of<S: AsRef<str>>(words: &[S]) -> Option<&str> {\n    let mut best\"\"\"),\n(\"\"\"            None => w,\n            Some(b) => longer(b, w),\"\"\",\"\"\"            None => w.as_ref(),\n            Some(b) => longer(b, w.as_ref()),\"\"\"),\n(\"\"\"    let mut items: Vec<(String, usize)> = counts.iter().map(|(w, c)| (w.clone(), *c)).collect();\n    items.sort_by(|a, b| b.1.cmp(&a.1).then_with(|| a.0.cmp(&b.0)));\n    items.truncate(n);\n    items\n}\"\"\",\"\"\"    let mut items: Vec<(&String, &usize)> = counts.iter().collect();\n    items.sort_by(|a, b| b.1.cmp(a.1).then_with(|| a.0.cmp(b.0)));\n    items.truncate(n);\n    // 잘라 낸 뒤에만 복사한다.\n    items.into_iter().map(|(w, c)| (w.clone(), *c)).collect()\n}\"\"\"),\n('format!(\"longest: {}\", longest(&words).unwrap_or(\"-\")),','format!(\"longest: {}\", longest_of(&words).unwrap_or(\"-\")),'),\n]\nfor a,b in rep:\n    assert s.count(a)==1,a\n    s=s.replace(a,b)\nopen(p,'w').write(s)\nEOF\ncargo fmt --check; echo fmt=$?; cargo clippy --all-targets -- -D warnings 2>&1 | tail -15; echo clippy=${PIPESTATUS[0]}; cargo test 2>&1 | grep -E \"test result|FAILED|panicked|error\"; echo test=${PIPESTATUS[0]}",
+    "cargo fmt --check 2>&1; echo \"fmt exit: $?\"; cargo clippy --all-targets -- -D warnings 2>&1 | tail -20; cargo test 2>&1 | grep -E \"test result|FAILED|panicked|error\"",
+    "cargo fmt --check",
+    "cargo clippy --all-targets -- -D warnings",
+    "cargo test",
+    "printf '%s\\n' \"ΟΔΟΣ. ΑΣ! 'Σ' ΣΑΣ.Β ǅemal ǅ İstanbul İ. KELVIN K Straße STRASSE ß ﬀ Hello!! hello ... \\\"Don't\\\" ÉLAN élan Élan, zoo ΑΣ'Β ΑΣ''\" > target/uni_input.txt && python3 -I python_src/wordstats.py --top 40 < target/uni_input.txt > target/py_out.txt && cargo run -q -- --top 40 < target/uni_input.txt > target/rs_out.txt && diff target/py_out.txt target/rs_out.txt && echo SAME && cat target/rs_out.txt",
+    "printf '%s\\n' \"ΟΔΟΣ. ΑΣ! 'Σ' ΣΑΣ.Β ǅemal ǅ İstanbul İ. KELVIN K Straße STRASSE ß ﬀ Hello!! hello ... \\\"Don't\\\" ÉLAN élan Élan, zoo ΑΣ'Β ΑΣ''\" > target/uni_input.txt",
+    "python3 -I python_src/wordstats.py --top 40 < target/uni_input.txt",
+    "cargo run -q -- --top 40 < target/uni_input.txt"
+  ],
+  "hook_check_failures": 0,
+  "stop_blocks": 0,
+  "stop_gave_up": 0,
+  "protected_digest_same_as_start": true,
+  "grade": {
+    "fmt": 0,
+    "clippy": 0,
+    "test": 0,
+    "spec_passed": 11,
+    "spec_failed": 0,
+    "failed_tests": [],
+    "cli_same_as_python": "5/5",
+    "protected_unchanged": true
+  }
+}

@@ -1,0 +1,12 @@
+error[E0515]: cannot return value referencing local variable `lower`
+ --> broken/e0515_return_local_ref.rs:4:5
+  |
+4 |     lower.trim_matches(|c: char| c.is_ascii_punctuation())
+  |     -----^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |     |
+  |     returns a value referencing data owned by the current function
+  |     `lower` is borrowed here
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0515`.

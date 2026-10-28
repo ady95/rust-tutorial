@@ -1,0 +1,2 @@
+broken/e0597_not_live_long_enough.rs:6:18: error[E0597]: `lower` does not live long enough: borrowed value does not live long enough
+error: aborting due to 1 previous error

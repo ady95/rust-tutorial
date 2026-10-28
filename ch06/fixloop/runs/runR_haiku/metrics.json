@@ -1,0 +1,66 @@
+{
+  "name": "runR_haiku",
+  "settings": "no_hooks",
+  "model_arg": "haiku",
+  "allowed": [
+    "Bash(cargo *)"
+  ],
+  "max_turns": 40,
+  "max_budget_usd": 4.0,
+  "extra_test": null,
+  "claude_exit": 0,
+  "claude_stderr_tail": "",
+  "wall_s": 89.7,
+  "models": [
+    "claude-haiku-5-5"
+  ],
+  "subtype": "success",
+  "is_error": false,
+  "num_turns": 20,
+  "duration_s": 88.1,
+  "cost_usd_estimate": 0.0221,
+  "permission_denials": 8,
+  "denied_tools": [
+    "Bash"
+  ],
+  "tool_uses": {
+    "Bash": 16,
+    "Read": 1,
+    "Write": 2
+  },
+  "cargo_commands": 8,
+  "compile_failures_seen": 0,
+  "error_codes_seen": [],
+  "bash_commands": [
+    "find . -type f -not -path './target/*' | head -100 && echo --- && cat Cargo.toml && echo --- && cat src/*.rs && echo --- && cat tests/spec.rs && echo --- && cat python_src/wordstats.py",
+    "cargo --version && (cargo fmt --check; echo \"fmt exit=$?\") 2>&1 | tail -40; (cargo clippy --all-targets -- -D warnings; echo \"clippy exit=$?\") 2>&1 | tail -60; (cargo test; echo \"test exit=$?\") 2>&1 | tail -60",
+    "cargo --version; cargo fmt --check > /tmp/fmt.log 2>&1; echo \"fmt exit=$?\"; head -60 /tmp/fmt.log; cargo clippy --all-targets -- -D warnings > /tmp/clippy.log 2>&1; echo \"clippy exit=$?\"; tail -80 /tmp/clippy.log; cargo test > /tmp/test.log 2>&1; echo \"test exit=$?\"; tail -80 /tmp/test.log",
+    "cargo fmt --check",
+    "cargo clippy --all-targets -- -D warnings",
+    "cargo test",
+    "cargo fmt --check",
+    "cargo clippy --all-targets -- -D warnings",
+    "cargo test",
+    "printf 'ǅungla ΑΣ. ΟΔΟΣ... İstanbul Straße ÉLAN élan !!hi!! a\\x1cb c\\x1fd KELVIN\\xe2\\x84\\xaa k\\n' > /tmp/edge.txt && python3 -I python_src/wordstats.py --top 20 < /tmp/edge.txt > /tmp/py.out && ./target/debug/wordstats --top 20 < /tmp/edge.txt > /tmp/rs.out; echo \"diff exit=$?\"; cat /tmp/py.out; echo ---; cat /tmp/rs.out",
+    "python3 -I python_src/wordstats.py --top 20 < /tmp/edge.txt",
+    "./target/debug/wordstats --top 20 < /tmp/edge.txt",
+    "printf 'ǅungla ΑΣ. ΟΔΟΣ... İstanbul Straße ÉLAN élan !!hi!! a\\x1cb c\\x1fd KELVIN\\xe2\\x84\\xaa k\\n' | python3 -I python_src/wordstats.py --top 20; echo \"--- rust\"; printf 'ǅungla ΑΣ. ΟΔΟΣ... İstanbul Straße ÉLAN élan !!hi!! a\\x1cb c\\x1fd KELVIN\\xe2\\x84\\xaa k\\n' | ./target/debug/wordstats --top 20",
+    "printf 'ǅungla ΑΣ. ΟΔΟΣ... İstanbul Straße ÉLAN élan !!hi!! a\\x1cb c\\x1fd KELVIN\\xe2\\x84\\xaa k\\n' | python3 -I python_src/wordstats.py --top 20",
+    "printf 'ǅungla ΑΣ. ΟΔΟΣ... İstanbul Straße ÉLAN élan !!hi!! a\\x1cb c\\x1fd KELVIN\\xe2\\x84\\xaa k\\n' | ./target/debug/wordstats --top 20",
+    "mkdir -p reports && ls reports"
+  ],
+  "hook_check_failures": 0,
+  "stop_blocks": 0,
+  "stop_gave_up": 0,
+  "protected_digest_same_as_start": true,
+  "grade": {
+    "fmt": 0,
+    "clippy": 0,
+    "test": 0,
+    "spec_passed": 11,
+    "spec_failed": 0,
+    "failed_tests": [],
+    "cli_same_as_python": "5/5",
+    "protected_unchanged": true
+  }
+}

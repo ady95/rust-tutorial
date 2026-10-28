@@ -1,0 +1,2 @@
+broken/e0515_return_local_ref.rs:4:5: error[E0515]: cannot return value referencing local variable `lower`: returns a value referencing data owned by the current function
+error: aborting due to 1 previous error
