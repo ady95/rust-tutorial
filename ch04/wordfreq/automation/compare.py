@@ -7,6 +7,9 @@
 비교 항목: stdout(바이트), stderr(바이트), 종료 코드.
 cases.json 에서 usage_error 가 true 인 케이스는 계약 4절에 따라
 종료 코드와 "stderr 가 비어 있지 않음"만 비교한다.
+
+종료 코드: 0 = 모두 일치, 1 = 불일치 있음, 2 = Rust 실행 파일 없음,
+3 = 프로그램을 실행하지 못함(운영체제 정책 차단 등). 3 은 코드 문제가 아니다.
 """
 
 from __future__ import annotations
@@ -28,8 +31,15 @@ class Run:
     err: bytes
 
 
+class LaunchError(Exception):
+    """프로그램을 아예 실행하지 못했다 (출력 비교 이전의 문제)."""
+
+
 def run(cmd: list[str]) -> Run:
-    proc = subprocess.run(cmd, cwd=ROOT, capture_output=True, timeout=30)
+    try:
+        proc = subprocess.run(cmd, cwd=ROOT, capture_output=True, timeout=30)
+    except OSError as err:  # Windows 스마트 앱 컨트롤 차단(WinError 4551) 등
+        raise LaunchError(f"{cmd[0]}: {err}") from err
     return Run(proc.returncode, proc.stdout, proc.stderr)
 
 
@@ -70,7 +80,12 @@ def main() -> int:
 
     results = []
     for case in cases:
-        problems = compare(case, run(python_cmd + case["args"]), run(rust_cmd + case["args"]))
+        try:
+            problems = compare(case, run(python_cmd + case["args"]), run(rust_cmd + case["args"]))
+        except LaunchError as err:
+            print(f"ERROR {case['name']}: could not run program", file=sys.stderr)
+            print(f"     {err}", file=sys.stderr)
+            return 3
         results.append({"name": case["name"], "ok": not problems, "problems": problems})
         print(f"{'OK  ' if not problems else 'FAIL'} {case['name']}")
         for problem in problems:
