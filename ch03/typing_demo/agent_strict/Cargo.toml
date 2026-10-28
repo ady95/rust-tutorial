@@ -1,0 +1,9 @@
+[package]
+name = "order"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# preserve_order: dict 키 순서(오류 메시지의 repr)를 Python과 같게 유지
+# arbitrary_precision: 수 리터럴 원문을 보존해 int/float 구분과 큰 정수를 직접 처리
+serde_json = { version = "1", features = ["preserve_order", "arbitrary_precision"] }

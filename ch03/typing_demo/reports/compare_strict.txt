@@ -1,0 +1,10 @@
+same  order_badcoupon    python=(1, b'')  rust=(1, b'')
+same  order_big          python=(0, b'9000000000000000\r\n')  rust=(0, b'9000000000000000\r\n')
+same  order_empty        python=(0, b'0\r\n')  rust=(0, b'0\r\n')
+same  order_float        python=(0, b'1999\r\n')  rust=(0, b'1999\r\n')
+same  order_negqty       python=(0, b'0\r\n')  rust=(0, b'0\r\n')
+same  order_over         python=(0, b'0\r\n')  rust=(0, b'0\r\n')
+same  order_pct          python=(0, b'4950\r\n')  rust=(0, b'4950\r\n')
+same  order_pct33        python=(0, b'2233\r\n')  rust=(0, b'2233\r\n')
+
+8/8 same

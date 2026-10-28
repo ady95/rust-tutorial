@@ -18,3 +18,6 @@ target/
 .idea/
 .DS_Store
 Thumbs.db
+
+# 측정 부산물
+.coverage

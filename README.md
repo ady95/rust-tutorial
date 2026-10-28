@@ -10,6 +10,8 @@
 |---|---|---|
 | `ch02/hello_python` | 02-1 | uv 프로젝트, pytest 첫 테스트 |
 | `ch02/hello_rust` | 02-2 | Cargo 첫 프로젝트 |
+| `ch03/` | 03장 | Python·Rust 동작 차이, 타입 힌트 비교, 테스트 강도 실험 |
+| `tools/baseline.py` | 03-4 | 승인한 기준 구현(Python·테스트·계약)을 해시로 고정하고 검사 |
 | `ch04/wordfreq` | 04장 | 단어 빈도 CLI — Python 기준 구현과 Claude Code가 만든 Rust 구현 |
 
 실습 프로젝트는 같은 폴더 구조를 따릅니다.
@@ -35,6 +37,7 @@ cd ch04/wordfreq
 uv run pytest                                   # Python 기준 구현 테스트
 cd rust_app && cargo build --release && cd ..   # Rust 빌드
 uv run python automation/compare.py             # 두 구현 비교
+uv run --no-project python ../../tools/baseline.py check   # 기준 구현이 그대로인지
 ```
 
 ## 주의
