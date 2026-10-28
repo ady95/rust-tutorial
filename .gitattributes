@@ -1,2 +1,5 @@
 # 테스트 입력은 바이트 그대로 보존한다 (Windows 체크아웃 시 줄바꿈 자동 변환 금지)
 **/tests/fixtures/** -text
+# 07장 기준 출력과 추가 입력도 바이트 그대로 보존한다 (해시로 대조하므로)
+ch07/golden/goldens/** -text
+ch07/golden/fixtures/** -text
