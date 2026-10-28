@@ -1,0 +1,87 @@
+[
+  {
+    "name": "basic",
+    "ok": true,
+    "problems": []
+  },
+  {
+    "name": "basic-top2",
+    "ok": true,
+    "problems": []
+  },
+  {
+    "name": "basic-json",
+    "ok": true,
+    "problems": []
+  },
+  {
+    "name": "korean",
+    "ok": true,
+    "problems": []
+  },
+  {
+    "name": "korean-json",
+    "ok": true,
+    "problems": []
+  },
+  {
+    "name": "punctuation",
+    "ok": true,
+    "problems": []
+  },
+  {
+    "name": "ties",
+    "ok": true,
+    "problems": []
+  },
+  {
+    "name": "crlf-case",
+    "ok": true,
+    "problems": []
+  },
+  {
+    "name": "empty",
+    "ok": true,
+    "problems": []
+  },
+  {
+    "name": "empty-json",
+    "ok": true,
+    "problems": []
+  },
+  {
+    "name": "missing-file",
+    "ok": true,
+    "problems": []
+  },
+  {
+    "name": "invalid-utf8",
+    "ok": true,
+    "problems": []
+  },
+  {
+    "name": "directory",
+    "ok": true,
+    "problems": []
+  },
+  {
+    "name": "usage-no-file",
+    "ok": true,
+    "problems": []
+  },
+  {
+    "name": "usage-top-zero",
+    "ok": true,
+    "problems": []
+  },
+  {
+    "name": "usage-top-abc",
+    "ok": true,
+    "problems": []
+  },
+  {
+    "name": "usage-unknown-option",
+    "ok": true,
+    "problems": []
+  }
+]

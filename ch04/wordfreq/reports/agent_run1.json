@@ -1,0 +1,14 @@
+{
+  "subtype": "success",
+  "is_error": false,
+  "num_turns": 48,
+  "duration_ms": 768593,
+  "total_cost_usd": 2.9985690000000007,
+  "models": [
+    "claude-haiku-5-5",
+    "claude-opus-5-5"
+  ],
+  "permission_denials": 10,
+  "claude_code_version": "2.1.299",
+  "date": "2026-10-28"
+}

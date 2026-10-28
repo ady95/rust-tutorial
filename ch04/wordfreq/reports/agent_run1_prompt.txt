@@ -1,0 +1,7 @@
+python_src/wordfreq.py 는 승인된 Python 기준 구현이고, contracts/behavior_spec.md 는 동작 계약이다. 이 프로그램을 Rust로 다시 구현해 줘.
+
+- rust_app/ 폴더에 Cargo 프로젝트를 만들고, 실행 파일 이름은 wordfreq 로 한다.
+- 계약의 출력 형식, 오류 메시지, 종료 코드를 바이트 단위로 지킨다.
+- python_src/, tests/, contracts/ 는 읽기만 하고 수정하지 않는다.
+- 마지막에 cargo build --release 가 성공하는지 확인한다.
+- 끝나면 만든 파일 목록과, Python 구현과 다르게 동작할 수 있는 부분을 보고한다.
