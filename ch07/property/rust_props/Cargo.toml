@@ -1,0 +1,12 @@
+[package]
+name = "wordfreq_props"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+# 검사할 구현. run_props.sh 가 경로를 바꿔 5장 2회차도 검사한다
+[dependencies]
+wordfreq = { path = "../../../ch05/wordfreq/rust_app" }
+
+[dev-dependencies]
+proptest = "1"

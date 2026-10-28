@@ -1,0 +1,506 @@
+[
+  {
+    "scenario": "missing-file",
+    "python": {
+      "exit": 1,
+      "stdout": "",
+      "stderr": "wordfreq: error: file not found: nope.txt⏎",
+      "side_effect": false
+    },
+    "ch04_run1": {
+      "exit": 1,
+      "same": true,
+      "same_exit": true,
+      "same_stdout": true,
+      "same_stderr": true,
+      "stderr": "wordfreq: error: file not found: nope.txt⏎",
+      "side_effect": false
+    },
+    "ch05_run2": {
+      "exit": 1,
+      "same": true,
+      "same_exit": true,
+      "same_stdout": true,
+      "same_stderr": true,
+      "stderr": "wordfreq: error: file not found: nope.txt⏎",
+      "side_effect": false
+    },
+    "ch05_run3": {
+      "exit": 1,
+      "same": true,
+      "same_exit": true,
+      "same_stdout": true,
+      "same_stderr": true,
+      "stderr": "wordfreq: error: file not found: nope.txt⏎",
+      "side_effect": false
+    }
+  },
+  {
+    "scenario": "directory",
+    "python": {
+      "exit": 1,
+      "stdout": "",
+      "stderr": "wordfreq: error: cannot read file: adir⏎",
+      "side_effect": false
+    },
+    "ch04_run1": {
+      "exit": 1,
+      "same": true,
+      "same_exit": true,
+      "same_stdout": true,
+      "same_stderr": true,
+      "stderr": "wordfreq: error: cannot read file: adir⏎",
+      "side_effect": false
+    },
+    "ch05_run2": {
+      "exit": 1,
+      "same": true,
+      "same_exit": true,
+      "same_stdout": true,
+      "same_stderr": true,
+      "stderr": "wordfreq: error: cannot read file: adir⏎",
+      "side_effect": false
+    },
+    "ch05_run3": {
+      "exit": 1,
+      "same": true,
+      "same_exit": true,
+      "same_stdout": true,
+      "same_stderr": true,
+      "stderr": "wordfreq: error: cannot read file: adir⏎",
+      "side_effect": false
+    }
+  },
+  {
+    "scenario": "permission-denied",
+    "python": {
+      "exit": 1,
+      "stdout": "",
+      "stderr": "wordfreq: error: cannot read file: secret.txt⏎",
+      "side_effect": false
+    },
+    "ch04_run1": {
+      "exit": 1,
+      "same": true,
+      "same_exit": true,
+      "same_stdout": true,
+      "same_stderr": true,
+      "stderr": "wordfreq: error: cannot read file: secret.txt⏎",
+      "side_effect": false
+    },
+    "ch05_run2": {
+      "exit": 1,
+      "same": true,
+      "same_exit": true,
+      "same_stdout": true,
+      "same_stderr": true,
+      "stderr": "wordfreq: error: cannot read file: secret.txt⏎",
+      "side_effect": false
+    },
+    "ch05_run3": {
+      "exit": 1,
+      "same": true,
+      "same_exit": true,
+      "same_stdout": true,
+      "same_stderr": true,
+      "stderr": "wordfreq: error: cannot read file: secret.txt⏎",
+      "side_effect": false
+    }
+  },
+  {
+    "scenario": "non-utf8-filename",
+    "python": {
+      "exit": 0,
+      "stdout": "words: 2⏎unique: 2⏎1\tbyte⏎1\tname⏎",
+      "stderr": "",
+      "side_effect": false
+    },
+    "ch04_run1": {
+      "exit": 0,
+      "same": true,
+      "same_exit": true,
+      "same_stdout": true,
+      "same_stderr": true,
+      "stderr": "",
+      "side_effect": false
+    },
+    "ch05_run2": {
+      "exit": 0,
+      "same": true,
+      "same_exit": true,
+      "same_stdout": true,
+      "same_stderr": true,
+      "stderr": "",
+      "side_effect": false
+    },
+    "ch05_run3": {
+      "exit": 0,
+      "same": true,
+      "same_exit": true,
+      "same_stdout": true,
+      "same_stderr": true,
+      "stderr": "",
+      "side_effect": false
+    }
+  },
+  {
+    "scenario": "non-utf8-missing",
+    "python": {
+      "exit": 1,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):⏎  File \"/home/dev/work/rust-tutorial/ch05/wordfreq/p...",
+      "side_effect": false
+    },
+    "ch04_run1": {
+      "exit": 1,
+      "same": false,
+      "same_exit": true,
+      "same_stdout": true,
+      "same_stderr": false,
+      "stderr": "wordfreq: error: file not found: gone�.txt⏎",
+      "side_effect": false
+    },
+    "ch05_run2": {
+      "exit": 1,
+      "same": false,
+      "same_exit": true,
+      "same_stdout": true,
+      "same_stderr": false,
+      "stderr": "wordfreq: error: file not found: gone�.txt⏎",
+      "side_effect": false
+    },
+    "ch05_run3": {
+      "exit": 1,
+      "same": false,
+      "same_exit": true,
+      "same_stdout": true,
+      "same_stderr": false,
+      "stderr": "wordfreq: error: file not found: gone�.txt⏎",
+      "side_effect": false
+    }
+  },
+  {
+    "scenario": "dash-filename",
+    "python": {
+      "exit": 0,
+      "stdout": "words: 2⏎unique: 2⏎1\tdash⏎1\tfile⏎",
+      "stderr": "",
+      "side_effect": false
+    },
+    "ch04_run1": {
+      "exit": 0,
+      "same": true,
+      "same_exit": true,
+      "same_stdout": true,
+      "same_stderr": true,
+      "stderr": "",
+      "side_effect": false
+    },
+    "ch05_run2": {
+      "exit": 0,
+      "same": true,
+      "same_exit": true,
+      "same_stdout": true,
+      "same_stderr": true,
+      "stderr": "",
+      "side_effect": false
+    },
+    "ch05_run3": {
+      "exit": 0,
+      "same": true,
+      "same_exit": true,
+      "same_stdout": true,
+      "same_stderr": true,
+      "stderr": "",
+      "side_effect": false
+    }
+  },
+  {
+    "scenario": "double-dash",
+    "python": {
+      "exit": 0,
+      "stdout": "words: 4⏎unique: 3⏎2\tthe⏎1\tcat⏎1\that⏎",
+      "stderr": "",
+      "side_effect": false
+    },
+    "ch04_run1": {
+      "exit": 0,
+      "same": true,
+      "same_exit": true,
+      "same_stdout": true,
+      "same_stderr": true,
+      "stderr": "",
+      "side_effect": false
+    },
+    "ch05_run2": {
+      "exit": 0,
+      "same": true,
+      "same_exit": true,
+      "same_stdout": true,
+      "same_stderr": true,
+      "stderr": "",
+      "side_effect": false
+    },
+    "ch05_run3": {
+      "exit": 0,
+      "same": true,
+      "same_exit": true,
+      "same_stdout": true,
+      "same_stderr": true,
+      "stderr": "",
+      "side_effect": false
+    }
+  },
+  {
+    "scenario": "top-repeated",
+    "python": {
+      "exit": 0,
+      "stdout": "words: 4⏎unique: 3⏎2\tthe⏎1\tcat⏎",
+      "stderr": "",
+      "side_effect": false
+    },
+    "ch04_run1": {
+      "exit": 0,
+      "same": true,
+      "same_exit": true,
+      "same_stdout": true,
+      "same_stderr": true,
+      "stderr": "",
+      "side_effect": false
+    },
+    "ch05_run2": {
+      "exit": 0,
+      "same": true,
+      "same_exit": true,
+      "same_stdout": true,
+      "same_stderr": true,
+      "stderr": "",
+      "side_effect": false
+    },
+    "ch05_run3": {
+      "exit": 0,
+      "same": true,
+      "same_exit": true,
+      "same_stdout": true,
+      "same_stderr": true,
+      "stderr": "",
+      "side_effect": false
+    }
+  },
+  {
+    "scenario": "top-fullwidth",
+    "python": {
+      "exit": 0,
+      "stdout": "words: 4⏎unique: 3⏎2\tthe⏎1\tcat⏎",
+      "stderr": "",
+      "side_effect": false
+    },
+    "ch04_run1": {
+      "exit": 0,
+      "same": true,
+      "same_exit": true,
+      "same_stdout": true,
+      "same_stderr": true,
+      "stderr": "",
+      "side_effect": false
+    },
+    "ch05_run2": {
+      "exit": 2,
+      "same": false,
+      "same_exit": false,
+      "same_stdout": false,
+      "same_stderr": false,
+      "stderr": "usage: wordfreq FILE [--top N] [--json]⏎wordfreq: error: argument --top: not an integer...",
+      "side_effect": false
+    },
+    "ch05_run3": {
+      "exit": 2,
+      "same": false,
+      "same_exit": false,
+      "same_stdout": false,
+      "same_stderr": false,
+      "stderr": "usage: wordfreq FILE [--top N] [--json]⏎wordfreq: error: argument --top: not an integer...",
+      "side_effect": false
+    }
+  },
+  {
+    "scenario": "top-huge",
+    "python": {
+      "exit": 0,
+      "stdout": "words: 4⏎unique: 3⏎2\tthe⏎1\tcat⏎1\that⏎",
+      "stderr": "",
+      "side_effect": false
+    },
+    "ch04_run1": {
+      "exit": 0,
+      "same": true,
+      "same_exit": true,
+      "same_stdout": true,
+      "same_stderr": true,
+      "stderr": "",
+      "side_effect": false
+    },
+    "ch05_run2": {
+      "exit": 0,
+      "same": true,
+      "same_exit": true,
+      "same_stdout": true,
+      "same_stderr": true,
+      "stderr": "",
+      "side_effect": false
+    },
+    "ch05_run3": {
+      "exit": 0,
+      "same": true,
+      "same_exit": true,
+      "same_stdout": true,
+      "same_stderr": true,
+      "stderr": "",
+      "side_effect": false
+    }
+  },
+  {
+    "scenario": "top-zero",
+    "python": {
+      "exit": 2,
+      "stdout": "",
+      "stderr": "usage: wordfreq [-h] [--top TOP] [--json] file⏎wordfreq: error: argument --top: must be...",
+      "side_effect": false
+    },
+    "ch04_run1": {
+      "exit": 2,
+      "same": true,
+      "same_exit": true,
+      "same_stdout": true,
+      "same_stderr": true,
+      "stderr": "usage: wordfreq [-h] [--top TOP] [--json] file⏎wordfreq: error: argument --top: must be...",
+      "side_effect": false
+    },
+    "ch05_run2": {
+      "exit": 2,
+      "same": true,
+      "same_exit": true,
+      "same_stdout": true,
+      "same_stderr": true,
+      "stderr": "usage: wordfreq FILE [--top N] [--json]⏎wordfreq: error: argument --top: must be at lea...",
+      "side_effect": false
+    },
+    "ch05_run3": {
+      "exit": 2,
+      "same": true,
+      "same_exit": true,
+      "same_stdout": true,
+      "same_stderr": true,
+      "stderr": "usage: wordfreq FILE [--top N] [--json]⏎wordfreq: error: argument --top: must be at lea...",
+      "side_effect": false
+    }
+  },
+  {
+    "scenario": "top-equals",
+    "python": {
+      "exit": 0,
+      "stdout": "words: 4⏎unique: 3⏎2\tthe⏎",
+      "stderr": "",
+      "side_effect": false
+    },
+    "ch04_run1": {
+      "exit": 0,
+      "same": true,
+      "same_exit": true,
+      "same_stdout": true,
+      "same_stderr": true,
+      "stderr": "",
+      "side_effect": false
+    },
+    "ch05_run2": {
+      "exit": 0,
+      "same": true,
+      "same_exit": true,
+      "same_stdout": true,
+      "same_stderr": true,
+      "stderr": "",
+      "side_effect": false
+    },
+    "ch05_run3": {
+      "exit": 0,
+      "same": true,
+      "same_exit": true,
+      "same_stdout": true,
+      "same_stderr": true,
+      "stderr": "",
+      "side_effect": false
+    }
+  },
+  {
+    "scenario": "closed-pipe",
+    "python": {
+      "exit": 1,
+      "stdout": "w",
+      "stderr": "Traceback (most recent call last):⏎  File \"/home/dev/work/rust-tutorial/ch05/wordfreq/p...",
+      "side_effect": false
+    },
+    "ch04_run1": {
+      "exit": 120,
+      "same": false,
+      "same_exit": false,
+      "same_stdout": true,
+      "same_stderr": false,
+      "stderr": "",
+      "side_effect": false
+    },
+    "ch05_run2": {
+      "exit": 1,
+      "same": false,
+      "same_exit": true,
+      "same_stdout": true,
+      "same_stderr": false,
+      "stderr": "",
+      "side_effect": false
+    },
+    "ch05_run3": {
+      "exit": 1,
+      "same": false,
+      "same_exit": true,
+      "same_stdout": true,
+      "same_stderr": false,
+      "stderr": "",
+      "side_effect": false
+    }
+  },
+  {
+    "scenario": "disk-full",
+    "python": {
+      "exit": 120,
+      "stdout": "",
+      "stderr": "Exception ignored in: <_io.TextIOWrapper name='<stdout>' mode='w' encoding='utf-8'>⏎OSE...",
+      "side_effect": false
+    },
+    "ch04_run1": {
+      "exit": 120,
+      "same": false,
+      "same_exit": true,
+      "same_stdout": true,
+      "same_stderr": false,
+      "stderr": "",
+      "side_effect": false
+    },
+    "ch05_run2": {
+      "exit": 1,
+      "same": false,
+      "same_exit": false,
+      "same_stdout": true,
+      "same_stderr": false,
+      "stderr": "",
+      "side_effect": false
+    },
+    "ch05_run3": {
+      "exit": 1,
+      "same": false,
+      "same_exit": false,
+      "same_stdout": true,
+      "same_stderr": false,
+      "stderr": "",
+      "side_effect": false
+    }
+  }
+]

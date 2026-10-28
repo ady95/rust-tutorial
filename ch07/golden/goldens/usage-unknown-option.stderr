@@ -1,0 +1,2 @@
+usage: wordfreq [-h] [--top TOP] [--json] file
+wordfreq: error: unrecognized arguments: --bogus

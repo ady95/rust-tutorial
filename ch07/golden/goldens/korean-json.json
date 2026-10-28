@@ -1,0 +1,16 @@
+{
+  "args": [
+    "tests/fixtures/korean.txt",
+    "--json",
+    "--top",
+    "3"
+  ],
+  "usage_error": false,
+  "exit_code": 0,
+  "stdout_sha256": "a4ef45b371e9c5e9358591bde117460a95020525410fb50bc4e1c673eae95efd",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "inputs": {
+    "tests/fixtures/korean.txt": "0fb92891612c6094d59e4c1991f5ac4931378ac94a303f9a1e4ceef5b95dec04"
+  },
+  "stored": true
+}

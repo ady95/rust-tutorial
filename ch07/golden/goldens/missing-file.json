@@ -1,0 +1,11 @@
+{
+  "args": [
+    "tests/fixtures/no_such_file.txt"
+  ],
+  "usage_error": false,
+  "exit_code": 1,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "97a953a3145b265f8ba8dfd620852e91acae71e7d3cb8bb9eff147be01c08f3e",
+  "inputs": {},
+  "stored": true
+}

@@ -1,0 +1,15 @@
+{
+  "args": [
+    "tests/fixtures/punctuation.txt",
+    "--top",
+    "20"
+  ],
+  "usage_error": false,
+  "exit_code": 0,
+  "stdout_sha256": "49299840ad5590a61e1de51a01ad740f57b5a19a1d8c001a80d939a0b05466a0",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "inputs": {
+    "tests/fixtures/punctuation.txt": "f913ab09620e4ec39653bf176979d169718269ce7a80a16b7f8c34b28525fe51"
+  },
+  "stored": true
+}

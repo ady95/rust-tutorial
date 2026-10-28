@@ -1,0 +1,65 @@
+{"plain": {"n": 500, "exact_diff": 313, "numeric_diff": 9, "text_only_fields": {"sum": 263, "mean": 276}, "value_diff_fields": {"mean2": 9}}}
+{"halfway": {"n": 500, "exact_diff": 190, "numeric_diff": 190, "text_only_fields": {}, "value_diff_fields": {"mean2": 190}}}
+{"magnitude": {"n": 500, "exact_diff": 500, "numeric_diff": 0, "text_only_fields": {"sum": 500, "mean": 500, "mean2": 500, "min": 500, "max": 500, "stdev": 148}, "value_diff_fields": {}}}
+{"cancel": {"n": 500, "exact_diff": 500, "numeric_diff": 500, "text_only_fields": {}, "value_diff_fields": {"sum": 500, "mean": 500, "mean2": 493}}}
+{
+ "examples": {
+  "plain/sum/text": [
+   "-573.95",
+   "-573.9499999999999"
+  ],
+  "plain/mean/text": [
+   "-143.4875",
+   "-143.48749999999998"
+  ],
+  "plain/mean2/value": [
+   "-82.82",
+   "-82.83",
+   "-208.22\n-515.62\n105.68\n-910.24\n-165.14\n-946.55\n128.98\n484.6\n682.34\n515.92\n"
+  ],
+  "halfway/mean2/value": [
+   "885.65",
+   "885.66",
+   "0.691\n1770.619\n"
+  ],
+  "magnitude/sum/text": [
+   "4.996316282367803e+19",
+   "4.996316282367803e19"
+  ],
+  "magnitude/mean/text": [
+   "9.992632564735607e+18",
+   "9.992632564735607e18"
+  ],
+  "magnitude/mean2/text": [
+   "9.992632564735607e+18",
+   "9.992632564735607e18"
+  ],
+  "magnitude/min/text": [
+   "8.519965598213159e-06",
+   "8.519965598213159e-6"
+  ],
+  "magnitude/max/text": [
+   "3.761096747301698e+19",
+   "3.761096747301698e19"
+  ],
+  "magnitude/stdev/text": [
+   "27028529672342024192.0000",
+   "27028529672342028288.0000"
+  ],
+  "cancel/sum/value": [
+   "10.867852663694729",
+   "12.0",
+   "1e+16\n5.5891441016145\n5.2787085620802285\n-1e+16\n"
+  ],
+  "cancel/mean/value": [
+   "2.716963165923682",
+   "3.0",
+   "1e+16\n5.5891441016145\n5.2787085620802285\n-1e+16\n"
+  ],
+  "cancel/mean2/value": [
+   "2.72",
+   "3.0",
+   "1e+16\n5.5891441016145\n5.2787085620802285\n-1e+16\n"
+  ]
+ }
+}

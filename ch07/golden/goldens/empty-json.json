@@ -1,0 +1,14 @@
+{
+  "args": [
+    "tests/fixtures/empty.txt",
+    "--json"
+  ],
+  "usage_error": false,
+  "exit_code": 0,
+  "stdout_sha256": "349f5f097575150bc3b47da6fd7ec6ba8de4dd906b89036b75fcf5d1aee398bc",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "inputs": {
+    "tests/fixtures/empty.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stored": true
+}

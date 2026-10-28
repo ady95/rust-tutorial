@@ -1,0 +1,27 @@
+{"binary": "ch04_run1", "strategy": "any_text", "seed": 1, "found": true, "first_failure_at": 397, "examples_run": 859, "seconds": 4.0, "minimal": {"text": "𖺠", "top": 1, "json": false, "rust_exit": 0}, "minimal_codepoints": ["U+16EA0"]}
+{"binary": "ch04_run1", "strategy": "any_text", "seed": 2, "found": false, "first_failure_at": null, "examples_run": 2000, "seconds": 5.1, "minimal": null, "minimal_codepoints": null}
+{"binary": "ch04_run1", "strategy": "any_text", "seed": 3, "found": false, "first_failure_at": null, "examples_run": 2000, "seconds": 4.9, "minimal": null, "minimal_codepoints": null}
+{"binary": "ch04_run1", "strategy": "sigma_words", "seed": 1, "found": false, "first_failure_at": null, "examples_run": 2000, "seconds": 8.0, "minimal": null, "minimal_codepoints": null}
+{"binary": "ch04_run1", "strategy": "sigma_words", "seed": 2, "found": false, "first_failure_at": null, "examples_run": 2000, "seconds": 8.2, "minimal": null, "minimal_codepoints": null}
+{"binary": "ch04_run1", "strategy": "sigma_words", "seed": 3, "found": false, "first_failure_at": null, "examples_run": 2000, "seconds": 7.9, "minimal": null, "minimal_codepoints": null}
+{"binary": "ch04_run1", "strategy": "unassigned_words", "seed": 1, "found": false, "first_failure_at": null, "examples_run": 2000, "seconds": 8.3, "minimal": null, "minimal_codepoints": null}
+{"binary": "ch04_run1", "strategy": "unassigned_words", "seed": 2, "found": true, "first_failure_at": 779, "examples_run": 1699, "seconds": 7.8, "minimal": {"text": "AࢗΣ", "top": 1, "json": false, "rust_exit": 0}, "minimal_codepoints": ["U+0041", "U+0897", "U+03A3"]}
+{"binary": "ch04_run1", "strategy": "unassigned_words", "seed": 3, "found": false, "first_failure_at": null, "examples_run": 2000, "seconds": 8.0, "minimal": null, "minimal_codepoints": null}
+{"binary": "ch05_run2", "strategy": "any_text", "seed": 1, "found": true, "first_failure_at": 397, "examples_run": 859, "seconds": 2.4, "minimal": {"text": "𖺠", "top": 1, "json": false, "rust_exit": 0}, "minimal_codepoints": ["U+16EA0"]}
+{"binary": "ch05_run2", "strategy": "any_text", "seed": 2, "found": false, "first_failure_at": null, "examples_run": 2000, "seconds": 5.0, "minimal": null, "minimal_codepoints": null}
+{"binary": "ch05_run2", "strategy": "any_text", "seed": 3, "found": false, "first_failure_at": null, "examples_run": 2000, "seconds": 5.0, "minimal": null, "minimal_codepoints": null}
+{"binary": "ch05_run2", "strategy": "sigma_words", "seed": 1, "found": false, "first_failure_at": null, "examples_run": 2000, "seconds": 7.8, "minimal": null, "minimal_codepoints": null}
+{"binary": "ch05_run2", "strategy": "sigma_words", "seed": 2, "found": false, "first_failure_at": null, "examples_run": 2000, "seconds": 8.2, "minimal": null, "minimal_codepoints": null}
+{"binary": "ch05_run2", "strategy": "sigma_words", "seed": 3, "found": false, "first_failure_at": null, "examples_run": 2000, "seconds": 8.3, "minimal": null, "minimal_codepoints": null}
+{"binary": "ch05_run2", "strategy": "unassigned_words", "seed": 1, "found": false, "first_failure_at": null, "examples_run": 2000, "seconds": 8.4, "minimal": null, "minimal_codepoints": null}
+{"binary": "ch05_run2", "strategy": "unassigned_words", "seed": 2, "found": true, "first_failure_at": 779, "examples_run": 1699, "seconds": 8.0, "minimal": {"text": "AࢗΣ", "top": 1, "json": false, "rust_exit": 0}, "minimal_codepoints": ["U+0041", "U+0897", "U+03A3"]}
+{"binary": "ch05_run2", "strategy": "unassigned_words", "seed": 3, "found": false, "first_failure_at": null, "examples_run": 2000, "seconds": 8.1, "minimal": null, "minimal_codepoints": null}
+{"binary": "ch05_run3", "strategy": "any_text", "seed": 1, "found": false, "first_failure_at": null, "examples_run": 2000, "seconds": 4.4, "minimal": null, "minimal_codepoints": null}
+{"binary": "ch05_run3", "strategy": "any_text", "seed": 2, "found": false, "first_failure_at": null, "examples_run": 2000, "seconds": 4.7, "minimal": null, "minimal_codepoints": null}
+{"binary": "ch05_run3", "strategy": "any_text", "seed": 3, "found": false, "first_failure_at": null, "examples_run": 2000, "seconds": 4.6, "minimal": null, "minimal_codepoints": null}
+{"binary": "ch05_run3", "strategy": "sigma_words", "seed": 1, "found": false, "first_failure_at": null, "examples_run": 2000, "seconds": 6.8, "minimal": null, "minimal_codepoints": null}
+{"binary": "ch05_run3", "strategy": "sigma_words", "seed": 2, "found": false, "first_failure_at": null, "examples_run": 2000, "seconds": 6.8, "minimal": null, "minimal_codepoints": null}
+{"binary": "ch05_run3", "strategy": "sigma_words", "seed": 3, "found": false, "first_failure_at": null, "examples_run": 2000, "seconds": 6.9, "minimal": null, "minimal_codepoints": null}
+{"binary": "ch05_run3", "strategy": "unassigned_words", "seed": 1, "found": false, "first_failure_at": null, "examples_run": 2000, "seconds": 7.2, "minimal": null, "minimal_codepoints": null}
+{"binary": "ch05_run3", "strategy": "unassigned_words", "seed": 2, "found": true, "first_failure_at": 779, "examples_run": 1699, "seconds": 7.7, "minimal": {"text": "AࢗΣ", "top": 1, "json": false, "rust_exit": 0}, "minimal_codepoints": ["U+0041", "U+0897", "U+03A3"]}
+{"binary": "ch05_run3", "strategy": "unassigned_words", "seed": 3, "found": false, "first_failure_at": null, "examples_run": 2000, "seconds": 8.3, "minimal": null, "minimal_codepoints": null}

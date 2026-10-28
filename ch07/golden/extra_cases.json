@@ -1,0 +1,5 @@
+[
+  {"name": "u0295-sigma", "args": ["../../ch07/golden/fixtures/u0295_sigma.txt"]},
+  {"name": "new-letters-json", "args": ["../../ch07/golden/fixtures/new_letters.txt", "--json", "--top", "100"]},
+  {"name": "all-codepoints-json", "args": ["../../ch07/golden/fixtures/all_codepoints.txt", "--json", "--top", "100000000"], "hash_only": true}
+]

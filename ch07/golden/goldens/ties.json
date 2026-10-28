@@ -1,0 +1,13 @@
+{
+  "args": [
+    "tests/fixtures/ties.txt"
+  ],
+  "usage_error": false,
+  "exit_code": 0,
+  "stdout_sha256": "49a0b7ce03fb006772d615a9166cef210cb4abde3eff93dbf679e91c8adebeb0",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "inputs": {
+    "tests/fixtures/ties.txt": "611722c8b53be8c20673ecd3123cfedf99262fd8860b69a5e4d55af37b860a50"
+  },
+  "stored": true
+}

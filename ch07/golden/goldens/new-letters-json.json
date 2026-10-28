@@ -1,0 +1,16 @@
+{
+  "args": [
+    "../../ch07/golden/fixtures/new_letters.txt",
+    "--json",
+    "--top",
+    "100"
+  ],
+  "usage_error": false,
+  "exit_code": 0,
+  "stdout_sha256": "5064cfd2475dc14eecdcd8a8eb1943678e85ab23f44f522a01a47ebe856cc080",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "inputs": {
+    "../../ch07/golden/fixtures/new_letters.txt": "6deaf15716016e63f2296c1e3df7ba3a1b41937cce77d6289a4dea6bf2a97f46"
+  },
+  "stored": true
+}

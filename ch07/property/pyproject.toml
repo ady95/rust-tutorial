@@ -1,0 +1,9 @@
+[project]
+name = "ch07-property"
+version = "0.1.0"
+description = "07-2 Hypothesis 로 Python 기준 구현과 Rust 구현 비교"
+requires-python = ">=3.12,<3.13"
+dependencies = ["hypothesis", "pytest"]
+
+[tool.uv]
+package = false

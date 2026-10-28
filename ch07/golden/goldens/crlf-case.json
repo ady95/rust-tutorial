@@ -1,0 +1,14 @@
+{
+  "args": [
+    "tests/fixtures/crlf_case.txt",
+    "--json"
+  ],
+  "usage_error": false,
+  "exit_code": 0,
+  "stdout_sha256": "cdc6d9265512ab2814ea3beeb11cdf745dc972344d1c866bf0d3310544b20967",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "inputs": {
+    "tests/fixtures/crlf_case.txt": "5fa65a4792f0e19b58d6213556c98d381e37bfe6b52953b6c6a2136557b5f574"
+  },
+  "stored": true
+}

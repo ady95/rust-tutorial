@@ -1,0 +1,16 @@
+{
+  "args": [
+    "../../ch07/golden/fixtures/all_codepoints.txt",
+    "--json",
+    "--top",
+    "100000000"
+  ],
+  "usage_error": false,
+  "exit_code": 0,
+  "stdout_sha256": "f7e6c16faecba55141d36dc67cbcc2122a2b696f02c81c447ab3f2793d50ede6",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "inputs": {
+    "../../ch07/golden/fixtures/all_codepoints.txt": "981026275b9e5503911f797d4259d6d5b373730962c96221235a94bc67a3b8e6"
+  },
+  "stored": false
+}

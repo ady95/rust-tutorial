@@ -1,0 +1,2 @@
+usage: wordfreq [-h] [--top TOP] [--json] file
+wordfreq: error: argument --top: not an integer: abc

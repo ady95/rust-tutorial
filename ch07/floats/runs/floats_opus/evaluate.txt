@@ -1,0 +1,7 @@
+{"plain": {"n": 500, "exact_diff": 0, "numeric_diff": 0, "text_only_fields": {}, "value_diff_fields": {}}}
+{"halfway": {"n": 500, "exact_diff": 0, "numeric_diff": 0, "text_only_fields": {}, "value_diff_fields": {}}}
+{"magnitude": {"n": 500, "exact_diff": 0, "numeric_diff": 0, "text_only_fields": {}, "value_diff_fields": {}}}
+{"cancel": {"n": 500, "exact_diff": 0, "numeric_diff": 0, "text_only_fields": {}, "value_diff_fields": {}}}
+{
+ "examples": {}
+}

@@ -1,0 +1,13 @@
+{
+  "args": [
+    "../../ch07/golden/fixtures/u0295_sigma.txt"
+  ],
+  "usage_error": false,
+  "exit_code": 0,
+  "stdout_sha256": "2274b76bb0c3d1d44627b5d69af7f8421b210c696a832aefea0c5917980b1eff",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "inputs": {
+    "../../ch07/golden/fixtures/u0295_sigma.txt": "dcaa84e1b6da3bb1571302ce17db8cf07a7e88d09de6777f13803ecf799f2dec"
+  },
+  "stored": true
+}

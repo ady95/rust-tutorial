@@ -1,0 +1,13 @@
+{
+  "args": [
+    "tests/fixtures/invalid_utf8.txt"
+  ],
+  "usage_error": false,
+  "exit_code": 1,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "e34d15125a4e60920ede2f9259069db0526f048884a72784a629ab2b0e963f0d",
+  "inputs": {
+    "tests/fixtures/invalid_utf8.txt": "aa08a80543081352eb7dbb8650908ee4006786e99dbf3d8c0e257d8c6d4fbd84"
+  },
+  "stored": true
+}

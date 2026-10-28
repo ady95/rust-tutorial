@@ -1,0 +1,15 @@
+{
+  "args": [
+    "tests/fixtures/basic.txt",
+    "--top",
+    "0"
+  ],
+  "usage_error": true,
+  "exit_code": 2,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "3b1521d8333371caa375bbe7040685aa6a63f6f0b28097412afddb48c8774b6c",
+  "inputs": {
+    "tests/fixtures/basic.txt": "4de248f38f2ca80549a5ccae7e36dc0425e98721f00710d8925e46521b3bd15e"
+  },
+  "stored": true
+}

@@ -1,0 +1,2 @@
+usage: wordfreq [-h] [--top TOP] [--json] file
+wordfreq: error: the following arguments are required: file

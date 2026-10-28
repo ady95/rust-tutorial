@@ -1,0 +1,9 @@
+{
+  "args": [],
+  "usage_error": true,
+  "exit_code": 2,
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr_sha256": "c24f65bc1d237e454f3c20874a24811cdf2b6aa1cba7d6122632de83828ed3e0",
+  "inputs": {},
+  "stored": true
+}
