@@ -1,6 +1,6 @@
 # rust-tutorial
 
-위키독스 책 「AI 에이전트로 Python을 Rust로 바꾸기 따라하기」의 예제 코드 저장소입니다.
+위키독스 책 「AI 에이전트로 Python 개발·Rust 배포 따라하기」의 예제 코드 저장소입니다.
 
 - 책: https://wikidocs.net/book/21893
 
