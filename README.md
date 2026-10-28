@@ -14,6 +14,7 @@
 | `ch03/` | 03장 | Python·Rust 동작 차이, 타입 힌트 비교, 테스트 강도 실험 |
 | `tools/baseline.py` | 03-4 | 승인한 기준 구현(Python·테스트·계약)을 해시로 고정하고 검사 |
 | `ch04/wordfreq` | 04장 | 단어 빈도 CLI — Python 기준 구현과 Claude Code가 만든 Rust 구현 |
+| `ch05/` | 05장 | 같은 wordfreq를 지침(AGENTS.md·CLAUDE.md)·권한·훅으로 다시 변환, 사람 리뷰 기록 |
 
 실습 프로젝트는 같은 폴더 구조를 따릅니다.
 

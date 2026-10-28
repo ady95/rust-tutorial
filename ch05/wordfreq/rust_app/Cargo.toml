@@ -1,0 +1,19 @@
+[package]
+name = "wordfreq"
+version = "0.1.0"
+edition = "2024"
+description = "Count word frequencies (Rust port of python_src/wordfreq.py)"
+publish = false
+
+# main.rs 에는 테스트가, lib.rs 에는 문서 테스트가 없다. 빈 테스트 실행 파일과 rustdoc 이
+# 운영체제 정책(os error 4551)에 막히지 않도록 아예 실행하지 않는다. 단위 테스트는 lib.rs 에 있다.
+[lib]
+path = "src/lib.rs"
+doctest = false
+
+[[bin]]
+name = "wordfreq"
+path = "src/main.rs"
+test = false
+
+[dependencies]

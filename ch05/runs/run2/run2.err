@@ -1,0 +1,9 @@
+claude : Ignoring 4 permissions.allow entries from .claude/settings.json: this workspace has not been trusted. Run Clau
+de Code interactively here once and accept the trust dialog, or set projects["E:/works/rust-tutorial"].hasTrustDialogAc
+cepted: true in C:\Users\<user>\.claude.json.
+At line:1 char:420
++ ... = Get-Date; claude -p (Get-Content ..\prompt.txt -Raw -Encoding UTF8) ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Ignoring 4 perm...5\.claude.json.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 

@@ -1,0 +1,10 @@
+input: 23,156,352 bytes
+DIFF  rust_app/target/static/release/wordfreq.exe (exit python=0 rust=0)
+      Python 에만 있는 단어 1개, Rust 에만 있는 단어 1개
+      예(Python): ['0x295', '0x3c2']
+DIFF  ../runs/run2/target/release/wordfreq.exe (exit python=0 rust=101)
+DIFF  ../../ch04/wordfreq/rust_app/target/release/wordfreq.exe (exit python=0 rust=0)
+      Python 에만 있는 단어 127개, Rust 에만 있는 단어 52개
+      예(Python): ['0x61', '0x16ea0', '0x62']
+      예(Python): ['0x61', '0x16ea1', '0x62']
+      예(Python): ['0x61', '0x16ea2', '0x62']

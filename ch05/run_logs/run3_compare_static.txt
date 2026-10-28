@@ -1,0 +1,19 @@
+OK   basic
+OK   basic-top2
+OK   basic-json
+OK   korean
+OK   korean-json
+OK   punctuation
+OK   ties
+OK   crlf-case
+OK   empty
+OK   empty-json
+OK   missing-file
+OK   invalid-utf8
+OK   directory
+OK   usage-no-file
+OK   usage-top-zero
+OK   usage-top-abc
+OK   usage-unknown-option
+
+17/17 cases match

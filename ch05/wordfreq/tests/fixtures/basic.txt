@@ -1,0 +1,2 @@
+Rust is fast. Python is friendly!
+Rust, Python, and Rust.

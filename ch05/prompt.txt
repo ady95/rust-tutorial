@@ -1,0 +1,1 @@
+AGENTS.md의 지침에 따라 python_src/wordfreq.py를 rust_app/에 Rust로 다시 구현하세요. 완료 조건을 모두 확인한 뒤 보고서를 쓰세요.
