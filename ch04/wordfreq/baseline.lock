@@ -1,6 +1,6 @@
 # approved 2026-10-28 — 이 파일은 사람이 승인할 때만 다시 만든다
 7b55f8e67b5623c4bef3fa691288da9437d79d3aba156de48d481db32ac7d16d  .python-version
-c59e701d3f14c7f8958bb995b6cebd3d269c5b28e6da5594286ca1830f54fdbe  automation/compare.py
+424c553fd44a3be47ea60628a915849687f19d1c99b85bab4a4ee983e7866a1b  automation/compare.py
 9f2d01a965e8541f0fb048dc3d38945f65e52cba4d4226c99c91e356928ebf95  contracts/behavior_spec.md
 6be59bf8592b5500632501e6cac4dbaefeb810b4f82eb295077ca6671304a64c  pyproject.toml
 0084bcf7764f5edd29a12838e8a0457cc7ac1fdc1d6a00b24d8a2d0819967eea  python_src/wordfreq.py

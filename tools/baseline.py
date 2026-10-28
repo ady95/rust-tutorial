@@ -36,12 +36,18 @@ def protected_files(root: Path) -> list[Path]:
     return sorted(files)
 
 
-def digest(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+def digest(root: Path, path: Path) -> str:
+    data = path.read_bytes()
+    # git(core.autocrlf)은 체크아웃할 때 텍스트 파일의 줄바꿈을 OS에 맞게 바꾼다.
+    # 그래서 줄바꿈을 LF로 맞춘 뒤 해시한다. 단 fixtures 는 바이트 그대로가 계약이므로
+    # (.gitattributes 에서 -text) 손대지 않는다
+    if "fixtures" not in path.relative_to(root).parts:
+        data = data.replace(b"\r\n", b"\n")
+    return hashlib.sha256(data).hexdigest()
 
 
 def snapshot(root: Path) -> dict[str, str]:
-    return {p.relative_to(root).as_posix(): digest(p) for p in protected_files(root)}
+    return {p.relative_to(root).as_posix(): digest(root, p) for p in protected_files(root)}
 
 
 def read_lock(lock: Path) -> dict[str, str]:
