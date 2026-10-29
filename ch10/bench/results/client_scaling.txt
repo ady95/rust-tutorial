@@ -1,0 +1,6 @@
+std procs=2 25883 rps 25.7 us/req cores 0.67
+std procs=4 42530 rps 29.7 us/req cores 1.26
+std procs=6 57617 rps 32.6 us/req cores 1.88
+axum procs=2 35396 rps 42.8 us/req cores 1.51
+axum procs=4 46419 rps 46.3 us/req cores 2.15
+axum procs=6 53805 rps 43.3 us/req cores 2.33

@@ -147,7 +147,8 @@ async def cmd_port(args: argparse.Namespace) -> int:
         result = await run_session(
             label=f"round{round_no}", prompt=prompt, workspace=workspace, policy=policy,
             log_path=out / "events.jsonl",
-            system_append=prompts.COORDINATOR if split else prompts.IMPLEMENTER + (prompts.IMPLEMENTER_V2_EXTRA if v2 else ""),
+            system_append=(prompts.COORDINATOR if split else prompts.IMPLEMENTER + (prompts.IMPLEMENTER_V2_EXTRA if v2 else ""))
+            + (prompts.CRATES_NOTE if args.allow_crates else ""),
             tools=FILE_TOOLS + (["Agent"] if split else []), model=args.model, max_turns=args.max_turns,
             max_budget_usd=remaining, resume=session_id, agents=split_agents(args.model) if split else None,
             sandbox=sandbox,
@@ -206,7 +207,9 @@ async def cmd_followup(args: argparse.Namespace) -> int:
             shutil.copy2(out / name, out / name.replace(".json", f"_round{round_no - 1}.json"))
     result = await run_session(
         label=f"round{round_no}-followup", prompt=prompts.FOLLOWUP_PROMPT, workspace=workspace, policy=policy,
-        log_path=out / "events.jsonl", system_append=prompts.IMPLEMENTER + (prompts.IMPLEMENTER_V2_EXTRA if v2 else ""),
+        log_path=out / "events.jsonl",
+        system_append=prompts.IMPLEMENTER + (prompts.IMPLEMENTER_V2_EXTRA if v2 else "")
+        + (prompts.CRATES_NOTE if run.get("allow_crates") else ""),
         tools=FILE_TOOLS, model=run["model"], max_turns=args.max_turns,
         max_budget_usd=max(run["budget_usd"] - spent, 0.1), resume=sessions[-1]["session_id"], sandbox=sandbox,
     )

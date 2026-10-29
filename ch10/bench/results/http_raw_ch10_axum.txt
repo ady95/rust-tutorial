@@ -1,0 +1,15 @@
+     python=(400, 'text/plain; charset=utf-8', '', None, b'Invalid HTTP request received.', None)
+     rust  =(400, None, '', None, b'', None)
+DIFF target-first 0x07
+     python=(400, 'text/plain; charset=utf-8', '', None, b'Invalid HTTP request received.', None)
+     rust  =(400, None, '', None, b'', None)
+DIFF header-value 0x07
+     python=(200, 'application/json', '', None, b'{"status":"ok"}', None)
+     rust  =(400, None, '', None, b'', None)
+DIFF header-name 0x07
+     python=(400, 'text/plain; charset=utf-8', '', None, b'Invalid HTTP request received.', None)
+     rust  =(400, None, '', None, b'', None)
+DIFF method 0x07
+     python=(400, 'text/plain; charset=utf-8', '', None, b'Invalid HTTP request received.', None)
+     rust  =(400, None, '', None, b'', None)
+500/1349 same

@@ -50,7 +50,7 @@ async def main() -> int:
     sandbox = sandbox_settings(workspace, porter.deny_read_paths(workspace), CRATES_DOMAINS)
     result = await run_session(
         label="variant", prompt=args.prompt_file.read_text(encoding="utf-8"), workspace=workspace, policy=policy,
-        log_path=out / "events.jsonl", system_append=prompts.IMPLEMENTER + prompts.IMPLEMENTER_V2_EXTRA,
+        log_path=out / "events.jsonl", system_append=prompts.IMPLEMENTER + prompts.IMPLEMENTER_V2_EXTRA + prompts.CRATES_NOTE,
         tools=porter.FILE_TOOLS, model=args.model, max_turns=80, max_budget_usd=args.budget, sandbox=sandbox,
     )
     gate = gate_mod.run_gate(workspace, manifest)

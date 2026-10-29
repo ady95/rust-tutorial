@@ -1,0 +1,18 @@
+== ch10_port
+target-byte    0/256 differ
+target-first   0/256 differ
+header-value   0/256 differ
+header-name    0/256 differ
+method         0/256 differ
+special        4/69 differ
+status pairs (python, rust): {(400, 200): 2, (100, 100): 1, (400, 422): 1}
+{'same status, different body/headers': 1, 'one side accepted': 2, 'both rejected, different status': 1}
+== ch10_axum
+target-byte    166/256 differ
+target-first   255/256 differ
+header-value   32/256 differ
+header-name    178/256 differ
+method         179/256 differ
+special        39/69 differ
+status pairs (python, rust): {(400, 400): 698, (404, 400): 93, (200, 400): 30, (400, 200): 7, (422, 414): 5, (422, 400): 4, (400, 422): 3, (400, 414): 3}
+{'same status, different body/headers': 701, 'one side accepted': 39, 'both rejected, different status': 109}

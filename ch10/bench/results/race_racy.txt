@@ -1,0 +1,4 @@
+{"reserve_requests": 2000, "initial_quantity": 500, "succeeded": 2000, "conflicts": 0, "other_status": 0, "remaining": 255, "reserve_ok": false, "create_ids_ok": true, "seconds": 2.079}
+{"reserve_requests": 2000, "initial_quantity": 500, "succeeded": 2000, "conflicts": 0, "other_status": 0, "remaining": 239, "reserve_ok": false, "create_ids_ok": true, "seconds": 1.869}
+{"reserve_requests": 2000, "initial_quantity": 500, "succeeded": 2000, "conflicts": 0, "other_status": 0, "remaining": 240, "reserve_ok": false, "create_ids_ok": true, "seconds": 1.85}
+FAIL 0/3

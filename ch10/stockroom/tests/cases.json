@@ -1,0 +1,1034 @@
+[
+ {
+  "name": "health",
+  "steps": [
+   {
+    "method": "GET",
+    "path": "/health"
+   }
+  ]
+ },
+ {
+  "name": "create-get-list",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "bolt",
+     "price": 1e-05,
+     "quantity": 5,
+     "tags": [
+      "hw"
+     ]
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "nut",
+     "price": 10,
+     "quantity": "7",
+     "tags": [
+      "hw",
+      "small"
+     ]
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "gear",
+     "price": 999999.9999999999,
+     "quantity": 1
+    }
+   },
+   {
+    "method": "GET",
+    "path": "/items/1"
+   },
+   {
+    "method": "GET",
+    "path": "/items"
+   },
+   {
+    "method": "GET",
+    "path": "/items?limit=2&offset=1"
+   },
+   {
+    "method": "GET",
+    "path": "/items?tag=hw"
+   }
+  ]
+ },
+ {
+  "name": "float-format",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "f",
+     "price": 10,
+     "quantity": 1
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "f",
+     "price": 1e-07,
+     "quantity": 1
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "f",
+     "price": 0.1,
+     "quantity": 1
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "f",
+     "price": 5e-324,
+     "quantity": 1
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "f",
+     "price": 123456.789,
+     "quantity": 1
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "f",
+     "price": "1e-5",
+     "quantity": 1
+    }
+   }
+  ]
+ },
+ {
+  "name": "lax-numbers",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "l",
+     "price": "12.5",
+     "quantity": "3"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "l",
+     "price": true,
+     "quantity": true
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "l",
+     "price": " 2 ",
+     "quantity": 3.0
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "l",
+     "price": "1_0.5",
+     "quantity": "1_0"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "l",
+     "price": 1,
+     "quantity": false
+    }
+   }
+  ]
+ },
+ {
+  "name": "validation-types",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "bolt",
+     "price": 1.5,
+     "quantity": 3.5
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "bolt",
+     "price": 1.5,
+     "quantity": null
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "bolt",
+     "price": null,
+     "quantity": 10
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "bolt",
+     "price": "true",
+     "quantity": 10
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": 5,
+     "price": 1.5,
+     "quantity": 10
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "bolt",
+     "price": 1.5,
+     "quantity": 10,
+     "tags": "abc"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "bolt",
+     "price": 1.5,
+     "quantity": 10,
+     "tags": [
+      1
+     ]
+    }
+   }
+  ]
+ },
+ {
+  "name": "validation-ranges",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "",
+     "price": -1,
+     "quantity": 10,
+     "extra": 1
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+     "price": 1.5,
+     "quantity": 10
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "bolt",
+     "price": 1.5,
+     "quantity": 10,
+     "tags": [
+      "a",
+      "a",
+      "a",
+      "a",
+      "a",
+      "a",
+      "a",
+      "a",
+      "a",
+      "a",
+      "a"
+     ]
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "bolt",
+     "price": 1.5,
+     "quantity": 10,
+     "tags": [
+      ""
+     ]
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "bolt",
+     "price": 1.5,
+     "quantity": 1000001
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "bolt",
+     "price": "inf",
+     "quantity": 10
+    }
+   }
+  ]
+ },
+ {
+  "name": "unicode-name",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+     "price": 1.5,
+     "quantity": 10
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀",
+     "price": 1.5,
+     "quantity": 10
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "값 x",
+     "price": 1.5,
+     "quantity": 10
+    }
+   }
+  ]
+ },
+ {
+  "name": "missing-fields",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "x"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {}
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "price": 1,
+     "quantity": 1,
+     "tags": []
+    }
+   }
+  ]
+ },
+ {
+  "name": "non-finite-body",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/items",
+    "body": "{\"name\":\"p\",\"price\":NaN,\"quantity\":1}",
+    "headers": {
+     "Content-Type": "application/json"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "body": "{\"name\":\"p\",\"price\":Infinity,\"quantity\":1}",
+    "headers": {
+     "Content-Type": "application/json"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "body": "{\"name\":\"p\",\"price\":1e400,\"quantity\":1}",
+    "headers": {
+     "Content-Type": "application/json"
+    }
+   }
+  ]
+ },
+ {
+  "name": "body-framing",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/items",
+    "body": "{\"name\":\"t\",\"price\":1,\"quantity\":1}",
+    "headers": {}
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "body": "{\"name\":\"t\",\"price\":1,\"quantity\":1}",
+    "headers": {
+     "Content-Type": "application/vnd.api+json"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "body": "{\"name\":\"t\",\"price\":1,\"quantity\":1}",
+    "headers": {
+     "Content-Type": "application/json; charset=utf-8"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "body": "{\"name\":\"t\",\"price\":1,\"quantity\":1}",
+    "headers": {
+     "Content-Type": "text/plain"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "body": "",
+    "headers": {
+     "Content-Type": "application/json"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "body": "null",
+    "headers": {
+     "Content-Type": "application/json"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "body": "[1]",
+    "headers": {
+     "Content-Type": "application/json"
+    }
+   }
+  ]
+ },
+ {
+  "name": "invalid-json",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/items",
+    "body": "{bad",
+    "headers": {
+     "Content-Type": "application/json"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "body": "{\"name\":\"t\",\"price\":1,\"quantity\":1} x",
+    "headers": {
+     "Content-Type": "application/json"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "body": "{\"name\":\"é\", \"price\": 1,",
+    "headers": {
+     "Content-Type": "application/json"
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "body": "{\"name\":\"t\",\"name\":\"u\",\"price\":1,\"quantity\":1}",
+    "headers": {
+     "Content-Type": "application/json"
+    }
+   }
+  ]
+ },
+ {
+  "name": "invalid-utf8",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/items",
+    "headers": {
+     "Content-Type": "application/json"
+    },
+    "body_b64": "eyJuYW1lIjoi6SIsInByaWNlIjoxLCJxdWFudGl0eSI6MX0="
+   }
+  ]
+ },
+ {
+  "name": "path-ints",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "bolt",
+     "price": 1e-05,
+     "quantity": 5,
+     "tags": [
+      "hw"
+     ]
+    }
+   },
+   {
+    "method": "GET",
+    "path": "/items/01"
+   },
+   {
+    "method": "GET",
+    "path": "/items/+1"
+   },
+   {
+    "method": "GET",
+    "path": "/items/%201"
+   },
+   {
+    "method": "GET",
+    "path": "/items/1.0"
+   },
+   {
+    "method": "GET",
+    "path": "/items/1_0"
+   },
+   {
+    "method": "GET",
+    "path": "/items/1e0"
+   },
+   {
+    "method": "GET",
+    "path": "/items/0x1"
+   },
+   {
+    "method": "GET",
+    "path": "/items/-0"
+   },
+   {
+    "method": "GET",
+    "path": "/items/-1"
+   },
+   {
+    "method": "GET",
+    "path": "/items/99999999999999999999"
+   },
+   {
+    "method": "GET",
+    "path": "/items/%D9%A1"
+   },
+   {
+    "method": "GET",
+    "path": "/items/abc"
+   }
+  ]
+ },
+ {
+  "name": "query-ints",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "bolt",
+     "price": 1e-05,
+     "quantity": 5,
+     "tags": [
+      "hw"
+     ]
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "nut",
+     "price": 10,
+     "quantity": "7",
+     "tags": [
+      "hw",
+      "small"
+     ]
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "gear",
+     "price": 999999.9999999999,
+     "quantity": 1
+    }
+   },
+   {
+    "method": "GET",
+    "path": "/items?limit=0&offset=-1"
+   },
+   {
+    "method": "GET",
+    "path": "/items?limit=101"
+   },
+   {
+    "method": "GET",
+    "path": "/items?limit=5.0"
+   },
+   {
+    "method": "GET",
+    "path": "/items?limit=5.5"
+   },
+   {
+    "method": "GET",
+    "path": "/items?limit=%205%20"
+   },
+   {
+    "method": "GET",
+    "path": "/items?limit="
+   },
+   {
+    "method": "GET",
+    "path": "/items?limit=1&limit=2"
+   },
+   {
+    "method": "GET",
+    "path": "/items?tag="
+   },
+   {
+    "method": "GET",
+    "path": "/items?tag=x&tag=hw"
+   }
+  ]
+ },
+ {
+  "name": "routing",
+  "steps": [
+   {
+    "method": "GET",
+    "path": "/Items"
+   },
+   {
+    "method": "GET",
+    "path": "/nope"
+   },
+   {
+    "method": "GET",
+    "path": "/items//1"
+   },
+   {
+    "method": "GET",
+    "path": "/items/"
+   },
+   {
+    "method": "GET",
+    "path": "/items/?limit=1"
+   },
+   {
+    "method": "POST",
+    "path": "/items/",
+    "json": {
+     "name": "bolt",
+     "price": 1.5,
+     "quantity": 10
+    }
+   },
+   {
+    "method": "GET",
+    "path": "/stats/"
+   },
+   {
+    "method": "GET",
+    "path": "/items/1/reserve/"
+   },
+   {
+    "method": "GET",
+    "path": "/nope/"
+   }
+  ]
+ },
+ {
+  "name": "method-not-allowed",
+  "steps": [
+   {
+    "method": "PUT",
+    "path": "/items"
+   },
+   {
+    "method": "PUT",
+    "path": "/items/1"
+   },
+   {
+    "method": "GET",
+    "path": "/items/1/reserve"
+   },
+   {
+    "method": "POST",
+    "path": "/stats"
+   },
+   {
+    "method": "DELETE",
+    "path": "/health"
+   },
+   {
+    "method": "HEAD",
+    "path": "/items"
+   },
+   {
+    "method": "OPTIONS",
+    "path": "/health"
+   },
+   {
+    "method": "GET",
+    "path": "/_test/reset"
+   }
+  ]
+ },
+ {
+  "name": "patch",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "bolt",
+     "price": 1e-05,
+     "quantity": 5,
+     "tags": [
+      "hw"
+     ]
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "nut",
+     "price": 10,
+     "quantity": "7",
+     "tags": [
+      "hw",
+      "small"
+     ]
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "gear",
+     "price": 999999.9999999999,
+     "quantity": 1
+    }
+   },
+   {
+    "method": "PATCH",
+    "path": "/items/1",
+    "json": {}
+   },
+   {
+    "method": "PATCH",
+    "path": "/items/1",
+    "json": {
+     "name": null
+    }
+   },
+   {
+    "method": "PATCH",
+    "path": "/items/1",
+    "json": {
+     "price": "2.5",
+     "tags": [
+      "a",
+      "b"
+     ]
+    }
+   },
+   {
+    "method": "PATCH",
+    "path": "/items/99",
+    "json": {
+     "bogus": 1
+    }
+   },
+   {
+    "method": "PATCH",
+    "path": "/items/99",
+    "json": {}
+   },
+   {
+    "method": "GET",
+    "path": "/items/1"
+   }
+  ]
+ },
+ {
+  "name": "delete",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "bolt",
+     "price": 1e-05,
+     "quantity": 5,
+     "tags": [
+      "hw"
+     ]
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "nut",
+     "price": 10,
+     "quantity": "7",
+     "tags": [
+      "hw",
+      "small"
+     ]
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "gear",
+     "price": 999999.9999999999,
+     "quantity": 1
+    }
+   },
+   {
+    "method": "DELETE",
+    "path": "/items/2"
+   },
+   {
+    "method": "DELETE",
+    "path": "/items/2"
+   },
+   {
+    "method": "GET",
+    "path": "/items"
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "after",
+     "price": 1.5,
+     "quantity": 10
+    }
+   },
+   {
+    "method": "GET",
+    "path": "/items/4"
+   }
+  ]
+ },
+ {
+  "name": "reserve",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "bolt",
+     "price": 1e-05,
+     "quantity": 5,
+     "tags": [
+      "hw"
+     ]
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "nut",
+     "price": 10,
+     "quantity": "7",
+     "tags": [
+      "hw",
+      "small"
+     ]
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "gear",
+     "price": 999999.9999999999,
+     "quantity": 1
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items/1/reserve",
+    "json": {
+     "quantity": 10
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items/1/reserve",
+    "json": {
+     "quantity": 2
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items/1/reserve",
+    "json": {
+     "quantity": 3
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items/1/reserve",
+    "json": {
+     "quantity": 1
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items/1/reserve",
+    "json": {
+     "quantity": 0
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items/1/reserve",
+    "json": {}
+   },
+   {
+    "method": "POST",
+    "path": "/items/abc/reserve",
+    "json": {
+     "quantity": 0
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items/9/reserve",
+    "json": {
+     "quantity": 1
+    }
+   },
+   {
+    "method": "GET",
+    "path": "/items/1"
+   }
+  ]
+ },
+ {
+  "name": "stats",
+  "steps": [
+   {
+    "method": "GET",
+    "path": "/stats"
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "s",
+     "price": 0.1,
+     "quantity": 3
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "s",
+     "price": 0.2,
+     "quantity": 3
+    }
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "s",
+     "price": 0.3,
+     "quantity": 3
+    }
+   },
+   {
+    "method": "GET",
+    "path": "/stats"
+   },
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "big",
+     "price": 1000000,
+     "quantity": 1000000
+    }
+   },
+   {
+    "method": "GET",
+    "path": "/stats"
+   }
+  ]
+ }
+]

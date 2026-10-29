@@ -1,0 +1,26 @@
+{"ts": 1793282323.782, "role": "analyst", "tool": "Glob", "input": "**/*", "decision": "allow", "reason": null}
+{"ts": 1793282325.122, "role": "analyst", "tool": "Glob", "input": "{contracts,python_src,tests,automation,port,rust_app,reports}/**/*", "decision": "allow", "reason": null}
+{"ts": 1793282325.344, "role": "analyst", "tool": "Glob", "input": "*", "decision": "allow", "reason": null}
+{"ts": 1793282326.802, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/ch10_analyze/contracts/behavior_spec.md", "decision": "allow", "reason": null}
+{"ts": 1793282327.289, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/ch10_analyze/python_src/stockroom/app.py", "decision": "allow", "reason": null}
+{"ts": 1793282327.744, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/ch10_analyze/python_src/run_server.py", "decision": "allow", "reason": null}
+{"ts": 1793282328.172, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/ch10_analyze/python_src/stockroom/__init__.py", "decision": "allow", "reason": null}
+{"ts": 1793282329.666, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/ch10_analyze/tests/test_api.py", "decision": "allow", "reason": null}
+{"ts": 1793282330.158, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/ch10_analyze/tests/make_cases.py", "decision": "allow", "reason": null}
+{"ts": 1793282330.636, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/ch10_analyze/automation/http_diff.py", "decision": "allow", "reason": null}
+{"ts": 1793282331.131, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/ch10_analyze/automation/compare.py", "decision": "allow", "reason": null}
+{"ts": 1793282331.496, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/ch10_analyze/automation/fuzz.py", "decision": "allow", "reason": null}
+{"ts": 1793282331.959, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/ch10_analyze/automation/port.json", "decision": "allow", "reason": null}
+{"ts": 1793282339.321, "role": "analyst", "tool": "Grep", "input": "json_body|There was an error parsing|json_invalid|subtype|\\+json", "decision": "allow", "reason": null}
+{"ts": 1793282343.29, "role": "analyst", "tool": "Grep", "input": "strict_content_type", "decision": "allow", "reason": null}
+{"ts": 1793282344.333, "role": "analyst", "tool": "Grep", "input": "def json|json.loads|def body", "decision": "allow", "reason": null}
+{"ts": 1793282351.131, "role": "analyst", "tool": "Grep", "input": "def render|json.dumps|dump_json|to_json", "decision": "allow", "reason": null}
+{"ts": 1793282352.449, "role": "analyst", "tool": "Grep", "input": "dump_json|serialize_json|to_json|_prepare_response_content|def serialize_response", "decision": "allow", "reason": null}
+{"ts": 1793282487.98, "role": "analyst", "tool": "Glob", "input": ".venv/lib/python3.12/site-packages/{httptools,h11,uvloop,pydantic_core}*", "decision": "allow", "reason": null}
+{"ts": 1793282489.249, "role": "analyst", "tool": "Grep", "input": "redirect_slashes|rstrip|Match.PARTIAL", "decision": "allow", "reason": null}
+{"ts": 1793282490.459, "role": "analyst", "tool": "Grep", "input": "path_regex = |\"\\^\"|\\$\"|def compile_path", "decision": "allow", "reason": null}
+{"ts": 1793282494.012, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/ch10_analyze/.venv/lib/python3.12/site-packages/starlette/routing.py", "decision": "allow", "reason": null}
+{"ts": 1793282494.914, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/ch10_analyze/.venv/lib/python3.12/site-packages/starlette/routing.py", "decision": "allow", "reason": null}
+{"ts": 1793282496.065, "role": "analyst", "tool": "Grep", "input": "class RedirectResponse|quote\\(", "decision": "allow", "reason": null}
+{"ts": 1793282496.409, "role": "analyst", "tool": "Glob", "input": ".venv/lib/python3.12/site-packages/*/__init__.py", "decision": "allow", "reason": null}
+{"ts": 1793282790.373, "role": "analyst", "tool": "StructuredOutput", "input": "", "decision": "allow", "reason": null}

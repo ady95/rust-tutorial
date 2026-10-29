@@ -104,7 +104,12 @@ Rust 실행 파일 이름은 automation/port.json 의 binary 입니다.
 IMPLEMENTER_V2_EXTRA = """
 verify/ 에도 쓸 수 있습니다. 비교 도구로 확인하기 어려운 것(예: 모든 코드 포인트에 대한 Python 과 Rust 의 결과)은
 verify/ 에 Python 스크립트를 만들어 python3 verify/<이름>.py 로 실행해 확인하세요. 기준 구현의 함수를 import 해도 됩니다.
-셸 명령은 샌드박스 안에서 실행됩니다(네트워크 없음, 사람의 파일과 작업 폴더 밖에는 쓸 수 없음).
+셸 명령은 샌드박스 안에서 실행됩니다(네트워크는 기본적으로 막혀 있음, 사람의 파일과 작업 폴더 밖에는 쓸 수 없음).
+"""
+
+# --allow-crates 일 때 더하는 지시. 10장에서 이 문장이 없어 에이전트가 "네트워크 없음"을 믿고 크레이트를 쓰지 않았다
+CRATES_NOTE = """
+이번 실행에서는 샌드박스에서 crates.io 접속이 허용되어 있어 cargo add·cargo build 로 외부 크레이트를 받을 수 있습니다.
 """
 
 PORT_PROMPT = """\

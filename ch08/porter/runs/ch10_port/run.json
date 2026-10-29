@@ -1,0 +1,11 @@
+{
+  "project": "stockroom",
+  "mode": "single",
+  "model": "opus",
+  "max_rounds": 4,
+  "budget_usd": 12.0,
+  "started": "2026-10-29T23:06:32+0900",
+  "plan": true,
+  "policy": "v2",
+  "allow_crates": true
+}

@@ -1,0 +1,98 @@
+{
+  "name": "axum",
+  "startup_ms": 10.5,
+  "idle_rss_kb": 3832,
+  "rss_after_1000_items_kb": 4176,
+  "workloads": {
+    "health": {
+      "request": "GET /health",
+      "connections": 64,
+      "duration_s": 10.0,
+      "requests": 468297,
+      "errors": 0,
+      "rps": 46829.7,
+      "latency_ms": {
+        "p50": 1.360074,
+        "p90": 1.7064,
+        "p99": 2.322218,
+        "max": 25.325968,
+        "mean": 1.364684543733998
+      },
+      "server_cpu_s": 18.080000000000002,
+      "server_cpu_us_per_request": 38.607977416041535,
+      "server_max_rss_kb": 6700
+    },
+    "get_item": {
+      "request": "GET /items/500",
+      "connections": 64,
+      "duration_s": 10.0,
+      "requests": 466751,
+      "errors": 0,
+      "rps": 46675.1,
+      "latency_ms": {
+        "p50": 1.3437,
+        "p90": 1.692,
+        "p99": 2.4823,
+        "max": 31.251,
+        "mean": 1.3690005436346147
+      },
+      "server_cpu_s": 21.669999999999998,
+      "server_cpu_us_per_request": 46.42732420498295,
+      "server_max_rss_kb": 7360
+    },
+    "list_20": {
+      "request": "GET /items?limit=20&offset=100",
+      "connections": 64,
+      "duration_s": 10.0,
+      "requests": 346288,
+      "errors": 0,
+      "rps": 34628.8,
+      "latency_ms": {
+        "p50": 1.786658,
+        "p90": 2.741814,
+        "p99": 3.9309,
+        "max": 10.516875,
+        "mean": 1.8456450023477569
+      },
+      "server_cpu_s": 34.36,
+      "server_cpu_us_per_request": 99.22376749988449,
+      "server_max_rss_kb": 8152
+    },
+    "reserve": {
+      "request": "POST /items/1/reserve",
+      "connections": 64,
+      "duration_s": 10.0,
+      "requests": 462448,
+      "errors": 0,
+      "rps": 46244.8,
+      "latency_ms": {
+        "p50": 1.3616,
+        "p90": 1.7752,
+        "p99": 2.7057,
+        "max": 8.1681,
+        "mean": 1.3803892687026433
+      },
+      "server_cpu_s": 21.320000000000007,
+      "server_cpu_us_per_request": 46.10248071134486,
+      "server_max_rss_kb": 8844
+    },
+    "get_item_1conn": {
+      "request": "GET /items/500",
+      "connections": 1,
+      "duration_s": 10.0,
+      "requests": 60669,
+      "errors": 0,
+      "rps": 6066.9,
+      "latency_ms": {
+        "p50": 0.1583,
+        "p90": 0.1967,
+        "p99": 0.2476,
+        "max": 9.119733,
+        "mean": 0.16420695033707497
+      },
+      "server_cpu_s": 3.559999999999988,
+      "server_cpu_us_per_request": 58.679061794326394,
+      "server_max_rss_kb": 8844
+    }
+  }
+}

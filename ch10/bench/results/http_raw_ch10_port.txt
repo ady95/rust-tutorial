@@ -1,0 +1,4 @@
+DIFF expect-100
+     python=(100, None, '', None, b'HTTP/1.1 201 Created\r\ndate: Thu, 29 Oct 2026 14:55:34 GMT\r\nserver: uvicorn\r\ncontent-length: 54\r\ncontent-type: application/json\r\nlocation: /items/5\r\n\r\n{"id":5,"nam
+     rust  =(100, None, '', None, b'HTTP/1.1 201 Created\r\ncontent-length: 54\r\ncontent-type: application/json\r\nlocation: /items/5\r\n\r\n{"id":5,"name":"a","price":1.0,"quantity":1,"tags":[]}', False)
+1348/1349 same

@@ -1,0 +1,20 @@
+[project]
+name = "stockroom"
+version = "0.1.0"
+description = "stockroom inventory API reference implementation (ch10)"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.120",
+    "uvicorn>=0.38",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+    "httpx>=0.28",
+    "hypothesis>=6.170",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["python_src"]
+testpaths = ["tests"]

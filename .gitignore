@@ -24,3 +24,9 @@ Thumbs.db
 ch01/run_time/data/
 ch05/review/data/
 ch07/golden/fixtures/all_codepoints.txt
+
+# 08장 파이프라인 실행 기록: 실행 파일과 에이전트가 생성한 대용량 검증 데이터는 올리지 않는다(해시는 report.md 에 있음)
+ch08/porter/runs/*/artifacts/*
+!ch08/porter/runs/*/artifacts/Cargo.toml
+!ch08/porter/runs/*/artifacts/Cargo.lock
+ch08/porter/runs/*/workspace/verify/data/

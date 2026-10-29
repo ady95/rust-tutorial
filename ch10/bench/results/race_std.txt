@@ -1,0 +1,6 @@
+{"reserve_requests": 2000, "initial_quantity": 500, "succeeded": 500, "conflicts": 1500, "other_status": 0, "remaining": 0, "reserve_ok": true, "create_ids_ok": true, "seconds": 0.542}
+{"reserve_requests": 2000, "initial_quantity": 500, "succeeded": 500, "conflicts": 1500, "other_status": 0, "remaining": 0, "reserve_ok": true, "create_ids_ok": true, "seconds": 0.435}
+{"reserve_requests": 2000, "initial_quantity": 500, "succeeded": 500, "conflicts": 1500, "other_status": 0, "remaining": 0, "reserve_ok": true, "create_ids_ok": true, "seconds": 0.446}
+{"reserve_requests": 2000, "initial_quantity": 500, "succeeded": 500, "conflicts": 1500, "other_status": 0, "remaining": 0, "reserve_ok": true, "create_ids_ok": true, "seconds": 0.485}
+{"reserve_requests": 2000, "initial_quantity": 500, "succeeded": 500, "conflicts": 1500, "other_status": 0, "remaining": 0, "reserve_ok": true, "create_ids_ok": true, "seconds": 0.482}
+PASS 5/5

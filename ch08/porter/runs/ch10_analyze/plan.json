@@ -1,0 +1,416 @@
+{
+  "summary": "stockroom은 FastAPI/Starlette/pydantic 2.14 위에서 돌아가는 메모리 기반 재고 API로, 엔드포인트는 8개(+테스트용 reset 1개)다. 비즈니스 로직은 단순하다. 하지만 계약의 대부분은 프레임워크 내장 동작에 기대고 있다. Starlette 라우팅(경로를 percent-decode한 뒤 `^...$` 정규식으로 맞추기, 끝 슬래시 rstrip 후 307, 처음 PARTIAL로 맞은 라우트로 405), FastAPI 본문 해석(email.message로 Content-Type 판정, json.loads(bytes)의 인코딩 감지, JSONDecodeError.pos, UnicodeDecodeError→400), pydantic-core lax 변환(문자열 trim, 밑줄, '.0' 접미 허용, 제약 검사 순서 le→ge, 목록 길이 초과 시 too_long 하나만 남김), 응답 직렬화(성공 응답은 pydantic-core가 ryu 방식으로 실수 표기, 오류 응답은 json.dumps(ensure_ascii=False)), stats의 Python sum()(Neumaier 보정 합산, 빈 저장소면 정수 0)이 그 예다. 그래서 Rust 쪽에서는 웹 프레임워크(axum 등)의 라우터·추출기·serde_json 입력 해석을 쓰지 않는다. hyper 위에 Python 동작을 그대로 흉내 내는 라우터, Python json 호환 파서, pydantic lax 검증기, ryu 기반 직렬화기를 직접 쓰는 구성을 권한다. 위험이 가장 큰 곳은 다음과 같다. (1) JSON 오류 위치(문자 단위, CPython _json.c 기준), (2) 실수 표기, (3) 보정 합산, (4) 정수·실수 lax 해석, (5) 디코딩된 경로에서의 라우팅과 `$`가 끝의 개행 앞에서도 맞는 동작, (6) json_invalid·400이 경로·쿼리 검증보다 먼저 단락되는 순서. pydantic-core·_json.c는 컴파일된 코드라 읽지 못했다. 그래서 일부 세부(정수 4300자리 제한, 실수 문자열의 밑줄 규칙, 제어문자·\\u 오류의 pos)는 추측으로 정하지 않았고, 기준 서버로 실측해 확인할 항목으로 남겼다.",
+  "behaviors": [
+    {
+      "contract_ref": "1. 실행 (--host/--port, 기본 127.0.0.1:8000)",
+      "python_mechanism": "run_server.py의 argparse(prog=stockroom, --port type=int)와 uvicorn.run(workers=1, h11 HTTP/1.1, keep-alive). argparse는 --port=N 형태와 접두 약어(--po)도 받는다",
+      "rust_approach": "std::env::args를 직접 파싱해 --host H, --port P, --host=H, --port=P를 받는다. 잘못된 인자면 stderr에 쓰고 exit 2. tokio + hyper http1 서버, keep-alive 유지"
+    },
+    {
+      "contract_ref": "1. STOCKROOM_TEST=1이면 POST /_test/reset(204), 아니면 경로 없음(404)",
+      "python_mechanism": "모듈 import 시점의 os.environ.get(\"STOCKROOM_TEST\") == \"1\" 비교로 라우트를 등록한다(라우트 목록의 마지막). store.__init__()으로 items를 비우고 next_id=1",
+      "rust_approach": "시작할 때 std::env::var(\"STOCKROOM_TEST\").as_deref() == Ok(\"1\")를 한 번 읽어, 라우트 테이블 끝에 reset 라우트를 넣을지 정한다. reset은 Mutex 안에서 Store를 새로 만든다. 204는 본문·Content-Type 없음"
+    },
+    {
+      "contract_ref": "2. GET /health → {\"status\":\"ok\"}",
+      "python_mechanism": "반환 주석 dict[str,str] → FastAPI 빠른 경로(field.serialize_json, pydantic-core)로 application/json",
+      "rust_approach": "고정 바이트 b\"{\\\"status\\\":\\\"ok\\\"}\", Content-Type: application/json"
+    },
+    {
+      "contract_ref": "2. POST /items 201 + Location, id 1부터 증가·재사용 없음",
+      "python_mechanism": "Item(id=store.next_id, **body.model_dump()), dict 삽입, next_id += 1, response.headers[\"Location\"] = f\"/items/{id}\". 이벤트 루프 하나라 원자적이다",
+      "rust_approach": "Mutex<Store> 안에서 id를 배정하고 next_id를 늘린 뒤 삽입한다. Location은 format!(\"/items/{}\", id). price는 f64, quantity는 i64(검증 뒤 0..=1e6), tags는 Vec<String>"
+    },
+    {
+      "contract_ref": "2. GET /items 목록: id 오름차순, tag 필터, offset/limit 슬라이스, total=필터 결과 수",
+      "python_mechanism": "dict 삽입 순서(= id 오름차순), `tag in item.tags`(str == 비교), matched[offset:offset+limit] 슬라이스(임의 크기 int offset 허용)",
+      "rust_approach": "BTreeMap<u64, Item>을 순회하며 tags.iter().any(|t| t == tag)로 거른다. offset은 검증된 큰 정수일 수 있으므로 usize로 saturating 변환해 skip(offset).take(limit)"
+    },
+    {
+      "contract_ref": "2. PATCH: 보낸 필드만 변경, {}는 무변경 200, null이면 400(404 확인 뒤)",
+      "python_mechanism": "검증(422) → store.get(404) → model_dump(exclude_unset=True) 중 None이 있으면 400 → model_copy(update)",
+      "rust_approach": "PATCH 본문을 필드별 enum Absent / Null / Value(T)로 검증한다. 처리 순서는 검증 오류 → 404 → Null이 하나라도 있으면 400 → 적용"
+    },
+    {
+      "contract_ref": "2. DELETE 204, 없으면 404",
+      "python_mechanism": "store.get → del, Response(status_code=204), media_type 없음",
+      "rust_approach": "remove가 None이면 404 JSON, 아니면 본문·Content-Type 없는 204"
+    },
+    {
+      "contract_ref": "2. reserve 409 / 차감, 5. 원자성",
+      "python_mechanism": "await 없는 async 함수 안에서 확인과 차감을 하므로 이벤트 루프 하나에서 원자적이다. 오류 메시지는 f\"insufficient stock: requested {n}, available {m}\"",
+      "rust_approach": "Mutex 가드 하나로 get·비교·차감을 모두 한다. 검증은 락 밖, 처리는 락 안. 응답 키 순서는 item_id, reserved, remaining"
+    },
+    {
+      "contract_ref": "2. GET /stats: total_value는 id 순 Python sum()",
+      "python_mechanism": "len(), int sum, `sum(item.price * item.quantity ...)`: CPython 3.12 builtin_sum의 Neumaier 보정 합산. 시작값이 int 0이라 항목이 없으면 결과가 int 0이고 `0`으로 출력된다. 항목이 있으면 float",
+      "rust_approach": "항목이 없으면 total_value를 JSON 정수 0으로 낸다. 있으면 f=0.0, c=0.0에서 시작해 CPython과 같은 Neumaier 루프를 돈다: t=f+x; |f|>=|x|이면 c+=(f-t)+x, 아니면 c+=(x-t)+f; f=t. 끝에서 c!=0이고 유한하면 f+=c. f64::sum이나 Iterator::sum은 쓰지 않는다"
+    },
+    {
+      "contract_ref": "3.1 경로 대소문자 구분·정확 일치, 404 {\"detail\":\"Not Found\"}",
+      "python_mechanism": "uvicorn(h11)이 raw target을 '?'에서 나누고 urllib.parse.unquote(UTF-8, errors='replace')로 디코딩한다. Starlette compile_path는 '^' + re.escape(...) + '$' 정규식(파라미터는 [^/]+)을 만들어 디코딩된 경로에 re.match한다. Python `$`는 문자열 끝의 '\\n' 바로 앞에서도 맞는다",
+      "rust_approach": "raw path를 Python unquote와 같게 직접 디코딩한다(연속된 %XX 바이트 묶음을 from_utf8_lossy로 바꾸고, 잘못된 %는 그대로 둔다). 디코딩된 문자열에서 끝의 '\\n' 하나를 허용하는 수동 매처로 세그먼트를 맞춘다. item_id 세그먼트는 '/'가 아닌 문자 1개 이상(개행 포함)"
+    },
+    {
+      "contract_ref": "3.1 끝 '/' 307 + Location",
+      "python_mechanism": "Starlette Router: 일치(FULL/PARTIAL)가 없고 경로가 '/'가 아니면 path.rstrip('/')(끝 슬래시 전부 제거)로 다시 맞춘다. 맞으면 URL(scope)로 'http://' + Host 헤더 + 디코딩된 경로 + ('?' + query_string)을 만들고, RedirectResponse가 quote(url, safe=\":/%#?=@[]!$&'()*+,;\")를 적용한다. 본문·Content-Type 없음",
+      "rust_approach": "디코딩된 경로에서 끝 '/'를 모두 떼고 라우트 패턴만 맞춰 본다(메서드 무관). Host 헤더는 latin-1로 디코딩한다(없으면 server 주소). query는 raw 그대로 붙인다. 그 뒤 Python quote와 같은 safe 집합(+ 영숫자, '_.-~')으로 나머지를 UTF-8 percent-encode한다"
+    },
+    {
+      "contract_ref": "3.1 405 + Allow(처음 등록된 라우트의 메서드), HEAD/OPTIONS도 405",
+      "python_mechanism": "Router가 등록 순서로 돌며 처음 PARTIAL로 맞은 라우트의 HTTPException(405, headers Allow)을 던지고, FastAPI 기본 처리기가 {\"detail\":\"Method Not Allowed\"}를 낸다. APIRoute는 HEAD를 덧붙이지 않는다",
+      "rust_approach": "Python 등록 순서(health, POST /items, GET /items, GET/PATCH/DELETE /items/{id}, reserve, stats, reset)대로 라우트 테이블을 둔다. 경로는 맞고 메서드가 다른 첫 항목의 메서드를 Allow로 쓴다. HEAD 응답은 본문을 보내지 않는다(hyper가 처리)"
+    },
+    {
+      "contract_ref": "3.2 정수 lax 해석(item_id, limit, offset)",
+      "python_mechanism": "pydantic-core str→int: str.trim()(Rust의 Unicode White_Space) 뒤 i64 parse를 시도한다. 실패하면 Python int()로 넘어가(밑줄, 큰 수) '.0…' 접미를 떼고 다시 시도한다. 비ASCII 숫자는 거부(계약). 4300자리를 넘으면 별도 오류일 가능성이 있다(미확인)",
+      "rust_approach": "lax::parse_int_str: trim() → 부호 하나(+/-) → ASCII 숫자 사이에만 단일 '_' 허용 → 선택적 '.' 뒤 '0'만(또는 없음) 허용. 결과는 정규화된 10진 문자열(부호, 앞 0 제거, -0→0)과 i128 saturating 값으로 함께 든다. 404 메시지는 정규화 문자열로 만든다"
+    },
+    {
+      "contract_ref": "3.2 중복 쿼리는 마지막 값, tag= 빈 문자열",
+      "python_mechanism": "Starlette QueryParams = parse_qsl(query_string.decode('latin-1'), keep_blank_values=True): '&'로만 나누고, '+'를 공백으로 바꾸고, unquote(errors='replace'). '='이 없으면 값은 ''. dict 변환으로 마지막 값이 남는다",
+      "rust_approach": "직접 쓴 parse_qsl: '&'로 나누고 빈 조각은 건너뛰며, 첫 '='에서 이름과 값을 나눈다. '+'→' ' 후 unquote_lossy. 이름별로 마지막 값을 쓴다. 검증 순서는 선언 순서(limit, offset)로 고정"
+    },
+    {
+      "contract_ref": "3.2 limit 1~100, offset ≥0 오류 type",
+      "python_mechanism": "Query(ge=1, le=100)/Query(ge=0) → pydantic의 greater_than_equal / less_than_equal. 오류 loc은 [\"query\",name]",
+      "rust_approach": "파싱한 큰 정수(saturating i128)로 le를 먼저, 그다음 ge를 검사해 오류 하나만 낸다"
+    },
+    {
+      "contract_ref": "3.3 Content-Type 판정(application/json, +json, 매개변수 무시)",
+      "python_mechanism": "FastAPI: request.headers.get('content-type')(첫 헤더, latin-1)가 비었으면 bytes 본문. 아니면 email.message.Message의 get_content_type(';' 앞부분을 str.strip().lower(), '/'가 정확히 1개가 아니면 text/plain) → maintype=='application'이고 subtype=='json' 또는 subtype.endswith('+json')",
+      "rust_approach": "첫 Content-Type 헤더 바이트를 latin-1 char로 바꾼다. ';'에서 partition하고, Python str.strip과 같은 공백 집합(\\t\\n\\x0b\\x0c\\r\\x1c-\\x1f 공백 \\x85 \\xa0)을 떼고 ASCII 소문자화한다. '/'가 정확히 1개인지 검사한 뒤 판정"
+    },
+    {
+      "contract_ref": "3.3 빈 본문 missing, UTF-8 아님 400, 비JSON 타입 model_attributes_type",
+      "python_mechanism": "body_bytes가 비면 body=None → 필수 body 필드 missing(loc [\"body\"]). Content-Type과 상관없다. json.loads(bytes)는 detect_encoding(BOM, NUL 바이트 패턴으로 utf-8-sig/utf-16/utf-32 판별) 뒤 decode(…, 'surrogatepass')를 한다. UnicodeDecodeError 같은 일반 Exception은 400 \"There was an error parsing the body\"",
+      "rust_approach": "pyjson::decode_bytes에서 json/__init__.py의 detect_encoding을 그대로 옮기고, surrogatepass 디코딩 결과를 Vec<u32>(코드 포인트, 고립 서로게이트 허용)로 든다. 디코딩에 실패하면 400. 본문 바이트가 비면 missing"
+    },
+    {
+      "contract_ref": "3.3 json.loads: NaN/Infinity, 중복 키 뒤 값, json_invalid loc [\"body\", pos(문자 단위)]",
+      "python_mechanism": "CPython _json.c C 스캐너: 공백은 ' \\t\\n\\r'만, NaN/Infinity/-Infinity 리터럴, 정수는 임의 크기 int(4300자리 초과는 ValueError → 400), 실수는 float()(1e400→inf). 문자열 안의 제어문자는 거부(strict). 중복 키는 첫 위치에 뒤 값. 오류 pos는 코드 포인트 인덱스. 최상위 뒤에 남은 문자는 'Extra data'. json_invalid는 경로·쿼리 검증 전에 바로 422로 끝난다",
+      "rust_approach": "serde_json을 쓰지 않고 pyjson 모듈에 재귀 하강 파서를 직접 쓴다. Value::Int(텍스트 보존), Value::Float(f64), Str(코드 포인트, 서로게이트 허용), Object(Vec<(key, value)>, 중복은 첫 위치에서 값 교체). 오류 위치는 CPython과 같게 '값 기대'·'속성 이름'·':'·','·'Extra data' 등 각 지점의 인덱스로 낸다. 재귀 깊이가 Python 한도를 넘으면 400"
+    },
+    {
+      "contract_ref": "3.4 name: 문자열, 1~100 코드 포인트",
+      "python_mechanism": "pydantic lax str: Python str만 받는다(int/bool/None은 string_type). len()은 코드 포인트 수. 고립 서로게이트가 든 str은 string_unicode일 가능성이 있다(미확인)",
+      "rust_approach": "Value::Str만 받는다. 길이는 코드 포인트 수(Vec<u32>.len() 또는 chars().count()). 서로게이트가 있으면 string_unicode로 처리(실측 뒤 확정)"
+    },
+    {
+      "contract_ref": "3.4 price: 실수 lax, ge 0 / le 1e6, NaN·inf는 less_than_equal",
+      "python_mechanism": "pydantic-core float lax: Python float, int(→float), bool(True→1.0)을 받고, str은 trim 뒤 Rust f64 parse('inf'/'nan' 허용, 16진 거부), 실패하면 밑줄을 떼고 다시 시도. None/list/dict는 float_type. 제약 검사는 le가 먼저라서 NaN은 less_than_equal. ge=0이므로 -0.0은 통과해 '-0.0'으로 저장",
+      "rust_approach": "lax::float_from_value: Int 텍스트→f64(Rust parse, 큰 수는 inf), Float 그대로, Bool→0/1, Str→trim().parse::<f64>()가 실패하면 밑줄 제거 뒤 다시 시도, 실패하면 float_parsing. 검사 순서: !(x <= 1e6)이면 less_than_equal, 그다음 !(x >= 0)이면 greater_than_equal. JSON 정수 -0은 0.0, JSON 실수 -0.0은 -0.0으로 구분"
+    },
+    {
+      "contract_ref": "3.4 quantity / reserve.quantity: 정수 lax",
+      "python_mechanism": "pydantic-core int lax: int(임의 크기), bool, float(정수값만, 소수부가 있으면 int_from_float, NaN/inf는 finite_number로 추정), str(위 정수 규칙). None/list/dict는 int_type. 제약은 le → ge(reserve는 gt)",
+      "rust_approach": "lax::int_from_value가 saturating i128을 돌려준다. Float는 fract()!=0이면 int_from_float, 비유한이면 finite_number. 검사 순서: le, ge/gt"
+    },
+    {
+      "contract_ref": "3.4 tags: 목록 ≤10, 원소 1~20자",
+      "python_mechanism": "pydantic list 검증: list 이외(str 포함)는 list_type. 원소를 차례로 검증하며 오류를 모으다가 11번째 원소에서 길이 검사가 실패하면 모은 원소 오류를 버리고 too_long 하나만 낸다",
+      "rust_approach": "Array가 아니면 list_type. len>10이면 too_long만 낸다. 아니면 원소별로 string_type / string_too_short / string_too_long을 loc [\"body\",\"tags\",i]로 낸다"
+    },
+    {
+      "contract_ref": "3.4 extra_forbidden, missing, tags 기본값 [], PATCH 필드 선택",
+      "python_mechanism": "pydantic 모델 검증 순서: 선언된 필드(name, price, quantity, tags) 순서로 각 오류/누락, 그다음 입력 dict 순서로 남은 키에 extra_forbidden",
+      "rust_approach": "models.rs에서 고정 필드 순서로 검증한 뒤, 객체 키를 입력 순서로 돌며 미지 키마다 extra_forbidden([\"body\", key])을 낸다. 객체가 아니면 model_attributes_type([\"body\"])"
+    },
+    {
+      "contract_ref": "3.5 판정 순서: 경로·메서드 → (경로→쿼리→본문 검증) → 처리",
+      "python_mechanism": "FastAPI get_request_handler: 본문 파라미터가 있는 라우트만 본문을 읽는다. JSON 해석 오류(json_invalid)와 400은 solve_dependencies 전에 바로 응답한다. 그다음 경로·쿼리·본문 오류를 모아 422",
+      "rust_approach": "handler 순서: 라우트 결정 → (본문이 있는 라우트만) 본문 디코딩·JSON 해석, 실패하면 즉시 400/422(json_invalid 하나) → 경로·쿼리·본문 검증 오류를 모아 422 → 락 안에서 처리. GET/DELETE의 본문은 무시"
+    },
+    {
+      "contract_ref": "4. 응답 Content-Type, 204/307 헤더 없음",
+      "python_mechanism": "JSONResponse/Response(media_type='application/json'): charset을 붙이지 않는다. Response(204)와 RedirectResponse는 media_type이 없다",
+      "rust_approach": "JSON 응답은 정확히 'application/json'. 204·307은 Content-Type 헤더를 넣지 않는다"
+    },
+    {
+      "contract_ref": "4. JSON 한 줄, 비ASCII 미이스케이프, 실수 표기(1.0, 0.00001, 1e-7, 5e-324)",
+      "python_mechanism": "성공 응답은 pydantic-core(serde_json 계열, ryu 표기: 소수점 앞 자릿수 kk가 -5<kk<=16이면 소수, 아니면 'de-7' 형식이고 지수에 + 없음, 정수값은 '.0'). 오류 응답은 json.dumps(ensure_ascii=False, separators=(',',':')). 둘 다 '\"', '\\\\', 제어문자(\\n\\r\\t\\b\\f, 나머지 \\u00XX 소문자)만 이스케이프",
+      "rust_approach": "jsonout.rs: ryu::Buffer::format_finite로 실수를 쓴다(serde_json과 같은 규칙). 문자열 이스케이프 규칙은 직접 쓰고 0x7F와 비ASCII는 그대로 둔다. 정수는 정수로. Rust의 {} / {:?} 포맷은 쓰지 않는다"
+    },
+    {
+      "contract_ref": "4. 422 본문 {\"detail\":[{type,loc,msg}]}",
+      "python_mechanism": "사용자 정의 validation_error 처리기가 type, loc(list), msg만 JSONResponse로 낸다. 키에 고립 서로게이트가 있으면 .encode('utf-8')가 실패해 500 text/plain이 될 가능성이 있다(미확인)",
+      "rust_approach": "오류마다 type, loc(문자열/정수 혼합), msg(pydantic 메시지를 최대한 흉내 내되 비교 대상 아님)를 쓴다. 서로게이트 키 처리는 실측 뒤 결정"
+    },
+    {
+      "contract_ref": "5. 동시성",
+      "python_mechanism": "단일 이벤트 루프, 처리 함수에 await 없음",
+      "rust_approach": "Arc<Mutex<Store>>(std::sync). 처리(조회·변경)는 한 번의 lock 안에서 끝내고, 락을 쥔 채 await하지 않는다"
+    }
+  ],
+  "risks": [
+    {
+      "id": "R01",
+      "title": "stats total_value 보정 합산과 빈 저장소의 정수 0",
+      "severity": "high",
+      "python_detail": "sum()은 int 0에서 시작하고 float 항목부터 Neumaier 보정 합산을 한다(3*(0.1+0.2+0.3) → 1.8). 항목이 없으면 결과가 int 0이라 JSON에 `0`으로 나온다",
+      "rust_pitfall": "Iterator::sum::<f64>()나 단순 누적은 1.8000000000000003 같은 결과를 낸다. 최근 Rust의 f64 Sum은 -0.0에서 시작해 모든 항목이 -0.0이면 '-0.0'이 된다. 빈 경우를 0.0으로 내면 '0.0'이 된다",
+      "mitigation": "CPython 3.12 builtin_sum 알고리즘을 그대로 옮긴다(시작 0.0, 끝에서 c가 0이 아니고 유한할 때만 더함). 항목이 없으면 정수 0",
+      "verification": "tests/cases.json의 'stats' 케이스(빈 stats, 0.1/0.2/0.3×3, 1e6×1e6)로 확인할 수 있다. 추가할 것: price -0.0만 있는 상태의 stats, 1e-7·5e-324 같은 아주 작은 값을 섞은 합",
+      "covered_by_existing_tests": true
+    },
+    {
+      "id": "R02",
+      "title": "실수 출력 표기(pydantic-core/ryu 규칙)",
+      "severity": "high",
+      "python_detail": "성공 응답의 실수는 pydantic-core가 직렬화한다: 10.0, 0.00001, 1e-7, 5e-324, 999999.9999999999. Python repr('1e-05', '1e-07')과 다르다",
+      "rust_pitfall": "Rust Display는 지수 표기를 쓰지 않아 0.0000001이 되고, Debug는 1e-5나 1e16 경계가 다르다. -0.0의 부호가 사라질 수도 있다",
+      "mitigation": "ryu::Buffer::format_finite(serde_json과 같은 규칙)를 쓴다. 비유한 값은 검증에서 이미 걸러진다",
+      "verification": "'float-format', 'create-get-list', 'stats' 케이스로 확인할 수 있다. 추가할 것: 1e-6(예상 '1e-6'), 0.000123, 1e15, 1e16(예상 '1e16'), 123456789012.5, -0.0을 기준 서버로 실측해 비교",
+      "covered_by_existing_tests": true
+    },
+    {
+      "id": "R03",
+      "title": "JSON 해석 오류 위치(JSONDecodeError.pos, 문자 단위)",
+      "severity": "high",
+      "python_detail": "CPython _json.c 스캐너의 지점별 pos: 값 기대(공백을 건너뛴 뒤 인덱스), 속성 이름(3.12에서는 끝 쉼표 뒤 '}' 위치), ':' / ',' 구분자, 'Extra data'(뒤 공백을 건너뛴 위치), 끝나지 않은 문자열(여는 따옴표 위치), 제어문자·잘못된 escape·\\uXXXX 위치. 인덱스는 바이트가 아니라 코드 포인트(UTF-8 BOM은 떼고 센다)",
+      "rust_pitfall": "serde_json은 줄/열과 바이트 기준이고 메시지 체계도 다르다. NaN/Infinity를 받지 않고 기본 재귀 한도는 128이다. 고립 서로게이트 \\ud800을 거부한다",
+      "mitigation": "pyjson 모듈에 CPython과 같은 재귀 하강 파서를 직접 쓴다. 코드 포인트 배열에서 위치를 센다",
+      "verification": "'invalid-json'({bad, 'Extra data', 비ASCII 뒤 EOF), 'non-finite-body' 케이스로 일부 확인할 수 있다. 추가할 것: '{\"a\" 1}', '{\"a\":1,}', '[1,]', '{', '\"\\x01\"'(문자열 안 제어문자), '\"\\q\"', '\"\\u12\"', '\"abc'(끝나지 않음), '-', '01', '1.', 'tru', ' '(공백만), '﻿{...}' BOM, 비ASCII 다음 오류 위치. 기준 서버 응답의 loc[1]을 실측한다",
+      "covered_by_existing_tests": false
+    },
+    {
+      "id": "R04",
+      "title": "json.loads(bytes)의 인코딩 자동 감지와 surrogatepass",
+      "severity": "medium",
+      "python_detail": "detect_encoding이 UTF-8 BOM을 떼고, UTF-16/32 BOM이나 NUL 바이트 패턴이면 UTF-16/32로 디코딩한다. 'surrogatepass'라 UTF-8로 인코딩된 서로게이트(ED A0 80)도 받는다. 계약의 'UTF-8이 아니면 400'보다 넓다",
+      "rust_pitfall": "String::from_utf8로 바로 디코딩하면 BOM이 붙은 본문이 json_invalid가 되고, UTF-16 본문은 400이 된다. 서로게이트 바이트는 400이 된다",
+      "mitigation": "detect_encoding과 각 디코더(surrogatepass)를 그대로 옮기고, 결과를 코드 포인트 배열로 든다",
+      "verification": "'invalid-utf8' 케이스만 있다. 추가할 것: UTF-8 BOM + 정상 JSON, UTF-16LE BOM 본문, BOM 없는 UTF-16LE('{\\0\"\\0...'), b'\\xed\\xa0\\x80' 포함 문자열, 잘린 UTF-8",
+      "covered_by_existing_tests": false
+    },
+    {
+      "id": "R05",
+      "title": "본문 파싱 오류의 단락(경로·쿼리 검증보다 먼저)과 본문 없는 라우트",
+      "severity": "high",
+      "python_detail": "FastAPI는 본문 파라미터가 있는 라우트에서만 본문을 읽는다. json_invalid(422, 오류 하나)와 400은 경로 int_parsing보다 먼저 즉시 응답한다. GET/DELETE에 붙은 본문은 무시한다",
+      "rust_pitfall": "경로→쿼리→본문 순으로 오류를 모으는 일반 구조로 짜면 [int_parsing(path), json_invalid]가 나온다. 모든 라우트에서 본문을 해석하면 GET에 400/422가 생긴다",
+      "mitigation": "handler 진입 직후 본문 단계를 따로 두어 실패하면 즉시 반환한다. 본문을 받는 라우트는 POST /items, PATCH /items/{id}, POST reserve 셋뿐이다",
+      "verification": "기존 케이스에 경로 오류와 본문 오류의 조합은 없다. 추가할 것: POST /items/abc/reserve 본문 '{bad', PATCH /items/x 본문 비UTF-8, POST /items/abc/reserve 빈 본문(이 경우는 missing과 int_parsing 둘 다 나와야 한다), GET /items/1에 깨진 JSON 본문",
+      "covered_by_existing_tests": false
+    },
+    {
+      "id": "R06",
+      "title": "경로 디코딩 뒤 라우팅(%2F, %0A, 대소문자)",
+      "severity": "high",
+      "python_detail": "uvicorn은 path를 unquote(errors='replace')한 뒤 Starlette에 넘긴다. '/items/1%2Freserve'는 reserve 라우트로 간다. '^…$' 정규식의 '$'가 끝 '\\n' 앞에서도 맞아서 '/health%0A'는 200, '/items/1%0A'는 item_id '1\\n'(trim 뒤 1)로 200이 된다",
+      "rust_pitfall": "axum/matchit은 raw 경로로 라우팅하고 파라미터만 디코딩한다. 정확 문자열 비교로는 끝 개행 동작을 재현하지 못한다. 잘못된 UTF-8 %시퀀스는 400이 된다",
+      "mitigation": "디코딩한 경로로 직접 짠 매처를 쓴다. 고정 경로는 s == p || s == p + \"\\n\". 파라미터는 '/'가 아닌 문자 1개 이상. 잘못된 바이트는 U+FFFD로 바꾼다",
+      "verification": "'path-ints'(%201, %D9%A1), 'routing'('/Items', '/items//1') 케이스로 일부 확인할 수 있다. 추가할 것: /%69tems, /items/1%2Freserve(POST), /health%0A, /items%0A, /items/1%0A, /items/%FF, /items/%2F",
+      "covered_by_existing_tests": false
+    },
+    {
+      "id": "R07",
+      "title": "307 리다이렉트 Location 구성(rstrip 전부, quote safe 집합)",
+      "severity": "medium",
+      "python_detail": "끝의 '/'를 전부 떼서(rstrip) 다시 맞춘다. Location = 'http://' + Host 헤더(latin-1) + 디코딩된 경로 + '?' + raw query, 여기에 quote(safe=\":/%#?=@[]!$&'()*+,;\")를 적용한다. 매칭은 메서드와 상관없고 item_id가 숫자가 아니어도 된다('/items/abc/' → 307)",
+      "rust_pitfall": "한 글자만 떼거나 raw 경로를 그대로 쓰거나 다른 percent-encode 집합을 쓰면 Location이 달라진다",
+      "mitigation": "Python quote 규칙(영숫자와 '_.-~'는 늘 안전, safe 집합 추가, 나머지는 UTF-8 %XX 대문자)을 직접 쓴다",
+      "verification": "'routing' 케이스(/items/, /items/?limit=1, POST /items/, /stats/, /items/1/reserve/, /nope/)로 확인할 수 있다. 추가할 것: /items//, /items/abc/, /items/%C3%A9/, /items/%2541/, 공백이나 '\"'가 든 쿼리, '//'",
+      "covered_by_existing_tests": true
+    },
+    {
+      "id": "R08",
+      "title": "정수 lax 해석 세부(trim 공백, 밑줄, '.0' 접미, 큰 수)",
+      "severity": "high",
+      "python_detail": "pydantic-core: trim()(Unicode White_Space) → i64 시도 → Python int() 경로(밑줄, 앞 0, 큰 수) → '.' 뒤가 '0'뿐이면 뗀다. 비ASCII 숫자, 1e1, 0x1, +-1, 빈 문자열은 거부한다. 4300자리를 넘으면 int_parsing_size가 나올 가능성이 있다(미확인)",
+      "rust_pitfall": "str::parse::<i64>는 밑줄, '5.0', 공백, 20자리 수를 거부한다. 큰 수를 i64에 담으면 404 메시지가 틀린다. char::is_numeric을 쓰면 비ASCII 숫자를 받는다",
+      "mitigation": "문법을 직접 쓴다: trim → [+-]? → ASCII digit ('_' ASCII digit)* → ('.' '0'*)?. 결과는 정규화된 10진 문자열과 saturating i128",
+      "verification": "'path-ints', 'query-ints'와 fuzz의 int_text로 확인할 수 있다. 추가할 것: '5.', '5.000', '.0', '_5', '5_', '5__0', '-05', '%C2%A05'(NBSP), '%E3%80%805'(전각 공백), '%1C5', 4301자리 수",
+      "covered_by_existing_tests": true
+    },
+    {
+      "id": "R09",
+      "title": "실수 lax 해석(문자열 price)",
+      "severity": "medium",
+      "python_detail": "pydantic-core: str.trim() → Rust f64 parse(inf/infinity/nan, 대소문자 무시) → 실패하면 밑줄을 떼고 재시도('1_0.5' 허용). '0x1p3', 'true'는 float_parsing. NaN은 le가 먼저 실패해 less_than_equal, '-inf'는 greater_than_equal",
+      "rust_pitfall": "Python float() 규칙(비ASCII 숫자 허용 등)을 따르거나 밑줄 처리를 다르게 하면 달라진다. 비교 순서를 ge→le로 하면 NaN 오류 type이 바뀐다",
+      "mitigation": "trim().parse::<f64>()를 쓰고, 실패하면 밑줄 제거 뒤 재시도한다. 검사는 le 먼저",
+      "verification": "'lax-numbers', 'validation-ranges'('inf'), fuzz의 number로 확인할 수 있다. 추가할 것: '1__0', '_1', '1_', '1_e5', 'Infinity', '-inf', 'NAN', '+1.5', '.5', '5.', '1e', '١.5', '-0'",
+      "covered_by_existing_tests": true
+    },
+    {
+      "id": "R10",
+      "title": "JSON 숫자 종류 보존(int와 float 구분, 큰 정수, -0)",
+      "severity": "high",
+      "python_detail": "json.loads는 정수 토큰을 임의 크기 int로, 소수점·지수가 있으면 float으로 만든다. quantity 3.0 → 3, 3.5 → int_from_float, 10**30 → less_than_equal. price -0(int) → 0.0, -0.0(float) → '-0.0'. 1e400 → inf",
+      "rust_pitfall": "serde_json(arbitrary_precision 없이)은 u64를 넘는 정수를 f64로 바꿔 int_from_float 등 다른 오류가 나고, -0 정수의 부호도 다르게 다룬다",
+      "mitigation": "파서가 숫자 토큰 텍스트와 종류를 보존한다. 정수는 saturating i128과 '넘침' 표시로 범위 검사한다",
+      "verification": "'validation-ranges'(1_000_001), 'non-finite-body'(1e400)로 일부 확인할 수 있다. 추가할 것: quantity 1e3(float, 1000), 99999999999999999999999, -0.0, price -0, -0.0, 1e309, 10**400(400자리 정수 price, 결과 미확인)",
+      "covered_by_existing_tests": false
+    },
+    {
+      "id": "R11",
+      "title": "tags 목록 검증에서 too_long이 원소 오류를 대체",
+      "severity": "medium",
+      "python_detail": "pydantic-core는 11번째 원소에서 길이 검사가 실패하면 모아 둔 원소 오류를 버리고 too_long 하나만 낸다",
+      "rust_pitfall": "원소 오류와 too_long을 함께 내거나 too_long을 뒤에 붙이면 errors 목록이 달라진다",
+      "mitigation": "len>10이면 too_long만 낸다",
+      "verification": "'validation-ranges'(['a']*11)로 확인할 수 있다. fuzz는 ['t']*11만 쓴다. 추가할 것: ['']*11, [1]*11, [1,'',...] 10개(원소 오류만)",
+      "covered_by_existing_tests": false
+    },
+    {
+      "id": "R12",
+      "title": "코드 포인트 길이와 고립 서로게이트",
+      "severity": "medium",
+      "python_detail": "min/max_length는 Python len(코드 포인트)으로 잰다. JSON '\\ud800' escape나 surrogatepass 바이트로 들어온 고립 서로게이트는 pydantic에서 string_unicode 오류가 날 가능성이 있다. extra 키에 들어 있으면 422 응답 인코딩이 실패해 500이 될 가능성이 있다",
+      "rust_pitfall": "str::len()은 바이트 수다. Rust String은 서로게이트를 담지 못해 파서가 오류를 내거나 U+FFFD로 바꾼다",
+      "mitigation": "내부 문자열을 Vec<u32>나 WTF-8로 든다. 길이는 코드 포인트 수로 센다. 서로게이트를 처리하는 방식은 실측 뒤 확정",
+      "verification": "'unicode-name'(😀×100/101, '값 x')으로 길이를 확인할 수 있다. 추가할 것: name '\\ud800', name '😀'(쌍), tags ['\\udc00'], 키 '\\ud800'인 extra, name 'é'(결합 문자)",
+      "covered_by_existing_tests": false
+    },
+    {
+      "id": "R13",
+      "title": "Content-Type 판정 세부",
+      "severity": "low",
+      "python_detail": "email.message: ';' 앞을 Python str.strip()(\\x1c-\\x1f, \\x85, \\xa0 포함)과 lower로 처리하고, '/'가 정확히 1개여야 하며, maintype 'application', subtype 'json' 또는 '*+json'. 헤더 값이 비었으면 비JSON. 여러 개면 첫 헤더",
+      "rust_pitfall": "mime 크레이트나 starts_with(\"application/json\")로는 'application/jsonx', 'Application/JSON', 'application/json/x', 'application/+json'에서 결과가 달라진다",
+      "mitigation": "직접 쓴 판정 함수에 Python 공백 집합을 쓴다",
+      "verification": "'body-framing'(없음, vnd.api+json, charset 매개변수, text/plain)으로 확인할 수 있다. 추가할 것: 'APPLICATION/JSON', 'application/jsonx', 'application/json/x', 'application/+json', 'application/json ;x', 빈 값, 'json'",
+      "covered_by_existing_tests": true
+    },
+    {
+      "id": "R14",
+      "title": "쿼리 문자열 해석('+', '=' 없음, 마지막 값)",
+      "severity": "medium",
+      "python_detail": "parse_qsl(keep_blank_values=True): '&'로만 나누고 '+'를 공백으로 바꾼다. '=' 없는 이름은 값 ''. %XX는 UTF-8 errors='replace'. 마지막 값을 쓴다",
+      "rust_pitfall": "url::form_urlencoded는 대체로 같지만 ';' 처리, '=' 없음, 빈 조각, 잘못된 % 처리에서 다를 수 있다. serde 구조체 추출기는 중복 키에서 오류를 내거나 첫 값을 쓴다",
+      "mitigation": "parse_qsl을 직접 쓴다",
+      "verification": "'query-ints'(limit=1&limit=2, tag=, tag=x&tag=hw)로 확인할 수 있다. 추가할 것: limit=+5, limit, limit=5;offset=1, tag=a+b, tag=%E2%82%AC, tag=%ZZ, &&limit=2",
+      "covered_by_existing_tests": true
+    },
+    {
+      "id": "R15",
+      "title": "FastAPI 기본 문서 라우트(/docs, /redoc, /openapi.json, /docs/oauth2-redirect)",
+      "severity": "medium",
+      "python_detail": "FastAPI(title='stockroom')는 기본으로 문서 라우트를 등록한다. 기준 구현에서 GET /openapi.json은 200, /docs/는 307, POST /docs는 405이다. 계약은 이 경로들을 말하지 않는다(404로 읽힌다)",
+      "rust_pitfall": "구현하지 않으면 기준 구현과 다르고, 구현하면 계약과 다르다",
+      "mitigation": "계약을 우선해 구현하지 않는 쪽을 권한다. 차이는 보고서에 남긴다",
+      "verification": "기존 케이스와 fuzz 모두 이 경로를 요청하지 않는다. 사람의 판단이 필요하다",
+      "covered_by_existing_tests": false
+    },
+    {
+      "id": "R16",
+      "title": "HTTP 계층 차이(h11 대 hyper)",
+      "severity": "low",
+      "python_detail": "uvicorn h11: target 바이트 검증, HEAD 응답 본문 생략, keep-alive, 잘못된 요청은 400",
+      "rust_pitfall": "http::Uri가 h11과 다른 문자('\"', '{', '|' 등)를 거부하거나 받아들일 수 있다. Connection 처리가 다르면 비교 도구가 재연결한다",
+      "mitigation": "hyper http1을 기본값으로 쓴다. 비교 도구는 status, Content-Type, Location, Allow, 본문만 본다",
+      "verification": "추가할 것: '/items/{1}', '/items/a|b', '/items/\"' 같은 raw target을 http.client로 직접 보내 비교",
+      "covered_by_existing_tests": false
+    },
+    {
+      "id": "R17",
+      "title": "404 메시지의 정수 표기",
+      "severity": "medium",
+      "python_detail": "f\"item {item_id} not found\"는 파싱된 Python int의 str이다: '+1'→1, '-0'→0, '05'→5, '1_0'→10, 20자리 이상은 그대로",
+      "rust_pitfall": "i64/u64로 파싱하면 20자리 수에서 실패하고, 원문 문자열을 쓰면 '+1'이나 '05'가 그대로 나온다",
+      "mitigation": "정규화한 10진 문자열(부호, 앞 0 제거, -0→0, 밑줄과 '.0' 제거)을 만든다",
+      "verification": "'path-ints' 케이스(99999999999999999999, -1, -0, 1_0)로 확인할 수 있다",
+      "covered_by_existing_tests": true
+    },
+    {
+      "id": "R18",
+      "title": "Allow 헤더와 라우트 등록 순서",
+      "severity": "low",
+      "python_detail": "처음 PARTIAL로 맞은 라우트의 메서드를 쓴다. /items/{id}는 GET, /items는 POST",
+      "rust_pitfall": "메서드 목록 전체('GET, PATCH, DELETE')를 Allow로 내면 다르다",
+      "mitigation": "등록 순서를 그대로 옮긴 라우트 테이블에서 첫 PARTIAL 항목을 쓴다",
+      "verification": "'method-not-allowed' 케이스로 확인할 수 있다",
+      "covered_by_existing_tests": true
+    },
+    {
+      "id": "R19",
+      "title": "JSON 문자열 출력 이스케이프",
+      "severity": "low",
+      "python_detail": "pydantic-core와 json.dumps(ensure_ascii=False) 모두 '\"', '\\\\', \\b\\f\\n\\r\\t, 나머지 <0x20은 \\u00xx(소문자)로 쓴다. 0x7F, U+2028, 비ASCII는 그대로",
+      "rust_pitfall": "직접 쓴 이스케이프가 '/'나 0x7F를 이스케이프하거나 \\u00XX를 대문자로 쓰면 다르다",
+      "mitigation": "위 규칙대로 jsonout을 쓴다",
+      "verification": "추가할 것: name 'a\\u0001b', 'a\\u007fb', 'a/b', 'a b', tags ['\\t']",
+      "covered_by_existing_tests": false
+    }
+  ],
+  "crate_layout": [
+    {
+      "path": "rust_app/Cargo.toml",
+      "responsibility": "패키지·바이너리 이름 stockroom(release 경로 rust_app/target/release/stockroom), 의존성 선언"
+    },
+    {
+      "path": "rust_app/src/main.rs",
+      "responsibility": "명령행(--host/--port, = 형태 포함) 파싱, STOCKROOM_TEST 읽기, tokio 런타임과 hyper http1 서버 기동, 연결마다 서비스 연결"
+    },
+    {
+      "path": "rust_app/src/http.rs",
+      "responsibility": "요청 수신: raw target을 '?'에서 분리, Python unquote 호환 경로 디코딩, parse_qsl 호환 쿼리 해석, Host/Content-Type 헤더 latin-1 처리, 응답 생성(JSON / 204 / 307 / 405 헤더)"
+    },
+    {
+      "path": "rust_app/src/router.rs",
+      "responsibility": "등록 순서 라우트 테이블, 끝 '\\n'을 허용하는 매칭, FULL/PARTIAL 판정, 405 Allow, rstrip('/') 307 리다이렉트와 quote(safe=...) Location 생성, 404"
+    },
+    {
+      "path": "rust_app/src/pyjson.rs",
+      "responsibility": "json.loads(bytes) 호환: detect_encoding과 surrogatepass 디코딩(실패하면 400), CPython _json과 같은 문법(NaN/Infinity, 제어문자 거부, 중복 키)과 코드 포인트 단위 오류 pos, 숫자 토큰 종류·텍스트 보존"
+    },
+    {
+      "path": "rust_app/src/lax.rs",
+      "responsibility": "pydantic 2.14 lax 변환: 문자열·정수·실수·불리언에서 int/float/str로. 오류 type 결정(int_parsing, int_from_float, finite_number, float_parsing, *_type), 큰 정수 saturating과 10진 정규화 문자열"
+    },
+    {
+      "path": "rust_app/src/models.rs",
+      "responsibility": "ItemIn / ItemPatch(Absent/Null/Value) / ReserveIn 검증: 필드 순서, 제약 검사 순서(le→ge/gt), tags 목록 규칙, extra_forbidden, missing, model_attributes_type. 오류 목록 (type, loc, msg)"
+    },
+    {
+      "path": "rust_app/src/store.rs",
+      "responsibility": "Store(BTreeMap<u64, Item>, next_id), 생성·조회·패치·삭제·예약·목록·reset, CPython sum() 호환 Neumaier 합산"
+    },
+    {
+      "path": "rust_app/src/handlers.rs",
+      "responsibility": "판정 순서 구현: 라우트 → 본문 단계(본문 라우트만, 즉시 400/422) → 경로·쿼리·본문 오류 모아 422 → Mutex 안에서 처리(404/400/409)"
+    },
+    {
+      "path": "rust_app/src/jsonout.rs",
+      "responsibility": "한 줄 JSON 직렬화: ryu 실수 표기, 정수, 문자열 이스케이프(비ASCII 유지), 고정 키 순서"
+    }
+  ],
+  "dependencies": [
+    {
+      "crate": "tokio (features: rt-multi-thread, net, macros, sync)",
+      "reason": "비동기 TCP 수신과 런타임. 동시 요청 처리"
+    },
+    {
+      "crate": "hyper 1.x (features: http1, server)",
+      "reason": "HTTP/1.1 파싱, keep-alive, 응답 framing. 라우팅·추출기는 쓰지 않고 raw target과 헤더만 받는다"
+    },
+    {
+      "crate": "hyper-util (features: tokio)",
+      "reason": "TokioIo 어댑터로 tokio 소켓을 hyper에 연결"
+    },
+    {
+      "crate": "http-body-util",
+      "reason": "요청 본문을 바이트로 모으고(BodyExt::collect) Full<Bytes> 응답 본문을 만든다"
+    },
+    {
+      "crate": "bytes",
+      "reason": "hyper 본문 타입(Bytes)"
+    },
+    {
+      "crate": "ryu",
+      "reason": "pydantic-core(serde_json)와 같은 최단 왕복 실수 표기(format_finite). 직접 구현하는 것보다 정확하다"
+    }
+  ],
+  "open_questions": [
+    "FastAPI 기본 문서 라우트(/docs, /redoc, /openapi.json, /docs/oauth2-redirect)가 기준 구현에는 있고 계약에는 없다. 계약을 우선해 404로 둘지 사람의 결정이 필요하다(R15)",
+    "정수 문자열이 4300자리를 넘을 때 pydantic이 int_parsing_size를 내는지 확인하지 못했다(pydantic-core는 컴파일 코드). 계약은 'item_id 크기 제한 없음'이라고만 한다. 기준 서버로 4301자리 item_id와 limit을 실측해야 한다",
+    "JSON 본문의 정수가 4300자리를 넘으면 json.loads가 ValueError를 내서 400이 될 것으로 추정한다. 또 400자리 정수를 price로 줄 때(float 변환 OverflowError) 어떤 오류 type이 나오는지 실측이 필요하다",
+    "제어문자, 잘못된 \\escape, 잘못된 \\uXXXX 오류의 JSONDecodeError.pos가 C 스캐너(_json.c) 기준으로 정확히 어디인지 소스를 읽지 못했다(작업 폴더 밖, C 소스). 위험 R03의 추가 입력으로 기준 서버에서 실측해야 한다",
+    "고립 서로게이트(\\ud800 escape, surrogatepass 바이트)가 name/tags에 있으면 string_unicode가 되는지, extra 키에 있으면 500(text/plain 'Internal Server Error')이 되는지 실측이 필요하다",
+    "pydantic-core의 문자열→실수 변환에서 밑줄 규칙('1__0', '_1', '1_')과 'infinity'/'NAN' 같은 대소문자 처리, 문자열→정수에서 '5.'·'.0' 처리를 실측해 확정해야 한다",
+    "float 값 quantity(NaN/Infinity 리터럴)의 오류 type을 finite_number로 추정했다. 계약 표에는 이 type이 없으므로 실측해야 한다",
+    "pydantic-core의 실수 직렬화가 모든 범위에서 ryu와 같은지(특히 1e16 이상, 1e-6 경계) 기준 서버로 확인해야 한다. 계약 예시는 ryu 규칙과 맞는다",
+    "port/plan.json은 없다. 계약 3.3의 'UTF-8이 아니면 400'은 기준 구현(json.loads(bytes)의 UTF-16/32 자동 감지, UTF-8 BOM 허용)보다 좁다. 기준 구현 동작을 따르는 쪽을 권하지만 확인이 필요하다"
+  ]
+}

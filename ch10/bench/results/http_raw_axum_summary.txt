@@ -1,0 +1,10 @@
+40 diffs
+  target-byte: 8
+  target-first: 8
+  header-value: 8
+  header-name: 8
+  method: 8
+status pairs (python, rust):
+  ('400', '400'): 33
+  ('200', '400'): 7
+500/1349 same
