@@ -4,6 +4,7 @@
   "binary": "stockroom",
   "checks": [
     {"name": "compare", "cmd": ["uv", "run", "python", "automation/compare.py", "--rust", "{bin}"]},
-    {"name": "fuzz", "cmd": ["uv", "run", "python", "automation/fuzz.py", "--rust", "{bin}", "--examples", "400", "--seed", "{seed}"]}
+    {"name": "fuzz", "cmd": ["uv", "run", "python", "automation/fuzz.py", "--rust", "{bin}", "--examples", "400", "--seed", "{seed}"]},
+    {"name": "race", "cmd": ["uv", "run", "python", "automation/race.py", "--repeat", "2", "--requests", "1000", "--quantity", "300", "--", "{bin}"]}
   ]
 }

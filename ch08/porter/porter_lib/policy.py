@@ -25,7 +25,7 @@ SHELL_CHAINING = re.compile(r";|&&|\|\||`|\$\(|>|<")
 READ_ONLY_COMMANDS = r"^(ls|cat|head|tail|wc|od|xxd|diff|cmp|grep|rg|find|file|stat)\b"
 RUN_RUST = r"^(\./)?rust_app/target/(release|debug)/[\w-]+(\s|$)"
 RUN_PYTHON_REF = r"^(python3|uv run python) python_src/[\w-]+\.py(\s|$)"
-RUN_CHECKS = r"^(python3|uv run python) automation/(compare|scenarios|fuzz)\.py(\s|$)"
+RUN_CHECKS = r"^(python3|uv run python) automation/(compare|scenarios|fuzz|race)\.py(\s|$)"
 
 ROLES: dict[str, dict[str, list[str]]] = {
     # 쓰기 가능한 경로(작업 폴더 기준 접두어)와 Bash 허용 정규식

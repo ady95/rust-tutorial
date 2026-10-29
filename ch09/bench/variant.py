@@ -34,6 +34,8 @@ async def main() -> int:
     parser.add_argument("--prompt-file", type=Path, required=True)
     parser.add_argument("--model", default="sonnet")
     parser.add_argument("--budget", type=float, default=5.0)
+    parser.add_argument("--refresh-project", type=Path,
+                        help="사람이 바꾼 프로젝트(기준 구현·계약·테스트·비교 도구)를 작업 폴더에 덮어쓴다(계약 갱신 반영용)")
     args = parser.parse_args()
 
     source = porter.WORK / args.source
@@ -42,6 +44,13 @@ async def main() -> int:
         shutil.rmtree(workspace)
     shutil.copytree(source, workspace, symlinks=True,
                     ignore=shutil.ignore_patterns("target", ".venv", "__pycache__", "verify"))
+    if args.refresh_project:
+        for name in ("python_src", "tests", "contracts", "automation"):
+            shutil.rmtree(workspace / name)
+            shutil.copytree(args.refresh_project / name, workspace / name,
+                            ignore=shutil.ignore_patterns(".venv", "__pycache__"))
+        for name in ("pyproject.toml", "uv.lock", ".python-version", "baseline.lock"):
+            shutil.copy2(args.refresh_project / name, workspace / name)
     (workspace / "verify").mkdir()
     porter.subprocess.run(["uv", "sync", "-q"], cwd=workspace, check=True)  # 비교 도구 환경(샌드박스 밖에서 미리)
     out = porter.run_dir(args.run)

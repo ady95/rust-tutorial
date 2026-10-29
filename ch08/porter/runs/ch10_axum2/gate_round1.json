@@ -1,0 +1,124 @@
+{
+  "ok": true,
+  "fuzz_seed": 1252763520,
+  "steps": [
+    {
+      "name": "baseline",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 0.03,
+      "tail": [
+        "baseline OK (15 files)"
+      ]
+    },
+    {
+      "name": "fmt",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 0.07,
+      "tail": []
+    },
+    {
+      "name": "clippy",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 0.16,
+      "tail": [
+        "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.12s"
+      ]
+    },
+    {
+      "name": "test",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 0.11,
+      "tail": [
+        "",
+        "running 15 tests",
+        "test handlers::tests::content_type_detection ... ok",
+        "test jsonout::tests::floats_follow_ryu ... ok",
+        "test jsonout::tests::strings_escape_like_python ... ok",
+        "test lax::tests::float_strings_match_pydantic ... ok",
+        "test lax::tests::floats_to_int ... ok",
+        "test models::tests::item_errors_in_field_then_extra_order ... ok",
+        "test pyjson::tests::error_positions_follow_cpython ... ok",
+        "test pyjson::tests::values_and_duplicates ... ok",
+        "test router::tests::matching_follows_starlette ... ok",
+        "test pyjson::tests::encodings ... ok",
+        "test router::tests::url_helpers ... ok",
+        "test store::tests::sum_is_compensated ... ok",
+        "test verify_io::dump_for_verify ... ignored",
+        "test tests::arguments_like_argparse ... ok",
+        "test lax::tests::int_strings_match_pydantic ... ok",
+        "",
+        "test result: ok. 14 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "",
+        "    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.08s",
+        "     Running unittests src/main.rs (rust_app/target/debug/deps/stockroom-e41b1e2384a54d05)"
+      ]
+    },
+    {
+      "name": "build",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 0.05,
+      "tail": [
+        "    Finished `release` profile [optimized] target(s) in 0.03s"
+      ]
+    },
+    {
+      "name": "compare",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 9.34,
+      "tail": [
+        "OK   health",
+        "OK   create-get-list",
+        "OK   float-format",
+        "OK   lax-numbers",
+        "OK   validation-types",
+        "OK   validation-ranges",
+        "OK   unicode-name",
+        "OK   missing-fields",
+        "OK   non-finite-body",
+        "OK   body-framing",
+        "OK   invalid-json",
+        "OK   invalid-utf8",
+        "OK   path-ints",
+        "OK   query-ints",
+        "OK   routing",
+        "OK   method-not-allowed",
+        "OK   patch",
+        "OK   delete",
+        "OK   reserve",
+        "OK   stats",
+        "OK   stats-exponent",
+        "OK   docs-disabled",
+        "OK   malformed-http",
+        "",
+        "23/23 cases match"
+      ]
+    },
+    {
+      "name": "fuzz",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 3.74,
+      "tail": [
+        "OK   400 random request sequences match"
+      ]
+    },
+    {
+      "name": "race",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 0.7,
+      "tail": [
+        "{\"reserve_requests\": 1000, \"initial_quantity\": 300, \"succeeded\": 300, \"conflicts\": 700, \"other_status\": 0, \"remaining\": 0, \"reserve_ok\": true, \"create_ids_ok\": true, \"seconds\": 0.202}",
+        "{\"reserve_requests\": 1000, \"initial_quantity\": 300, \"succeeded\": 300, \"conflicts\": 700, \"other_status\": 0, \"remaining\": 0, \"reserve_ok\": true, \"create_ids_ok\": true, \"seconds\": 0.205}",
+        "PASS 2/2"
+      ]
+    }
+  ],
+  "protected_changed": false
+}

@@ -77,6 +77,18 @@ CASES = {
                 {"method": "POST", "path": "/items/9/reserve", "json": {"quantity": 1}}, get("/items/1")],
     "stats": [get("/stats"), *[post(item("s", p, 3)) for p in (0.1, 0.2, 0.3)], get("/stats"),
               post(item("big", 1_000_000, 1_000_000)), get("/stats")],
+    # 이하 2026-10-30 결정 반영(계약 2절 문서 경로, 3.6 잘못된 HTTP 요청, 4절 지수 표기)
+    "stats-exponent": [{**post(item("huge", 1_000_000, 1_000_000)), "repeat": 10_000}, get("/stats")],
+    "docs-disabled": [get("/docs"), get("/redoc"), get("/openapi.json"), get("/docs/oauth2-redirect")],
+    "malformed-http": [
+        {"raw": "GET /health HTTP/1.1\r\n\r\n", "expect": 400},
+        {"raw": "GET /health HTTP/1.1\r\nHost: a\r\nHost: b\r\n\r\n", "expect": 400},
+        {"raw": "GET /health HTTP/1.1\r\nHost: x\r\nX-A: a\x07b\r\n\r\n"},
+        {"raw": "G\x01T /health HTTP/1.1\r\nHost: x\r\n\r\n"},
+        {"raw": "GET /hea\x7flth HTTP/1.1\r\nHost: x\r\n\r\n"},
+        {"raw": "GET /health HTTP/1.1\r\nHost: x\r\nContent-Length: 2, 3\r\n\r\nab"},
+        {"raw": "GET /health HTTP/9.9\r\nHost: x\r\n\r\n"},
+    ],
 }
 
 

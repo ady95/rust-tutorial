@@ -121,17 +121,56 @@ def normalize(server: Server, status: int, headers: dict, body: bytes) -> dict:
     return out
 
 
+def raw_status(server: Server, data: bytes) -> int:
+    """원시 바이트를 새 연결로 보내고 응답의 상태 코드만 읽는다. 응답 없이 끊기면 0."""
+    with socket.create_connection(("127.0.0.1", server.port), timeout=5) as sock:
+        sock.sendall(data)
+        buf = b""
+        try:
+            while b"\r\n" not in buf:
+                chunk = sock.recv(4096)
+                if not chunk:
+                    break
+                buf += chunk
+        except OSError:
+            pass
+    try:
+        return int(buf.split(b" ", 2)[1])
+    except (IndexError, ValueError):
+        return 0
+
+
+def compare_raw(python: Server, rust: Server, step: dict) -> list[str]:
+    """계약 3.6: HTTP/1.1 문법에 맞지 않는 요청. 상태 코드만 본다(본문 비교 안 함)."""
+    data = step["raw"].encode("latin-1")
+    py, rs = raw_status(python, data), raw_status(rust, data)
+    if "expect" in step:  # Host 누락·중복처럼 계약이 상태 코드를 정한 경우
+        return [] if py == rs == step["expect"] else [f"status: expected {step['expect']}, python={py} rust={rs}"]
+    if rs == py or 400 <= rs < 500:  # 기준 구현보다 엄격하게 4xx 로 거부하는 것은 허용
+        return []
+    return [f"status: python={py} rust={rs} (잘못된 요청에는 기준과 같거나 4xx 여야 함)"]
+
+
 def run_steps(python: Server, rust: Server, steps: list[dict]) -> list[str]:
-    """상태를 비운 뒤 요청을 차례로 보내고, 처음 다른 응답에서 멈춘다. 차이가 없으면 빈 목록."""
+    """상태를 비운 뒤 요청을 차례로 보내고, 처음 다른 응답에서 멈춘다. 차이가 없으면 빈 목록.
+
+    step 의 "repeat": n 은 같은 요청을 n 번 보낸다(큰 상태를 만들 때). "raw" 는 원시 바이트 요청(계약 3.6).
+    """
     for server in (python, rust):
         if server.request("POST", "/_test/reset", None, {})[0] != 204:
             return [f"{server.name}: /_test/reset failed"]
     for index, step in enumerate(steps, 1):
+        if "raw" in step:
+            problems = compare_raw(python, rust, step)
+            if problems:
+                return [f"step {index}: raw {step['raw'][:40]!r}", *problems]
+            continue
         body, headers = encode(step)
-        got = [normalize(s, *s.request(step["method"], step["path"], body, headers)) for s in (python, rust)]
-        if got[0] != got[1]:
-            label = f"step {index}: {step['method']} {step['path']}"
-            diffs = [f"{key}: python={got[0].get(key)!r:.200} rust={got[1].get(key)!r:.200}"
-                     for key in sorted(set(got[0]) | set(got[1])) if got[0].get(key) != got[1].get(key)]
-            return [label, *diffs]
+        for _ in range(step.get("repeat", 1)):
+            got = [normalize(s, *s.request(step["method"], step["path"], body, headers)) for s in (python, rust)]
+            if got[0] != got[1]:
+                label = f"step {index}: {step['method']} {step['path']}"
+                diffs = [f"{key}: python={got[0].get(key)!r:.200} rust={got[1].get(key)!r:.200}"
+                         for key in sorted(set(got[0]) | set(got[1])) if got[0].get(key) != got[1].get(key)]
+                return [label, *diffs]
     return []

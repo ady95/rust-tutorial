@@ -41,3 +41,11 @@ def test_bad_line(capsys: pytest.CaptureFixture[str]) -> None:
     code, _, err = run(capsys, str(FIXTURES / "bad_line.txt"))
     assert code == 1
     assert err == "stats: error: not a number on line 3: abc\n"
+
+
+def test_invalid_utf8_and_overflow_are_clean_errors(capsys: pytest.CaptureFixture[str]) -> None:
+    code, out, err = run(capsys, str(FIXTURES / "invalid_utf8.txt"))
+    assert (code, out) == (1, "")
+    assert err.startswith("stats: error: not valid UTF-8: ")
+    code, out, err = run(capsys, str(FIXTURES / "overflow.txt"))
+    assert (code, out, err) == (1, "", "stats: error: result out of range\n")

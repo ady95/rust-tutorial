@@ -1,4 +1,4 @@
-"""stats — 숫자 목록 요약 (기준 구현 2판, 08장. 1판은 07-4 실험용).
+"""stats — 숫자 목록 요약 (기준 구현 3판, 08장. 1판은 07-4 실험용).
 
 입력 파일: 한 줄에 숫자 하나(빈 줄은 건너뜀). 출력:
     count: <개수>
@@ -64,13 +64,23 @@ def main(argv: list[str]) -> int:
     except OSError:
         print(f"stats: error: cannot read file: {argv[0]}", file=sys.stderr)
         return 1
+    except UnicodeDecodeError:
+        # 3판: UnicodeDecodeError 는 ValueError 의 하위 클래스라 아래 except 에 잡혀 디코더 메시지가 나왔다(08-2)
+        print(f"stats: error: not valid UTF-8: {argv[0]}", file=sys.stderr)
+        return 1
     except ValueError as err:
         print(f"stats: error: {err}", file=sys.stderr)
         return 1
     if len(numbers) < 2:
         print("stats: error: need at least 2 numbers", file=sys.stderr)
         return 1
-    sys.stdout.write(summarize(numbers))
+    try:
+        out = summarize(numbers)
+    except OverflowError:
+        # 3판: 표준편차가 실수 범위를 넘으면 statistics.stdev 가 OverflowError 로 죽었다(08-2)
+        print("stats: error: result out of range", file=sys.stderr)
+        return 1
+    sys.stdout.write(out)
     return 0
 
 

@@ -1030,5 +1030,73 @@
     "path": "/stats"
    }
   ]
+ },
+ {
+  "name": "stats-exponent",
+  "steps": [
+   {
+    "method": "POST",
+    "path": "/items",
+    "json": {
+     "name": "huge",
+     "price": 1000000,
+     "quantity": 1000000
+    },
+    "repeat": 10000
+   },
+   {
+    "method": "GET",
+    "path": "/stats"
+   }
+  ]
+ },
+ {
+  "name": "docs-disabled",
+  "steps": [
+   {
+    "method": "GET",
+    "path": "/docs"
+   },
+   {
+    "method": "GET",
+    "path": "/redoc"
+   },
+   {
+    "method": "GET",
+    "path": "/openapi.json"
+   },
+   {
+    "method": "GET",
+    "path": "/docs/oauth2-redirect"
+   }
+  ]
+ },
+ {
+  "name": "malformed-http",
+  "steps": [
+   {
+    "raw": "GET /health HTTP/1.1\r\n\r\n",
+    "expect": 400
+   },
+   {
+    "raw": "GET /health HTTP/1.1\r\nHost: a\r\nHost: b\r\n\r\n",
+    "expect": 400
+   },
+   {
+    "raw": "GET /health HTTP/1.1\r\nHost: x\r\nX-A: a\u0007b\r\n\r\n"
+   },
+   {
+    "raw": "G\u0001T /health HTTP/1.1\r\nHost: x\r\n\r\n"
+   },
+   {
+    "raw": "GET /health HTTP/1.1\r\nHost: x\r\n\r\n"
+   },
+   {
+    "raw": "GET /health HTTP/1.1\r\nHost: x\r\nContent-Length: 2, 3\r\n\r\nab"
+   },
+   {
+    "raw": "GET /health HTTP/9.9\r\nHost: x\r\n\r\n"
+   }
+  ]
  }
 ]

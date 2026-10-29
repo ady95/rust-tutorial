@@ -63,5 +63,19 @@
   {
     "name": "usage-no-file",
     "args": []
+  },
+  {
+    "name": "invalid-utf8",
+    "args": [
+      "tests/fixtures/invalid_utf8.txt"
+    ],
+    "stderr_ignored": true
+  },
+  {
+    "name": "stdev-overflow",
+    "args": [
+      "tests/fixtures/overflow.txt"
+    ],
+    "stderr_ignored": true
   }
 ]

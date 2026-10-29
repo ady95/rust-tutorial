@@ -120,3 +120,8 @@ def test_list_patch_delete_reserve_stats() -> None:
     assert client.delete("/items/1").status_code == 204
     assert client.get("/stats").content == b'{"items":1,"total_quantity":1,"total_value":0.2}'
     assert errors(client.patch("/items/99", json={"bogus": 1})) == [("extra_forbidden", ["body", "bogus"])]
+
+
+def test_docs_routes_are_disabled() -> None:
+    for path in ("/docs", "/redoc", "/openapi.json"):
+        assert client.get(path).status_code == 404

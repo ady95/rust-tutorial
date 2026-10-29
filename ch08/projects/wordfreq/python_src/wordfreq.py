@@ -1,4 +1,4 @@
-"""wordfreq: 텍스트 파일의 단어 빈도를 세는 CLI (기준 구현 2판, 08장).
+"""wordfreq: 텍스트 파일의 단어 빈도를 세는 CLI (기준 구현 3판, 08장·11장 이후 결정 반영).
 
 동작 계약은 contracts/behavior_spec.md 에 있다. 이 파일이 그 계약의 기준 구현이다.
 1판(04장)과 달라진 점은 계약 끝의 "변경 기록"에 있다.
@@ -88,7 +88,8 @@ def display_name(arg: str) -> str:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="wordfreq", description="Count word frequencies.")
+    # 3판: 옵션 이름 줄여 쓰기(--to)는 받지 않는다(08-2에서 계약에 없던 동작으로 확인)
+    parser = argparse.ArgumentParser(prog="wordfreq", description="Count word frequencies.", allow_abbrev=False)
     parser.add_argument("file", help="UTF-8 text file")
     parser.add_argument("--top", type=positive_int, default=10, help="number of words (default 10)")
     parser.add_argument("--json", action="store_true", help="print JSON instead of text")
@@ -111,7 +112,8 @@ def write_output(text: str) -> bool:
 def main(argv: list[str] | None = None) -> int:
     # Windows 에서도 출력은 항상 UTF-8, 줄바꿈은 LF 로 고정한다 (계약 3절).
     sys.stdout.reconfigure(encoding="utf-8", newline="\n")
-    sys.stderr.reconfigure(encoding="utf-8", newline="\n")
+    # 3판: 인자 오류 메시지에 UTF-8 이 아닌 바이트(서로게이트)가 들어가도 죽지 않도록 backslashreplace(08-2)
+    sys.stderr.reconfigure(encoding="utf-8", errors="backslashreplace", newline="\n")
 
     args = build_parser().parse_args(argv)
     path = Path(args.file)

@@ -160,5 +160,30 @@
       "+3"
     ],
     "usage_error": true
+  },
+  {
+    "name": "usage-abbrev",
+    "args": [
+      "tests/fixtures/basic.txt",
+      "--to",
+      "2"
+    ],
+    "usage_error": true
+  },
+  {
+    "name": "path-trailing-slash",
+    "args": [
+      "tests/fixtures/basic.txt/"
+    ]
+  },
+  {
+    "name": "top-last-wins",
+    "args": [
+      "tests/fixtures/basic.txt",
+      "--top",
+      "1",
+      "--top",
+      "3"
+    ]
   }
 ]

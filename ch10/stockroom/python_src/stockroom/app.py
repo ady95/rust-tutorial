@@ -14,7 +14,8 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ConfigDict, Field
 
-app = FastAPI(title="stockroom")
+# API 문서 경로(/docs, /redoc, /openapi.json)는 이식 범위에서 빼므로 끈다(2026-10-30 결정, 10-2)
+app = FastAPI(title="stockroom", docs_url=None, redoc_url=None, openapi_url=None)
 
 
 @app.exception_handler(RequestValidationError)

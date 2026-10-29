@@ -112,3 +112,26 @@ def test_non_utf8_missing_file_name_is_replaced(capsys: pytest.CaptureFixture[st
     assert code == 1
     assert out == ""
     assert err == "wordfreq: error: file not found: gone�.txt\n"
+
+
+# --- 3판(11장 이후 결정 반영) ---
+
+
+def test_option_abbreviation_is_a_usage_error(capsys: pytest.CaptureFixture[str]) -> None:
+    with pytest.raises(SystemExit) as exc:
+        main([str(FIXTURES / "basic.txt"), "--to", "2"])
+    assert exc.value.code == 2
+
+
+@pytest.mark.skipif(sys.platform == "win32", reason="UTF-8 이 아닌 인자는 POSIX 에서만 만들 수 있다")
+def test_non_utf8_top_value_is_a_usage_error_not_a_crash(capsys: pytest.CaptureFixture[str]) -> None:
+    with pytest.raises(SystemExit) as exc:
+        main([str(FIXTURES / "basic.txt"), "--top", os.fsdecode(b"\xff")])
+    assert exc.value.code == 2
+    assert capsys.readouterr().err != ""
+
+
+def test_trailing_slash_path_reads_the_file(capsys: pytest.CaptureFixture[str]) -> None:
+    code, out, _ = run(capsys, str(FIXTURES / "basic.txt") + "/")
+    assert code == 0
+    assert out.startswith("words: 10\n")
