@@ -1,0 +1,9 @@
+{
+  "name": "logstat",
+  "python": "python_src/logstat.py",
+  "binary": "logstat",
+  "checks": [
+    {"name": "compare", "cmd": ["uv", "run", "python", "automation/compare.py", "--rust", "{bin}"]},
+    {"name": "fuzz", "cmd": ["uv", "run", "python", "automation/fuzz.py", "--rust", "{bin}", "--examples", "1500", "--seed", "{seed}"]}
+  ]
+}

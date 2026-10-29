@@ -1,0 +1,31 @@
+{
+  "data": "/home/dev/work/rust-tutorial/ch09/logstat/tests/fixtures/empty.csv",
+  "data_bytes": 0,
+  "records": 0,
+  "warmup": 5,
+  "machine": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+  "results": {
+    "py": {
+      "mean_s": 0.0428704152,
+      "stddev_s": 0.0012544436668843794,
+      "median_s": 0.0424985775,
+      "min_s": 0.04152236,
+      "max_s": 0.047501248,
+      "runs": 50,
+      "records_per_s": 0.0,
+      "max_rss_kb": 14908,
+      "command": "python3 /home/dev/work/rust-tutorial/ch09/logstat/python_src/logstat.py /home/dev/work/rust-tutorial/ch09/logstat/tests/fixtures/empty.csv --top 10"
+    },
+    "rs": {
+      "mean_s": 0.0008265416799999999,
+      "stddev_s": 2.8357735478830937e-05,
+      "median_s": 0.0008137835000000001,
+      "min_s": 0.000780993,
+      "max_s": 0.0009203630000000001,
+      "runs": 50,
+      "records_per_s": 0.0,
+      "max_rss_kb": 2164,
+      "command": "/home/dev/work/ch09_bin/logstat_agent /home/dev/work/rust-tutorial/ch09/logstat/tests/fixtures/empty.csv --top 10"
+    }
+  }
+}

@@ -1,0 +1,189 @@
+[
+  {
+    "name": "basic-csv",
+    "args": [
+      "tests/fixtures/basic.csv"
+    ]
+  },
+  {
+    "name": "basic-csv-json",
+    "args": [
+      "tests/fixtures/basic.csv",
+      "--json"
+    ]
+  },
+  {
+    "name": "basic-csv-top2",
+    "args": [
+      "tests/fixtures/basic.csv",
+      "--top",
+      "2"
+    ]
+  },
+  {
+    "name": "basic-csv-strict",
+    "args": [
+      "tests/fixtures/basic.csv",
+      "--strict"
+    ]
+  },
+  {
+    "name": "basic-jsonl",
+    "args": [
+      "tests/fixtures/basic.jsonl"
+    ]
+  },
+  {
+    "name": "basic-jsonl-json",
+    "args": [
+      "tests/fixtures/basic.jsonl",
+      "--json",
+      "--top",
+      "3"
+    ]
+  },
+  {
+    "name": "basic-jsonl-strict",
+    "args": [
+      "tests/fixtures/basic.jsonl",
+      "--strict"
+    ]
+  },
+  {
+    "name": "quoting",
+    "args": [
+      "tests/fixtures/quoting.csv"
+    ]
+  },
+  {
+    "name": "quoting-json",
+    "args": [
+      "tests/fixtures/quoting.csv",
+      "--json"
+    ]
+  },
+  {
+    "name": "edge",
+    "args": [
+      "tests/fixtures/edge.jsonl"
+    ]
+  },
+  {
+    "name": "edge-json",
+    "args": [
+      "tests/fixtures/edge.jsonl",
+      "--json"
+    ]
+  },
+  {
+    "name": "edge-strict",
+    "args": [
+      "tests/fixtures/edge.jsonl",
+      "--strict"
+    ]
+  },
+  {
+    "name": "tz",
+    "args": [
+      "tests/fixtures/tz.jsonl"
+    ]
+  },
+  {
+    "name": "tz-json",
+    "args": [
+      "tests/fixtures/tz.jsonl",
+      "--json"
+    ]
+  },
+  {
+    "name": "empty",
+    "args": [
+      "tests/fixtures/empty.csv"
+    ]
+  },
+  {
+    "name": "empty-json",
+    "args": [
+      "tests/fixtures/empty.csv",
+      "--json"
+    ]
+  },
+  {
+    "name": "header-only",
+    "args": [
+      "tests/fixtures/header_only.csv",
+      "--json"
+    ]
+  },
+  {
+    "name": "missing-column",
+    "args": [
+      "tests/fixtures/missing_column.csv"
+    ]
+  },
+  {
+    "name": "bom",
+    "args": [
+      "tests/fixtures/bom.csv"
+    ]
+  },
+  {
+    "name": "bad-utf8",
+    "args": [
+      "tests/fixtures/bad_utf8.csv"
+    ]
+  },
+  {
+    "name": "big-field",
+    "args": [
+      "tests/fixtures/big_field.csv"
+    ]
+  },
+  {
+    "name": "format-override",
+    "args": [
+      "tests/fixtures/log.txt",
+      "--format",
+      "jsonl"
+    ]
+  },
+  {
+    "name": "missing-file",
+    "args": [
+      "tests/fixtures/nope.csv"
+    ]
+  },
+  {
+    "name": "usage-unknown-extension",
+    "args": [
+      "tests/fixtures/log.txt"
+    ],
+    "usage_error": true
+  },
+  {
+    "name": "usage-top-zero",
+    "args": [
+      "tests/fixtures/basic.csv",
+      "--top",
+      "0"
+    ],
+    "usage_error": true
+  },
+  {
+    "name": "usage-abbrev",
+    "args": [
+      "tests/fixtures/basic.csv",
+      "--js"
+    ],
+    "usage_error": true
+  },
+  {
+    "name": "usage-bad-format",
+    "args": [
+      "tests/fixtures/basic.csv",
+      "--format",
+      "tsv"
+    ],
+    "usage_error": true
+  }
+]

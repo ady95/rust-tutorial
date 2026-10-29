@@ -1,0 +1,13 @@
+[package]
+name = "logstat"
+version = "0.1.0"
+edition = "2021"
+# 1.67 부터 {:.1} 이 정확한 이진값 기준 half-even 으로 반올림한다(Python f"{x:.1f}" 와 같음)
+rust-version = "1.67"
+publish = false
+
+[dependencies]
+
+[[bin]]
+name = "logstat"
+path = "src/main.rs"

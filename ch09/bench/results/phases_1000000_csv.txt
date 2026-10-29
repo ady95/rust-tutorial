@@ -1,0 +1,8 @@
+logs_1000000.csv: 1,000,000 rows, best of 3
+  read+decode                      0.068s   0.7%
+  split only                       0.762s 
+  parse+validate (incl. split)     7.038s  75.1%
+  summarize                        2.269s  24.2%
+  format                           0.000s   0.0%
+  total (without split only)       9.375s
+{"read+decode": 0.06799462700018921, "split only": 0.7617197120002857, "parse+validate (incl. split)": 7.038094010999885, "summarize": 2.2688417099998333, "format": 1.2488999800552847e-05, "total": 9.374942836999708, "rows": 1000000}

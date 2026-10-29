@@ -1,0 +1,16 @@
+[project]
+name = "logstat"
+version = "0.1.0"
+description = "logstat reference implementation (ch09)"
+requires-python = ">=3.12"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+    "hypothesis>=6.170",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["python_src"]
+testpaths = ["tests"]

@@ -1,0 +1,31 @@
+{
+  "data": "/home/dev/work/ch09_data/logs_100000.jsonl",
+  "data_bytes": 11948318,
+  "records": 100000,
+  "warmup": 3,
+  "machine": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+  "results": {
+    "py": {
+      "mean_s": 0.97260664955,
+      "stddev_s": 0.0342641098555279,
+      "median_s": 0.96389616,
+      "min_s": 0.9199790510000001,
+      "max_s": 1.058192633,
+      "runs": 20,
+      "records_per_s": 102816.48809029572,
+      "max_rss_kb": 99596,
+      "command": "python3 /home/dev/work/rust-tutorial/ch09/logstat/python_src/logstat.py /home/dev/work/ch09_data/logs_100000.jsonl --top 10"
+    },
+    "rs": {
+      "mean_s": 0.11386588050000002,
+      "stddev_s": 0.001791904492429845,
+      "median_s": 0.11364375400000001,
+      "min_s": 0.11135913200000001,
+      "max_s": 0.119704791,
+      "runs": 20,
+      "records_per_s": 878226.2040295731,
+      "max_rss_kb": 31740,
+      "command": "/home/dev/work/ch09_bin/logstat_agent /home/dev/work/ch09_data/logs_100000.jsonl --top 10"
+    }
+  }
+}

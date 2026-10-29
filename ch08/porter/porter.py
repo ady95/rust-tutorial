@@ -27,7 +27,7 @@ from claude_agent_sdk import AgentDefinition
 from porter_lib import gate as gate_mod
 from porter_lib import prompts
 from porter_lib.agent import run_session
-from porter_lib.policy import Policy, sandbox_settings
+from porter_lib.policy import CRATES_DOMAINS, Policy, sandbox_settings
 from porter_lib.report import write_report
 
 HERE = Path(__file__).resolve().parent
@@ -123,11 +123,12 @@ async def cmd_port(args: argparse.Namespace) -> int:
     main_role = "coordinator" if split else ("implementer_v2" if v2 else "implementer")
     policy = Policy(workspace, main_role, out / "audit.jsonl", read_roots(),
                     role_alias={"implementer": "implementer_v2"} if v2 else {})
-    sandbox = sandbox_settings(workspace, deny_read_paths(workspace)) if v2 else None
+    domains = CRATES_DOMAINS if args.allow_crates else []
+    sandbox = sandbox_settings(workspace, deny_read_paths(workspace), domains) if v2 else None
     (out / "run.json").write_text(json.dumps({
         "project": manifest["name"], "mode": args.mode, "model": args.model, "max_rounds": args.max_rounds,
         "budget_usd": args.budget, "started": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
-        "plan": bool(args.plan), "policy": args.policy}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        "plan": bool(args.plan), "policy": args.policy, "allow_crates": args.allow_crates}, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
     session_id: str | None = None
     spent = 0.0
@@ -198,7 +199,8 @@ async def cmd_followup(args: argparse.Namespace) -> int:
     round_no = sessions[-1]["round"] + 1
     v2 = run.get("policy") == "v2"
     policy = Policy(workspace, "implementer_v2" if v2 else "implementer", out / "audit.jsonl", read_roots())
-    sandbox = sandbox_settings(workspace, deny_read_paths(workspace)) if v2 else None
+    domains = CRATES_DOMAINS if run.get("allow_crates") else []
+    sandbox = sandbox_settings(workspace, deny_read_paths(workspace), domains) if v2 else None
     for name in ("heldout.json", "plan_probes.json"):  # 후속 라운드 전의 평가를 남긴다
         if (out / name).exists():
             shutil.copy2(out / name, out / name.replace(".json", f"_round{round_no - 1}.json"))
@@ -276,6 +278,8 @@ def main() -> int:
             p.add_argument("--mode", choices=["single", "split"], default="single")
             p.add_argument("--max-rounds", type=int, default=4)
             p.add_argument("--max-turns", type=int, default=120)
+            p.add_argument("--allow-crates", action="store_true",
+                           help="샌드박스에서 crates.io 접속을 허용(외부 크레이트 사용, 09장)")
             p.add_argument("--policy", choices=["v1", "v2"], default="v2",
                            help="v1: 검증 스크립트 실행 불가(08-3 첫 실행), v2: verify/ 스크립트 실행 + 샌드박스")
     for name in ("heldout", "report"):

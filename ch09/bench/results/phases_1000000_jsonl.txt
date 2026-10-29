@@ -1,0 +1,8 @@
+logs_1000000.jsonl: 1,000,000 rows, best of 3
+  read+decode                      0.113s   1.2%
+  split only                       2.078s 
+  parse+validate (incl. split)     6.845s  74.4%
+  summarize                        2.245s  24.4%
+  format                           0.000s   0.0%
+  total (without split only)       9.203s
+{"read+decode": 0.11279807400023856, "split only": 2.0780506210003296, "parse+validate (incl. split)": 6.845496362000176, "summarize": 2.244979014999899, "format": 1.3164999927539611e-05, "total": 9.203286616000241, "rows": 1000000}

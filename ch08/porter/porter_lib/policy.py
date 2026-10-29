@@ -64,17 +64,22 @@ PROTECTED = ["python_src", "tests", "contracts", "automation", "port", ".porter"
              "pyproject.toml", "uv.lock", ".python-version"]
 
 
-def sandbox_settings(workspace: Path, deny_read: list[Path]) -> dict[str, Any]:
-    """셸 명령용 샌드박스 설정(bubblewrap). 쓰기는 작업 폴더(사람의 파일 제외)와 캐시로, 네트워크는 차단."""
+# 외부 크레이트를 받을 때 여는 도메인(09장). Cargo 레지스트리만 허용한다
+CRATES_DOMAINS = ["crates.io", "index.crates.io", "static.crates.io"]
+
+
+def sandbox_settings(workspace: Path, deny_read: list[Path], allowed_domains: list[str] | None = None) -> dict[str, Any]:
+    """셸 명령용 샌드박스 설정(bubblewrap). 쓰기는 작업 폴더(사람의 파일 제외)와 캐시로, 네트워크는 기본 차단."""
     home = Path.home()
     return {
         "enabled": True,
         "autoAllowBashIfSandboxed": False,  # 샌드박스 안이어도 허용 여부는 훅·허용 목록이 정한다
         "allowUnsandboxedCommands": False,  # 샌드박스 밖으로 다시 실행하는 길을 막는다
         "failIfUnavailable": True,  # 샌드박스를 못 쓰면 조용히 넘어가지 말고 시작하지 않는다
-        "network": {"allowedDomains": []},
+        "network": {"allowedDomains": list(allowed_domains or [])},
         "filesystem": {
-            "allowWrite": [str(home / ".cache" / "uv"), str(home / ".cargo" / "registry")],
+            "allowWrite": [str(home / ".cache" / "uv"), str(home / ".cargo" / "registry"),
+                           str(home / ".cargo" / ".package-cache"), str(home / ".cargo" / "git")],
             "denyWrite": [str(workspace / name) for name in PROTECTED],
             "denyRead": [str(p) for p in deny_read],
         },

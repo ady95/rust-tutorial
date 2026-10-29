@@ -1,0 +1,2 @@
+{"ts": "2026-10-29T09:00:01Z", "method": "GET", "path": "/", "status": 200, "bytes": 512, "latency_ms": 12.5}
+{"ts": "2026-10-29T09:00:02Z", "method": "GET", "path": "/api/users?id=1", "status": 200, "bytes": 1024, "latency_ms": 30.25}

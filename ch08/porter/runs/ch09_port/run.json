@@ -1,0 +1,11 @@
+{
+  "project": "logstat",
+  "mode": "single",
+  "model": "opus",
+  "max_rounds": 4,
+  "budget_usd": 10.0,
+  "started": "2026-10-29T21:37:55+0900",
+  "plan": true,
+  "policy": "v2",
+  "allow_crates": true
+}
