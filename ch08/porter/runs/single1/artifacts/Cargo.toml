@@ -1,0 +1,12 @@
+[package]
+name = "wordfreq"
+version = "0.2.0"
+edition = "2021"
+description = "Count word frequencies (Rust port of python_src/wordfreq.py, contract 2nd edition)"
+publish = false
+
+[[bin]]
+name = "wordfreq"
+path = "src/main.rs"
+
+[dependencies]

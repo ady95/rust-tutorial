@@ -1,0 +1,23 @@
+{
+  "versions": {
+    "claude_code": "2.1.299",
+    "model": "claude-opus-5-5",
+    "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+    "cargo": "cargo 1.99.1 (5f94df478 2026-08-27)",
+    "python": "Python 3.12.3",
+    "os": "Linux 6.18.33.2-microsoft-standard-WSL2",
+    "claude_agent_sdk": "0.2.174"
+  },
+  "inputs_sha256": {
+    "baseline.lock": "fd86a51b2772bc53",
+    "port/plan.json": "4a4ff894303eafd7"
+  },
+  "rust_loc": {
+    "rust_app/src/cli.rs": 816,
+    "rust_app/src/main.rs": 140,
+    "rust_app/src/output.rs": 113,
+    "rust_app/src/text.rs": 513,
+    "rust_app/tests/cli.rs": 253
+  },
+  "binary_sha256": "0162ad18290015be87dd50a1236a81d0bb9566ad47f068a4a0bb7340a5df95cb"
+}

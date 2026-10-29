@@ -1,0 +1,9 @@
+{
+  "project": "wordfreq",
+  "mode": "single",
+  "model": "opus",
+  "max_rounds": 4,
+  "budget_usd": 10.0,
+  "started": "2026-10-29T12:59:18+0900",
+  "plan": true
+}

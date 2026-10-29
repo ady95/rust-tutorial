@@ -1,0 +1,17 @@
+{
+  "type": "object",
+  "properties": {
+    "functions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {"type": "string"},
+          "contract_sections": {"type": "array", "items": {"type": "string"}}
+        },
+        "required": ["name", "contract_sections"]
+      }
+    }
+  },
+  "required": ["functions"]
+}

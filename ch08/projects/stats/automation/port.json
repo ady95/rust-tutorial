@@ -1,0 +1,8 @@
+{
+  "name": "stats",
+  "python": "python_src/stats.py",
+  "binary": "stats",
+  "checks": [
+    {"name": "compare", "cmd": ["uv", "run", "python", "automation/compare.py", "--rust", "{bin}"]}
+  ]
+}

@@ -1,0 +1,3 @@
+UPPER Upper upper
+Windows	line
+endings

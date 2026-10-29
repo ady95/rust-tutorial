@@ -1,0 +1,67 @@
+[
+  {
+    "name": "integers",
+    "args": [
+      "tests/fixtures/integers.txt"
+    ]
+  },
+  {
+    "name": "decimals",
+    "args": [
+      "tests/fixtures/decimals.txt"
+    ]
+  },
+  {
+    "name": "negative",
+    "args": [
+      "tests/fixtures/negative.txt"
+    ]
+  },
+  {
+    "name": "blank-lines",
+    "args": [
+      "tests/fixtures/blank_lines.txt"
+    ]
+  },
+  {
+    "name": "one-number",
+    "args": [
+      "tests/fixtures/one_number.txt"
+    ]
+  },
+  {
+    "name": "bad-line",
+    "args": [
+      "tests/fixtures/bad_line.txt"
+    ]
+  },
+  {
+    "name": "scientific",
+    "args": [
+      "tests/fixtures/scientific.txt"
+    ]
+  },
+  {
+    "name": "same-values",
+    "args": [
+      "tests/fixtures/same_values.txt"
+    ]
+  },
+  {
+    "name": "infinity",
+    "args": [
+      "tests/fixtures/infinity.txt"
+    ],
+    "stderr_ignored": true
+  },
+  {
+    "name": "missing-file",
+    "args": [
+      "tests/fixtures/no_such_file.txt"
+    ]
+  },
+  {
+    "name": "usage-no-file",
+    "args": []
+  }
+]

@@ -1,0 +1,146 @@
+{
+  "ok": true,
+  "fuzz_seed": 993447470,
+  "steps": [
+    {
+      "name": "baseline",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 0.03,
+      "tail": [
+        "baseline OK (18 files)"
+      ]
+    },
+    {
+      "name": "fmt",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 0.05,
+      "tail": []
+    },
+    {
+      "name": "clippy",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 0.07,
+      "tail": [
+        "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.03s"
+      ]
+    },
+    {
+      "name": "test",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 0.06,
+      "tail": [
+        "",
+        "running 13 tests",
+        "test cli::tests::abbreviations ... ok",
+        "test cli::tests::basic_forms ... ok",
+        "test cli::tests::help ... ok",
+        "test cli::tests::non_utf8_arguments ... ok",
+        "test cli::tests::usage_errors ... ok",
+        "test cli::tests::positive_int_rules ... ok",
+        "test output::tests::json_format_and_escapes ... ok",
+        "test output::tests::text_format ... ok",
+        "test text::tests::lower_leaves_letters_newer_than_unicode_15 ... ok",
+        "test text::tests::lower_matches_python_special_cases ... ok",
+        "test text::tests::splits_on_python_whitespace ... ok",
+        "test text::tests::strips_punctuation_and_lowercases ... ok",
+        "test text::tests::ties_are_sorted_by_code_point ... ok",
+        "",
+        "test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "",
+        "",
+        "running 5 tests",
+        "test output_failure_exits_1 ... ok",
+        "test basic_text_and_json ... ok",
+        "test paths_are_normalized_like_pathlib ... ok",
+        "test read_errors ... ok",
+        "test usage_errors_and_help ... ok",
+        "",
+        "test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+        "",
+        "    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.03s",
+        "     Running unittests src/main.rs (rust_app/target/debug/deps/wordfreq-406f932be0a3770d)",
+        "     Running tests/cli.rs (rust_app/target/debug/deps/cli-a09516296a9d54db)"
+      ]
+    },
+    {
+      "name": "build",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 0.02,
+      "tail": [
+        "    Finished `release` profile [optimized] target(s) in 0.00s"
+      ]
+    },
+    {
+      "name": "compare",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 1.0,
+      "tail": [
+        "OK   basic",
+        "OK   basic-top2",
+        "OK   basic-json",
+        "OK   korean",
+        "OK   korean-json",
+        "OK   punctuation",
+        "OK   ties",
+        "OK   crlf-case",
+        "OK   empty",
+        "OK   empty-json",
+        "OK   missing-file",
+        "OK   invalid-utf8",
+        "OK   directory",
+        "OK   usage-no-file",
+        "OK   usage-top-zero",
+        "OK   usage-top-abc",
+        "OK   usage-unknown-option",
+        "OK   top-leading-zero",
+        "OK   top-huge",
+        "OK   usage-top-fullwidth",
+        "OK   usage-top-underscore",
+        "OK   usage-top-plus",
+        "",
+        "22/22 cases match"
+      ]
+    },
+    {
+      "name": "scenarios",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 1.48,
+      "tail": [
+        "OK   missing-file",
+        "OK   directory",
+        "OK   permission-denied",
+        "OK   non-utf8-filename",
+        "OK   non-utf8-missing",
+        "OK   non-utf8-missing-2",
+        "OK   dash-filename",
+        "OK   double-dash",
+        "OK   top-repeated",
+        "OK   top-fullwidth",
+        "OK   top-huge",
+        "OK   top-zero",
+        "OK   top-equals",
+        "OK   closed-pipe",
+        "OK   disk-full",
+        "",
+        "15/15 scenarios match"
+      ]
+    },
+    {
+      "name": "fuzz",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 5.76,
+      "tail": [
+        "OK   3000 random inputs match"
+      ]
+    }
+  ],
+  "protected_changed": false
+}

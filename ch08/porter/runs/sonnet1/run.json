@@ -1,0 +1,10 @@
+{
+  "project": "wordfreq",
+  "mode": "single",
+  "model": "sonnet",
+  "max_rounds": 4,
+  "budget_usd": 10.0,
+  "started": "2026-10-29T13:26:43+0900",
+  "plan": true,
+  "policy": "v2"
+}

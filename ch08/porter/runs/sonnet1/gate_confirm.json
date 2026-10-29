@@ -1,0 +1,134 @@
+{
+  "ok": true,
+  "fuzz_seed": 1990569796,
+  "steps": [
+    {
+      "name": "baseline",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 0.03,
+      "tail": [
+        "baseline OK (18 files)"
+      ]
+    },
+    {
+      "name": "fmt",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 0.05,
+      "tail": []
+    },
+    {
+      "name": "clippy",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 0.07,
+      "tail": [
+        "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.03s"
+      ]
+    },
+    {
+      "name": "test",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 0.05,
+      "tail": [
+        "",
+        "running 12 tests",
+        "test cli::tests::basic_forms ... ok",
+        "test cli::tests::dash_and_double_dash ... ok",
+        "test cli::tests::help_wins_over_deferred_errors ... ok",
+        "test cli::tests::positive_int_rules ... ok",
+        "test cli::tests::usage_errors ... ok",
+        "test output::tests::empty_top_is_empty_array ... ok",
+        "test output::tests::json_escapes_like_python ... ok",
+        "test text::tests::bom_is_kept ... ok",
+        "test text::tests::final_sigma_and_special_casing ... ok",
+        "test text::tests::ranking_and_truncation ... ok",
+        "test text::tests::splits_on_python_whitespace ... ok",
+        "test text::tests::strips_punctuation_and_lowercases ... ok",
+        "",
+        "test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "",
+        "    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.03s",
+        "     Running unittests src/main.rs (rust_app/target/debug/deps/wordfreq-932b806457571174)"
+      ]
+    },
+    {
+      "name": "build",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 0.02,
+      "tail": [
+        "    Finished `release` profile [optimized] target(s) in 0.00s"
+      ]
+    },
+    {
+      "name": "compare",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 0.98,
+      "tail": [
+        "OK   basic",
+        "OK   basic-top2",
+        "OK   basic-json",
+        "OK   korean",
+        "OK   korean-json",
+        "OK   punctuation",
+        "OK   ties",
+        "OK   crlf-case",
+        "OK   empty",
+        "OK   empty-json",
+        "OK   missing-file",
+        "OK   invalid-utf8",
+        "OK   directory",
+        "OK   usage-no-file",
+        "OK   usage-top-zero",
+        "OK   usage-top-abc",
+        "OK   usage-unknown-option",
+        "OK   top-leading-zero",
+        "OK   top-huge",
+        "OK   usage-top-fullwidth",
+        "OK   usage-top-underscore",
+        "OK   usage-top-plus",
+        "",
+        "22/22 cases match"
+      ]
+    },
+    {
+      "name": "scenarios",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 1.53,
+      "tail": [
+        "OK   missing-file",
+        "OK   directory",
+        "OK   permission-denied",
+        "OK   non-utf8-filename",
+        "OK   non-utf8-missing",
+        "OK   non-utf8-missing-2",
+        "OK   dash-filename",
+        "OK   double-dash",
+        "OK   top-repeated",
+        "OK   top-fullwidth",
+        "OK   top-huge",
+        "OK   top-zero",
+        "OK   top-equals",
+        "OK   closed-pipe",
+        "OK   disk-full",
+        "",
+        "15/15 scenarios match"
+      ]
+    },
+    {
+      "name": "fuzz",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 5.61,
+      "tail": [
+        "OK   3000 random inputs match"
+      ]
+    }
+  ],
+  "protected_changed": false
+}

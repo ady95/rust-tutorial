@@ -1,0 +1,7 @@
+{
+  "stop_reason": "gate_passed",
+  "rounds": 2,
+  "cost_usd": 1.2268,
+  "confirm_gate_ok": true,
+  "followup_gate_ok": true
+}

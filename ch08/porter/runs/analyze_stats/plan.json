@@ -1,0 +1,321 @@
+{
+  "summary": "분석만 했고, 파일을 쓰거나 명령을 실행하지 않았습니다.\n\n읽은 범위는 계약(contracts/behavior_spec.md 2판), 기준 구현(python_src/stats.py), 테스트(tests/test_stats.py, cases.json, fixture 9개), 비교 도구(automation/compare.py, port.json)입니다. 실제 기준 런타임은 .venv/pyvenv.cfg에 적힌 CPython 3.12.3이고, 그 표준 라이브러리 statistics.py를 직접 읽어 mean과 stdev의 계산 방식을 확인했습니다. port/plan.json은 없습니다.\n\n프로그램 자체는 짧지만, 출력이 바이트 단위로 같아야 하는 값 대부분이 Python 내장 동작에 기대고 있습니다.\n- sum: Python 3.12 내장 sum()의 Neumaier 보정 합산\n- mean: statistics.mean()이 Fraction으로 정확히 계산한 뒤 float로 한 번만 반올림\n- stdev: 정확한 유리수 분산에 round-to-odd를 써서 올바르게 반올림한 sqrt\n- mean2: round(x, 2), 저장된 이진값 기준으로 정확히 중간이면 짝수 쪽(dtoa mode 3)\n- 표기: repr(float), 지수 표기 기준이 Python 고유함\n- 입력: float() 파싱(밑줄, 유니코드 십진 숫자 허용), str.strip()의 공백 정의, str.splitlines()의 줄바꿈 정의, open(encoding='utf-8')의 universal newline과 엄격한 UTF-8 디코딩\n- min/max: 엄격한 < / > 비교라서 0.0과 -0.0이 있으면 먼저 나온 값이 남음\n\nRust에서 흔히 쓰는 방식(iter().sum, sum/n, 2-pass 분산, (x*100).round()/100, {}·{:?} 출력, str::parse::<f64>, trim, lines, f64::min/max)은 거의 모두 결과가 달라질 수 있습니다. 그래서 정확한 정수·유리수 연산(bigint)과 Python 규칙을 그대로 옮긴 파서·포매터를 직접 구현하는 계획입니다.\n\n기존 비교 케이스 11개는 정수, 짧은 소수, 단순 오류만 다룹니다. 이 위험들은 대부분 기존 케이스로 드러나지 않습니다. tests/는 수정 금지이므로, 추가 입력은 별도 위치의 케이스 파일을 만들어 compare.py --cases로 돌리는 것을 제안합니다.\n\n계약과 기준 구현이 어긋나는 곳도 하나 찾았습니다. 잘못된 UTF-8 입력에서 Python은 'cannot read file'이 아니라 UnicodeDecodeError 메시지를 냅니다. 이 부분과 stdev overflow처럼 계약에 없는 동작은 추측으로 정하지 않고 open_questions에 남겼습니다.",
+  "behaviors": [
+    {
+      "contract_ref": "1. 명령행: 인자가 정확히 하나가 아니면 'usage: stats FILE', 종료 코드 2",
+      "python_mechanism": "main(): sys.argv[1:]의 길이를 확인하고 print(..., file=sys.stderr)로 '\\n'을 붙여 출력한 뒤 return 2. 옵션은 해석하지 않으므로 '-h', '--'도 파일 이름으로 취급. argv는 surrogateescape로 디코딩됨",
+      "rust_approach": "std::env::args_os().skip(1)로 개수를 셈. 비 UTF-8 인자에서 panic하는 env::args()와 clap은 쓰지 않음. eprint로 'usage: stats FILE\\n'을 쓰고 std::process::exit(2)"
+    },
+    {
+      "contract_ref": "2.1 파일 전체를 UTF-8로 읽기",
+      "python_mechanism": "open(path, encoding='utf-8')는 엄격한 utf-8 디코딩에 newline=None(universal newline)으로 열림. 이어서 fp.read()로 전체를 읽음. OSError는 'cannot read file'로 처리됨. UnicodeDecodeError는 ValueError의 하위 클래스라 except ValueError로 잡혀 'stats: error: 'utf-8' codec can't decode byte 0xNN in position P: <reason>'이 출력됨. 디코딩은 줄 파싱보다 먼저 파일 전체에 대해 일어남",
+      "rust_approach": "std::fs::read로 바이트 전체를 읽고, 어떤 io::Error든 'stats: error: cannot read file: <FILE>'로 처리. 디렉터리는 Linux에서 open은 성공하고 read에서 EISDIR가 나므로 read 단계 오류까지 포함해야 함. 이어서 std::str::from_utf8 실패 시 valid_up_to/error_len으로 Python 형식의 메시지를 만듦: 1바이트는 'byte 0x%02x in position N', 여러 바이트는 'bytes in position N-M', 사유는 invalid start byte / invalid continuation byte / unexpected end of data(error_len이 None일 때). 계약과의 충돌은 open_questions 참조"
+    },
+    {
+      "contract_ref": "2.1 str.splitlines()와 같은 규칙으로 줄 나누기 (줄 번호 N은 1부터, 빈 줄 포함)",
+      "python_mechanism": "universal newline이 \\r\\n과 \\r을 \\n으로 바꾼 뒤 str.splitlines()가 \\n, \\r, \\r\\n, \\x0b, \\x0c, \\x1c, \\x1d, \\x1e, \\x85,  ,  에서 줄을 나눔. 마지막 줄바꿈 뒤에는 빈 줄을 만들지 않음. 줄 번호는 enumerate(start=1)",
+      "rust_approach": "Python 규칙대로 직접 쪼개는 함수 py_splitlines를 만듦. \\r\\n은 하나의 줄바꿈. str::lines와 split('\\n')은 쓰지 않음. 줄 번호는 이 결과의 인덱스+1"
+    },
+    {
+      "contract_ref": "2.2 앞뒤 공백 제거(str.strip()), 빈 줄은 건너뜀",
+      "python_mechanism": "str.strip()은 Py_UNICODE_ISSPACE 기준. \\t \\n \\x0b \\x0c \\r \\x1c-\\x1f, 공백, \\x85, \\xa0,  ,  - ,  ,  ,  ,  , 　이 해당되고 U+FEFF는 해당되지 않음",
+      "rust_approach": "위 집합과 정확히 같은 is_py_space(char)를 만들어 trim_matches(is_py_space)를 씀. char::is_whitespace와 str::trim은 \\x1c-\\x1f를 공백으로 보지 않으므로 쓰지 않음"
+    },
+    {
+      "contract_ref": "2.3 Python float()가 받는 형식의 숫자 / 4. 숫자가 아닌 줄 'not a number on line <N>: <줄>'",
+      "python_mechanism": "float(text): 비 ASCII 문자는 _PyUnicode_TransformDecimalAndSpaceToASCII에서 Nd 숫자면 '0'-'9'로, 공백이면 ' '로, 나머지는 '?'로 바뀜. 밑줄은 숫자와 숫자 사이에만 허용('1_000', '1e1_0'). 부호, '.5', '5.', '1.e5', 지수 e/E와 부호, inf/infinity/nan(대소문자 무시, 부호 허용)을 받음. 16진수와 '1e', '.', '_1', '1_', '1__0'은 거부. 결과는 올바르게 반올림됨. 오류 메시지의 <줄>은 strip한 원문 text",
+      "rust_approach": "py_float(text): (1) 비 ASCII를 Python과 같은 방식으로 변환(Unicode 15.0 Nd 표 내장), (2) 밑줄 규칙을 검사하고 밑줄 제거, (3) 남은 ASCII 문법을 직접 검증(숫자 부분 / inf / infinity / nan), (4) 숫자 값은 str::parse::<f64>로 구함(올바른 반올림). 메시지의 <줄>에는 변환 전 원문을 씀"
+    },
+    {
+      "contract_ref": "4. inf·nan 또는 너무 커서 inf가 되는 수: 종료 코드 1 (stderr 비교 안 함)",
+      "python_mechanism": "float()가 성공한 뒤 math.isfinite가 False면 ValueError('not a finite number on line N: text')를 냄. '1e400'은 float()가 inf를 돌려줌. 처음 오류가 난 줄에서 멈춤",
+      "rust_approach": "값이 !is_finite()이면 Python과 같은 문구 'stats: error: not a finite number on line N: text'를 쓰고 exit(1). 계약상 stderr는 비교하지 않지만 기준 구현과 똑같이 맞춰 둠"
+    },
+    {
+      "contract_ref": "4. 숫자가 2개 미만 'stats: error: need at least 2 numbers'",
+      "python_mechanism": "parse가 끝난 뒤 len(numbers) < 2이면 이 메시지를 냄. 빈 파일과 공백뿐인 파일도 해당",
+      "rust_approach": "파싱이 모두 끝난 뒤 개수를 확인. 오류 우선순위는 파일 읽기 → UTF-8 디코딩 → 줄 순서대로 파싱 → 개수"
+    },
+    {
+      "contract_ref": "3. count",
+      "python_mechanism": "f\"{len(numbers)}\"",
+      "rust_approach": "usize를 {}로 출력"
+    },
+    {
+      "contract_ref": "3. sum: Python sum()(오차 보정 합산), repr",
+      "python_mechanism": "CPython 3.12의 builtin sum은 float 전용 빠른 경로에서 Neumaier 보정 합산을 함: t=f+x; |f|>=|x|이면 c+=(f-t)+x, 아니면 c+=(x-t)+f; f=t. 마지막에 c를 더함(3.12.3에서는 c가 0이 아니고 유한할 때만 더하는 것으로 기억하나 C 소스로 확인 못 함). 시작값이 int 0이라 첫 항은 0+x1이고, 결과가 -0.0이 되지 않음",
+      "rust_approach": "f=0.0, c=0.0으로 시작하는 Neumaier 합산을 그대로 옮김. 마지막 보정은 `if c != 0.0 && c.is_finite() { f += c }`(3.12.3에서 확인 필요). iter().sum::<f64>()는 쓰지 않음: 보정이 없고, 최근 Rust는 -0.0에서 시작함"
+    },
+    {
+      "contract_ref": "3. mean: statistics.mean(), 정확히 계산 후 한 번만 반올림, repr",
+      "python_mechanism": "_sum이 각 float를 as_integer_ratio로 바꿔 Fraction으로 정확히 합함. total/n을 _convert(float)하면 Fraction.__float__ = int/int true division이 되어 짝수 쪽 반올림으로 올바르게 반올림됨(subnormal 포함). 합이 0이면 +0.0",
+      "rust_approach": "각 f64를 정수 m·2^e로 분해해 bigint로 정확히 합함(공통 분모 2^1074). 이어 CPython long_true_divide처럼 올바르게 반올림되는 big_ratio_to_f64(num, den)를 구현해 num/(den·n)을 변환. 합이 0이면 +0.0이 나오도록 함"
+    },
+    {
+      "contract_ref": "3. mean2: round(mean, 2), 저장된 이진값 기준, 정확히 중간이면 짝수 쪽, repr",
+      "python_mechanism": "float.__round__ → double_round: _Py_dg_dtoa(mode 3, ndigits 2)로 정확한 이진값을 소수 둘째 자리로 반올림(중간이면 짝수 쪽)한 뒤 _Py_dg_strtod로 되돌림. 부호가 보존되어 -0.001은 -0.0이 됨",
+      "rust_approach": "format!(\"{:.2}\", x)(정확한 십진 전개로 반올림)를 parse::<f64>()로 되돌림. 단 Rust {:.N}의 중간값 처리가 짝수 쪽인지 검증해야 함(위험 R6). 맞지 않으면 bigint로 x·100의 정확한 반올림을 직접 계산. (x*100.0).round()/100.0은 금지"
+    },
+    {
+      "contract_ref": "3. stdev: statistics.stdev(), 고정 소수점 .4f",
+      "python_mechanism": "_ss가 Fraction으로 sx, sxx를 정확히 구함 → ssd=(n·sxx−sx²)/n → mss=ssd/(n−1)(기약분수) → _float_sqrt_of_frac: 109비트 정수 isqrt에 round-to-odd를 쓴 뒤 int/int true division으로 올바르게 반올림된 sqrt를 냄. 너무 크면 OverflowError(처리되지 않은 예외). 출력은 format(x, '.4f')로, 정확한 이진값 기준 짝수 쪽 반올림",
+      "rust_approach": "bigint로 N·Sxx−Sx²와 분모를 정확히 구하고 _float_sqrt_of_frac을 그대로 옮김(BigUint::sqrt는 floor isqrt, 그 위에 round-to-odd, 마지막에 big_ratio_to_f64). 출력은 format!(\"{:.4}\")이고 중간값 규칙은 R6에서 검증. 결과가 inf로 넘치면 stdout에 아무것도 쓰지 않고 exit 1"
+    },
+    {
+      "contract_ref": "3. min, max: repr",
+      "python_mechanism": "builtin min/max는 첫 원소부터 시작해, 새 항목이 엄격히 작을(큰) 때만 바꿈. 0.0과 -0.0은 같다고 보므로 먼저 나온 값이 남음",
+      "rust_approach": "직접 fold: `if x < cur { cur = x }` / `if x > cur { cur = x }`. f64::min/max, total_cmp, partial_cmp+sort는 쓰지 않음"
+    },
+    {
+      "contract_ref": "3. 표기: Python repr(float)",
+      "python_mechanism": "float_repr_style 'short': 가장 짧게 왕복되는 자릿수(dtoa mode 0)를 구하고 decpt(값 = 0.d1d2…×10^decpt)를 봄. decpt <= -4이거나 decpt > 16이면 지수 표기('1e+16', '1.5e-07', 지수는 부호 필수에 최소 두 자리). 아니면 고정 소수점으로 쓰고 정수면 '.0'을 붙임('1000.0', '1234567890123456.0', '0.0001'). -0.0은 '-0.0', inf는 'inf'",
+      "rust_approach": "format!(\"{:e}\", x)(Rust의 shortest 표현)에서 자릿수와 지수를 뽑아 Python 규칙대로 다시 조립하는 py_repr(f64)를 만듦. Display({})와 Debug({:?})는 그대로 쓰지 않음"
+    },
+    {
+      "contract_ref": "3. 정상 출력: UTF-8, 줄바꿈 LF, 종료 코드 0 / 4. 오류 시 stdout은 비어야 함",
+      "python_mechanism": "stdout/stderr를 reconfigure(newline='\\n')로 다시 설정. summarize가 문자열 전체를 만든 뒤 sys.stdout.write를 한 번 호출하므로, 계산 중 예외가 나면 stdout은 비어 있음. print는 '\\n'을 붙임",
+      "rust_approach": "출력 문자열 전체를 먼저 만든 뒤 io::stdout().lock().write_all을 한 번 호출. println!이 쓰기 실패로 panic(종료 코드 101)하지 않도록 write 결과를 처리. 종료 코드는 std::process::exit로 지정"
+    }
+  ],
+  "risks": [
+    {
+      "id": "R1",
+      "title": "sum: Neumaier 보정 합산",
+      "severity": "high",
+      "python_detail": "CPython 3.12의 sum()은 float에 Neumaier 보정을 함. [1e16, 1, -1e16]의 합은 1.0이고(단순 합산이면 0.0), 0.1을 10개 더하면 1.0",
+      "rust_pitfall": "iter().sum::<f64>()과 fold(0.0, +)는 보정이 없어 '0.0'이나 '0.9999999999999999'가 나옴. 최근 Rust의 f64 Sum은 -0.0에서 시작해 [-0.0,-0.0]의 합이 -0.0이 됨(Python은 0.0)",
+      "mitigation": "CPython 알고리즘을 그대로 옮김. 시작값 0.0, 비교는 |f|>=|x|, 보정 c는 마지막에 한 번 더함",
+      "verification": "기존 compare 케이스로는 검증 불가(모두 정확히 표현되는 값). pytest test_float_rules_python_specific가 1e16/1/-1e16을 검사하지만 Python만 대상임. 추가로 시험할 입력: '1e16\\n1\\n-1e16', 0.1×10줄, '-0\\n-0', '0.1\\n0.2\\n0.3'",
+      "covered_by_existing_tests": false
+    },
+    {
+      "id": "R2",
+      "title": "sum이 inf로 넘칠 때 inf인지 nan인지",
+      "severity": "medium",
+      "python_detail": "입력은 모두 유한해도 '1.7e308\\n1.7e308'이면 합이 inf가 됨. 이때 보정 c는 -inf. 3.12.3이 c가 유한할 때만 더하면 'sum: inf', 무조건 더하면 'sum: nan'. C 소스를 읽을 수 없어 확인하지 못함",
+      "rust_pitfall": "보정 조건을 잘못 옮기면 inf와 nan이 뒤바뀜",
+      "mitigation": "구현 단계에서 기준 Python을 실행해 결과를 확인한 뒤 조건을 정함. 이 경우 mean과 stdev는 Fraction 경로라 유한함(stdev 0.0000)",
+      "verification": "'1.7e308\\n1.7e308'와 '-1.7e308\\n-1.7e308'를 compare로 비교",
+      "covered_by_existing_tests": false
+    },
+    {
+      "id": "R3",
+      "title": "mean: 정확한 유리수 평균의 올바른 반올림",
+      "severity": "high",
+      "python_detail": "statistics.mean은 Fraction 합을 n으로 나눈 뒤 한 번만 반올림함. 결과에 sum()의 보정은 쓰이지 않음",
+      "rust_pitfall": "sum/n이나 Neumaier 합/n은 두 번 반올림되어 마지막 비트가 다를 수 있고, 그러면 repr 출력이 달라짐(예: [0.1,0.2,0.3] → 0.2와 0.20000000000000004). subnormal 영역 반올림과 0의 부호(-0.0 입력에서도 결과는 +0.0)도 다름",
+      "mitigation": "bigint로 정확히 합한 뒤 big_ratio_to_f64(짝수 쪽 반올림, subnormal과 2^1024 overflow 처리)로 변환. 무작위 float에 대해 Python 결과와 대조",
+      "verification": "기존 decimals 케이스(2.2916666666666665)는 일부만 확인함. 추가 입력: '0.1\\n0.2\\n0.3', '1e16\\n1\\n-1e16', '5e-324\\n0'(정확히 중간 → 0.0), '5e-324\\n5e-324\\n0', '-0\\n-0', 큰 수와 작은 수 섞기('1e300\\n1e-300\\n-1e300'), 무작위 float 수십 개짜리 파일",
+      "covered_by_existing_tests": false
+    },
+    {
+      "id": "R4",
+      "title": "stdev: 정확한 분산과 올바르게 반올림한 sqrt",
+      "severity": "high",
+      "python_detail": "Fraction으로 분산을 정확히 구하고, round-to-odd 109비트 isqrt로 올바르게 반올림한 sqrt를 냄. 값이 크면 OverflowError(처리되지 않음)",
+      "rust_pitfall": "Welford, 2-pass, f64::sqrt를 쓰면 큰 값이나 상쇄가 큰 데이터(1e15 근처 등)에서 넷째 자리가 달라지고, .4f 경계에서 반올림이 뒤집힘. 같은 값만 있을 때 0이 아닌 작은 값이 나올 수도 있음(Python은 정확히 0.0000)",
+      "mitigation": "_ss와 _float_sqrt_of_frac을 bigint로 그대로 옮김(gcd로 약분해 Python과 같은 분자·분모 사용). 결과가 inf면 오류 경로로 보냄",
+      "verification": "기존 same-values, integers, negative 케이스는 일부만 확인함. 추가 입력: '1e15\\n1000000000000002\\n1000000000000004', '100000000.1\\n100000000.2\\n100000000.3', '-0.03125\\n0\\n0.03125'(stdev 정확히 0.03125), 같은 큰 값 반복, 무작위 데이터",
+      "covered_by_existing_tests": false
+    },
+    {
+      "id": "R5",
+      "title": "repr(float) 표기 규칙",
+      "severity": "high",
+      "python_detail": "repr은 decpt가 -4 이하이거나 16 초과면 지수 표기('1e+16', '1e-05', '1.5e-07', '1e+22')이고, 아니면 고정 소수점에 '.0'을 붙임('1000.0', '1234567890123456.0', '0.0001', '-0.0', 'inf')",
+      "rust_pitfall": "Display는 '1e16'을 10000000000000000으로, 정수는 '1'로 출력함. Debug는 '1e16', '1e-5'처럼 지수에 '+'와 두 자리 채움이 없음. -0.0과 inf 표기도 다름",
+      "mitigation": "{:e}에서 가장 짧은 자릿수와 지수를 뽑아 Python의 format_float_short 규칙으로 다시 조립하는 py_repr 함수를 만듦",
+      "verification": "기존 scientific 케이스는 고정 소수점 범위만 확인함. 추가 입력: '1e16\\n1e16'(sum 2e+16, min/max 1e+16), '1e-5\\n2e-5', '1.5e-7\\n1.5e-7', '9999999999999998\\n1', '0.0001\\n0.0002', '-0\\n0', '123456789012345678\\n1'",
+      "covered_by_existing_tests": false
+    },
+    {
+      "id": "R6",
+      "title": "round(mean, 2)와 .4f의 중간값 반올림",
+      "severity": "high",
+      "python_detail": "round와 format('.4f')는 저장된 이진값을 정확한 십진수로 봄. 정확히 중간이면 짝수 쪽(0.125→0.12, 0.375→0.38, 0.03125→'0.0312'). 2.675는 실제 값이 2.67499…라 2.67. 음수가 0으로 반올림되면 -0.0",
+      "rust_pitfall": "f64::round는 0에서 먼 쪽으로 반올림하고, x*100에서 이미 반올림 오차가 생김(0.125→0.13, 1.005 계열 오류). Rust {:.N}의 중간값 처리가 짝수 쪽인지는 Rust 버전에 따라 달랐던 기록이 있어 확신할 수 없음",
+      "mitigation": "mean2는 format!(\"{:.2}\")를 parse로 되돌리는 방식, stdev는 {:.4}. 둘 다 중간값 케이스로 검증하고, 다르면 bigint로 정확한 십진 반올림을 직접 구현",
+      "verification": "추가 입력: '0.125\\n0.125'(mean2 0.12), '0.375\\n0.375'(0.38), '2.675\\n2.675'(2.67), '1.005\\n1.005', '-0.001\\n-0.001'(mean2 -0.0), '0.5\\n0.5', '-0.03125\\n0\\n0.03125'(stdev 0.0312), 1e300 근처 큰 값",
+      "covered_by_existing_tests": false
+    },
+    {
+      "id": "R7",
+      "title": "숫자 해석 규칙 차이 (float() 대 str::parse)",
+      "severity": "high",
+      "python_detail": "float()는 숫자 사이 밑줄('1_000', '1e1_0'), 유니코드 Nd 숫자('١٢', '１２', '߁'), 'Infinity'/'INF'/'-nan'(대소문자 무시), '5.', '.5', '1.e5'를 받음. '0x10', '1e', '.', '_1', '1_', '1__0', 'nan(1)'은 거부함",
+      "rust_pitfall": "parse::<f64>는 밑줄과 비 ASCII 숫자를 거부함. 그러면 Python은 정상 출력, Rust는 'not a number' 오류가 되어 stdout, stderr, 종료 코드가 모두 다름. 'inf'/'nan' 철자 허용 범위와 '1.e5'·'5.' 수용 여부도 Rust 버전마다 확인해야 함",
+      "mitigation": "py_float 전처리: 비 ASCII를 Python 방식으로 바꾸고(Nd→숫자, 공백→' ', 나머지→'?'), 밑줄 규칙을 검사한 뒤 제거하고, ASCII 문법을 직접 검증한 다음 parse 호출",
+      "verification": "추가 입력(정상): '1_000\\n2', '١٢\\n３', '5.\\n.5', '1.e5\\n1', '+1\\n-1', '1E+05\\n1'. 추가 입력(오류): '1__0', '_1', '1_', '0x10', '1e', '.', '1 2', '－1'(전각 마이너스). 비유한값: 'Infinity', 'INF', '-nan', '+inf'",
+      "covered_by_existing_tests": false
+    },
+    {
+      "id": "R8",
+      "title": "strip 공백 정의 차이",
+      "severity": "medium",
+      "python_detail": "str.strip()은 \\x1c-\\x1f도 공백으로 보고, \\xa0, 　 등도 포함함. U+FEFF(BOM)는 공백이 아님",
+      "rust_pitfall": "str::trim(Unicode White_Space)은 \\x1f를 공백으로 보지 않음. 그러면 '1\\x1f'가 Python에서는 1.0, Rust에서는 오류가 됨",
+      "mitigation": "Python Py_UNICODE_ISSPACE 집합을 그대로 표로 옮김",
+      "verification": "추가 입력: '\\x1f1\\x1f\\n2', '　1　\\n2', '\\xa01\\n2', BOM으로 시작하는 파일('﻿1\\n2' → Python 'not a number on line 1: ﻿1')",
+      "covered_by_existing_tests": false
+    },
+    {
+      "id": "R9",
+      "title": "줄 나누기와 줄 번호",
+      "severity": "high",
+      "python_detail": "universal newline에 splitlines()가 더해져 \\r, \\r\\n, \\x0b, \\x0c, \\x1c-\\x1e, \\x85,  ,  가 모두 줄바꿈임. 오류 메시지의 N은 이 기준으로 셈",
+      "rust_pitfall": "str::lines()는 \\n만 나누고 끝의 \\r만 떼어냄. 그래서 '1\\x0b2'를 한 줄로 보아 오류를 내거나 줄 번호가 달라짐. 단독 \\r(구형 Mac 형식) 파일 전체가 한 줄이 됨",
+      "mitigation": "py_splitlines를 직접 구현(\\r\\n은 하나의 줄바꿈)",
+      "verification": "기존 bad-line과 blank-lines 케이스는 \\n만 확인함. 추가 입력: CRLF 파일, 단독 CR 파일, '1\\x0b2\\x0c3', '1 2\\x853', 줄바꿈 종류를 섞은 뒤 4번째 줄에 'abc'를 둔 파일(N 확인)",
+      "covered_by_existing_tests": false
+    },
+    {
+      "id": "R10",
+      "title": "잘못된 UTF-8 입력의 오류 메시지 (계약과 기준 구현이 다름)",
+      "severity": "high",
+      "python_detail": "UnicodeDecodeError는 ValueError의 하위 클래스라 except ValueError로 잡힘. 그래서 출력은 'stats: error: 'utf-8' codec can't decode byte 0xff in position 3: invalid start byte'이고 종료 코드 1. 'cannot read file'이 아님. 디코딩은 파싱보다 먼저 일어나므로 앞쪽 줄에 'abc'가 있어도 디코딩 오류가 우선함",
+      "rust_pitfall": "계약 문구만 따라 'cannot read file'을 내거나 from_utf8_lossy로 넘어가면 compare에서 stderr가 다름",
+      "mitigation": "기준 구현과 바이트 단위로 같게 만듦. 사유와 위치는 valid_up_to/error_len으로 구함: 첫 바이트가 0x80-0xC1이거나 0xF5-0xFF면 invalid start byte, error_len이 None이면 unexpected end of data(위치 범위는 끝까지), 그 외는 invalid continuation byte. 계약과의 충돌은 보고서에 적음",
+      "verification": "추가 입력: '1\\n2\\n\\xff', '\\xe2\\x28\\xa1', '\\xf0\\x90\\x28', '\\xed\\xa0\\x80'(surrogate), 파일 끝 '\\xe2\\x82', 'abc\\n\\xff'",
+      "covered_by_existing_tests": false
+    },
+    {
+      "id": "R11",
+      "title": "min/max의 부호 있는 0 처리",
+      "severity": "medium",
+      "python_detail": "min([0.0,-0.0])은 0.0, min([-0.0,0.0])은 -0.0. 먼저 나온 값이 남음",
+      "rust_pitfall": "f64::min/max는 0끼리 어느 쪽을 돌려줄지 정해져 있지 않고, total_cmp는 -0.0<0.0으로 봄",
+      "mitigation": "엄격한 < / > 비교 fold로 구현",
+      "verification": "추가 입력: '0\\n-0', '-0\\n0'",
+      "covered_by_existing_tests": false
+    },
+    {
+      "id": "R12",
+      "title": "stdev overflow와 계산 중 예외",
+      "severity": "medium",
+      "python_detail": "'1.7e308\\n-1.7e308'이면 stdev가 약 2.4e308이 되어 int/int true division에서 OverflowError가 남. 처리되지 않은 traceback이 stderr로 나가고 종료 코드 1, stdout은 비어 있음(write 전에 예외)",
+      "rust_pitfall": "f64 계산은 'stdev: inf'를 출력하거나, unwrap에서 panic해 종료 코드 101이 됨",
+      "mitigation": "big_ratio_to_f64에서 overflow를 감지해 stdout 없이 종료 코드 1로 끝냄. stderr는 traceback을 재현할 수 없으므로 문구는 open question으로 남김",
+      "verification": "'1.7e308\\n-1.7e308'로 종료 코드와 stdout이 같은지 확인(stderr는 다를 것으로 예상)",
+      "covered_by_existing_tests": false
+    },
+    {
+      "id": "R13",
+      "title": "파일 읽기 실패 유형",
+      "severity": "medium",
+      "python_detail": "없는 파일, 권한 없음, 디렉터리(IsADirectoryError), 빈 경로가 모두 OSError라 'cannot read file: <argv 원문>'이 됨",
+      "rust_pitfall": "Linux에서는 File::open이 디렉터리에도 성공하고 read에서 실패함. 그 실패를 다른 문구로 처리하거나 unwrap하면 다른 결과가 나옴",
+      "mitigation": "open과 read 단계의 모든 io::Error를 같은 메시지로 처리. 경로는 인자 원문 그대로 출력",
+      "verification": "기존 missing-file 케이스는 없는 파일만 확인함. 추가 입력: 디렉터리 경로('tests/fixtures'), 빈 문자열 인자 ''",
+      "covered_by_existing_tests": false
+    },
+    {
+      "id": "R14",
+      "title": "인자 처리와 비 UTF-8 인자",
+      "severity": "low",
+      "python_detail": "인자는 개수만 확인함. 비 UTF-8 바이트는 surrogateescape로 들어오고, stderr(errors=backslashreplace)에는 '\\udcff' 같은 글자로 출력됨",
+      "rust_pitfall": "env::args()는 비 UTF-8 인자에서 panic함(종료 코드 101). clap 같은 파서는 '-h' 등을 가로챔",
+      "mitigation": "args_os를 씀. 경로 출력에서는 유효하지 않은 바이트를 '\\udcXX' 형식으로 바꿔 Python과 맞춤(Unix에서는 OsStrExt로 바이트를 얻음)",
+      "verification": "기존 usage-no-file 케이스는 인자가 0개인 경우만 확인함. 추가: 인자 2개, '-h' 1개(없는 파일 → cannot read file)",
+      "covered_by_existing_tests": false
+    },
+    {
+      "id": "R15",
+      "title": "출력 인코딩과 쓰기 실패 (플랫폼)",
+      "severity": "medium",
+      "python_detail": "Linux에서는 UTF-8. Windows에서 stdout/stderr가 파이프면 Python 3.12는 로캘 코드페이지(cp949 등)로 인코딩하고 backslashreplace를 씀. 그래서 오류 메시지 안의 비 ASCII 줄 내용이 UTF-8과 달라짐. compare.py는 stats.exe도 고려하고 있음",
+      "rust_pitfall": "Rust는 항상 UTF-8로 씀. println!/eprintln!은 쓰기 실패 시 panic함",
+      "mitigation": "계약(UTF-8)을 따름. Windows에서의 차이는 보고서에 적음. write_all 오류를 무시하거나 처리해 panic을 막음",
+      "verification": "Linux에서 비 ASCII 오류 줄(예: '1\\n가나\\n')의 stderr 바이트 비교",
+      "covered_by_existing_tests": false
+    },
+    {
+      "id": "R16",
+      "title": "가장 짧은 repr 자릿수가 같은지",
+      "severity": "low",
+      "python_detail": "Python dtoa mode 0은 가장 짧게 왕복되고, 후보가 여럿이면 가장 가까운 자릿수를 고름",
+      "rust_pitfall": "Rust {:e}(Grisu/Dragon)도 가장 짧고 가까운 표현을 내지만, 경계 사례에서 같은지 확인해야 함",
+      "mitigation": "py_repr은 Rust의 shortest 자릿수에 기댐",
+      "verification": "무작위 float 대량 입력(min/max로 원값을 노출)과 5e-324, 1.7976931348623157e308, 2.2250738585072014e-308 비교",
+      "covered_by_existing_tests": false
+    },
+    {
+      "id": "R17",
+      "title": "bigint를 float로 바꿀 때의 정확성(subnormal, 큰 지수)",
+      "severity": "medium",
+      "python_detail": "CPython long_true_divide는 subnormal을 포함해 올바르게 반올림하고, 너무 크면 OverflowError를 냄",
+      "rust_pitfall": "직접 구현한 변환에서 비트 수 경계, sticky bit, subnormal 처리에 실수하기 쉬움",
+      "mitigation": "분자·분모 비트 길이로 53비트(subnormal이면 그보다 적게) 몫과 나머지를 구하고 짝수 쪽으로 반올림. 단위 테스트로 경계값을 확인",
+      "verification": "R3 입력(5e-324 계열)과 Rust 단위 테스트(2^-1075 중간값, 2^1024 근처)",
+      "covered_by_existing_tests": false
+    },
+    {
+      "id": "R18",
+      "title": "오류 우선순위",
+      "severity": "medium",
+      "python_detail": "파일 읽기 → 전체 디코딩 → 줄 순서대로 첫 오류(not a number와 non-finite 중 먼저 나온 것) → 개수 확인 순서",
+      "rust_pitfall": "줄 단위 스트리밍 디코딩이나 개수를 먼저 확인하면 다른 메시지가 나옴",
+      "mitigation": "같은 순서로 구현",
+      "verification": "추가 입력: 'abc\\ninf'(not a number), 'inf\\nabc'(non-finite), 'abc'만 있는 파일(개수 오류 대신 not a number)",
+      "covered_by_existing_tests": false
+    }
+  ],
+  "crate_layout": [
+    {
+      "path": "rust_app/Cargo.toml",
+      "responsibility": "패키지 이름과 [[bin]] 이름을 'stats'로 하여 target/release/stats를 만듦(compare.py 기본 경로). edition 2021, release 프로필"
+    },
+    {
+      "path": "rust_app/src/main.rs",
+      "responsibility": "args_os 개수 확인(usage, 종료 코드 2), 파일 읽기와 오류 메시지, 오류 우선순위, 출력 문자열을 한 번에 write, 종료 코드 처리. panic이 없어야 함"
+    },
+    {
+      "path": "rust_app/src/input.rs",
+      "responsibility": "Python 형식 UTF-8 디코딩 오류 메시지, py_splitlines, is_py_space와 py_strip"
+    },
+    {
+      "path": "rust_app/src/pyfloat.rs",
+      "responsibility": "py_float(Python float() 문법: 유니코드 숫자와 공백 변환, 밑줄 규칙, inf/nan), py_repr(repr 규칙), round_2(round(x,2)), fmt_4f(.4f)"
+    },
+    {
+      "path": "rust_app/src/exact.rs",
+      "responsibility": "f64를 정확한 정수비로 분해, bigint 합과 제곱합, big_ratio_to_f64(올바른 반올림과 overflow 감지), _float_sqrt_of_frac 이식(round-to-odd)"
+    },
+    {
+      "path": "rust_app/src/stats.rs",
+      "responsibility": "Neumaier sum(CPython 3.12 규칙), mean, stdev, 엄격 비교 min/max, 출력 7줄 조립"
+    },
+    {
+      "path": "rust_app/src/unicode_tables.rs",
+      "responsibility": "Python 3.12(Unicode 15.0) 기준 Nd 숫자 블록 시작점 표와 Python 공백 집합 표(손으로 옮기되 출처를 주석으로 남김)"
+    }
+  ],
+  "dependencies": [
+    {
+      "crate": "num-bigint",
+      "reason": "statistics.mean과 stdev의 Fraction 정확 계산(분자가 수천 비트까지 커짐)과 _float_sqrt_of_frac의 정수 isqrt(BigUint::sqrt)에 씀. 직접 bigint를 만드는 것보다 오류 위험이 낮음"
+    },
+    {
+      "crate": "num-integer",
+      "reason": "gcd로 Fraction처럼 약분하고 정수 나눗셈과 나머지를 구함"
+    },
+    {
+      "crate": "num-traits",
+      "reason": "Zero, One, Signed 등 bigint 보조 트레이트"
+    },
+    {
+      "crate": "(사용하지 않음) clap, ryu, lexical 등",
+      "reason": "clap은 '-h' 등을 가로채 Python의 단순 인자 처리와 달라짐. 숫자 파싱·출력은 std(parse, {:e}, {:.N})를 Python 규칙으로 감싸서 해결함"
+    }
+  ],
+  "open_questions": [
+    "잘못된 UTF-8 입력: 계약 4절은 이 경우를 '파일을 읽을 수 없음'으로 볼 여지가 있지만, 기준 구현은 UnicodeDecodeError(ValueError)를 잡아 'stats: error: 'utf-8' codec can't decode …'를 출력합니다. compare.py는 Python 출력과 비교하므로 기준 구현에 맞추는 것을 제안합니다. 계약 문서를 고칠지는 사람이 정해야 합니다.",
+    "stdev가 float 범위를 넘을 때(예: 1.7e308, -1.7e308) Python은 OverflowError traceback을 내고 종료 코드 1로 끝납니다. 계약에 없는 동작입니다. Rust의 stderr 문구는 정할 수 없으니 종료 코드 1과 빈 stdout만 맞추는 것으로 충분한지 확인이 필요합니다.",
+    "sum이 inf로 넘칠 때 CPython 3.12.3의 sum()이 'inf'와 'nan' 중 무엇을 내는지 C 소스(bltinmodule.c)를 읽을 수 없어 확인하지 못했습니다. 구현 단계에서 기준 Python을 실행해 확정해야 합니다.",
+    "inf·nan 오류는 stderr를 비교하지 않지만, Rust도 Python과 같은 'not a finite number on line N: text' 문구를 쓰기로 했습니다(계약을 어기지 않음).",
+    "Windows에서 Python stdout/stderr가 파이프면 로캘 코드페이지로 인코딩되어, 비 ASCII가 들어간 오류 메시지는 계약(UTF-8)과 기준 구현이 다를 수 있습니다. 대상 플랫폼이 Linux뿐인지 확인이 필요합니다.",
+    "tests/는 수정 금지입니다. 위험 검증용 추가 입력은 별도 위치(예: rust_app/compare_extra/cases.json과 fixture들)에 두고 'compare.py --cases'로 돌리는 것을 제안합니다. 이 방식이 파이프라인 규칙에 맞는지 확인이 필요합니다.",
+    "외부 크레이트(num-bigint, num-integer, num-traits)를 받을 수 있는 환경(네트워크 또는 vendor)인지 모릅니다. 받을 수 없으면 최소 bigint(덧셈, 곱셈, 나눗셈, isqrt, 시프트)를 직접 구현해야 합니다.",
+    "Rust의 {:.N} 포맷이 정확한 중간값에서 짝수 쪽으로 반올림하는지 쓰려는 툴체인 버전에서 확인해야 합니다. 다르면 bigint로 십진 반올림을 직접 구현해야 합니다.",
+    "pyproject는 requires-python >=3.12이지만 기준은 .venv의 CPython 3.12.3입니다. 다른 3.x에서는 sum()과 statistics 동작이 달라질 수 있으니 기준 버전을 3.12.3으로 고정하는 것이 맞는지 확인이 필요합니다."
+  ]
+}

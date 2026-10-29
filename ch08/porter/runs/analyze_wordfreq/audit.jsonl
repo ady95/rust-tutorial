@@ -1,0 +1,16 @@
+{"ts": 1793245682.204, "role": "analyst", "tool": "Glob", "input": "**/*", "decision": "allow", "reason": null}
+{"ts": 1793245683.43, "role": "analyst", "tool": "Glob", "input": "{python_src,contracts,tests,automation,port,rust_app,reports}/**/*", "decision": "allow", "reason": null}
+{"ts": 1793245683.703, "role": "analyst", "tool": "Glob", "input": "*", "decision": "allow", "reason": null}
+{"ts": 1793245684.925, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/analyze_wordfreq/contracts/behavior_spec.md", "decision": "allow", "reason": null}
+{"ts": 1793245685.408, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/analyze_wordfreq/python_src/wordfreq.py", "decision": "allow", "reason": null}
+{"ts": 1793245685.881, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/analyze_wordfreq/tests/cases.json", "decision": "allow", "reason": null}
+{"ts": 1793245686.359, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/analyze_wordfreq/tests/test_wordfreq.py", "decision": "allow", "reason": null}
+{"ts": 1793245686.796, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/analyze_wordfreq/automation/compare.py", "decision": "allow", "reason": null}
+{"ts": 1793245687.276, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/analyze_wordfreq/automation/scenarios.py", "decision": "allow", "reason": null}
+{"ts": 1793245687.78, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/analyze_wordfreq/automation/fuzz.py", "decision": "allow", "reason": null}
+{"ts": 1793245688.132, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/analyze_wordfreq/automation/port.json", "decision": "allow", "reason": null}
+{"ts": 1793245800.126, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/analyze_wordfreq/tests/fixtures/punctuation.txt", "decision": "allow", "reason": null}
+{"ts": 1793245800.668, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/analyze_wordfreq/tests/fixtures/crlf_case.txt", "decision": "allow", "reason": null}
+{"ts": 1793245801.16, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/analyze_wordfreq/tests/fixtures/korean.txt", "decision": "allow", "reason": null}
+{"ts": 1793245801.531, "role": "analyst", "tool": "Glob", "input": "{port,rust_app,reports}/**", "decision": "allow", "reason": null}
+{"ts": 1793245916.799, "role": "analyst", "tool": "StructuredOutput", "input": "", "decision": "allow", "reason": null}

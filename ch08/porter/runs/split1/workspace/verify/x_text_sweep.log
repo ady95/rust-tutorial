@@ -1,0 +1,11 @@
+single lines 1112064 -> [None, None]
+infix lines 1112064 -> [None, None]
+upper_infix lines 1112064 -> [None, None]
+wrap lines 1112064 -> [None, None]
+sig_before lines 1112064 -> [None, None]
+sig_ign lines 1112064 -> [None, None]
+sig_after lines 1112064 -> [None, None]
+sig_after_cased lines 1112064 -> [None, None]
+sig_double lines 1112064 -> [None, None]
+sig_punct lines 1112064 -> [None, None]
+contexts with diffs: {}

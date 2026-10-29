@@ -1,0 +1,142 @@
+[
+  {
+    "probe": "ws-u001c-u001f",
+    "rule": "exact",
+    "same": true,
+    "python_exit": 0,
+    "rust_exit": 0
+  },
+  {
+    "probe": "ws-u000b-u0085-u3000",
+    "rule": "exact",
+    "same": true,
+    "python_exit": 0,
+    "rust_exit": 0
+  },
+  {
+    "probe": "not-ws-u200b-u180e",
+    "rule": "exact",
+    "same": true,
+    "python_exit": 0,
+    "rust_exit": 0
+  },
+  {
+    "probe": "sigma-final",
+    "rule": "exact",
+    "same": true,
+    "python_exit": 0,
+    "rust_exit": 0
+  },
+  {
+    "probe": "path-trailing-slash",
+    "rule": "exact",
+    "same": true,
+    "python_exit": 0,
+    "rust_exit": 0
+  },
+  {
+    "probe": "path-trailing-dot",
+    "rule": "exact",
+    "same": true,
+    "python_exit": 0,
+    "rust_exit": 0
+  },
+  {
+    "probe": "path-dot-segment",
+    "rule": "exact",
+    "same": true,
+    "python_exit": 0,
+    "rust_exit": 0
+  },
+  {
+    "probe": "path-empty",
+    "rule": "exact",
+    "same": true,
+    "python_exit": 1,
+    "rust_exit": 1
+  },
+  {
+    "probe": "path-missing-slash",
+    "rule": "exact",
+    "same": true,
+    "python_exit": 1,
+    "rust_exit": 1
+  },
+  {
+    "probe": "abbrev-to",
+    "rule": "exact",
+    "same": true,
+    "python_exit": 0,
+    "rust_exit": 0
+  },
+  {
+    "probe": "abbrev-js",
+    "rule": "exact",
+    "same": true,
+    "python_exit": 0,
+    "rust_exit": 0
+  },
+  {
+    "probe": "abbrev-t-equals",
+    "rule": "exact",
+    "same": true,
+    "python_exit": 0,
+    "rust_exit": 0
+  },
+  {
+    "probe": "top-last-wins",
+    "rule": "exact",
+    "same": true,
+    "python_exit": 0,
+    "rust_exit": 0
+  },
+  {
+    "probe": "double-dash-dash-name",
+    "rule": "exact",
+    "same": true,
+    "python_exit": 1,
+    "rust_exit": 1
+  },
+  {
+    "probe": "negative-like-file",
+    "rule": "exact",
+    "same": true,
+    "python_exit": 1,
+    "rust_exit": 1
+  },
+  {
+    "probe": "usage-extra-positional",
+    "rule": "exit-only",
+    "same": true,
+    "python_exit": 2,
+    "rust_exit": 2
+  },
+  {
+    "probe": "usage-json-value",
+    "rule": "exit-only",
+    "same": true,
+    "python_exit": 2,
+    "rust_exit": 2
+  },
+  {
+    "probe": "usage-top-missing",
+    "rule": "exit-only",
+    "same": true,
+    "python_exit": 2,
+    "rust_exit": 2
+  },
+  {
+    "probe": "usage-dash-option",
+    "rule": "exit-only",
+    "same": true,
+    "python_exit": 2,
+    "rust_exit": 2
+  },
+  {
+    "probe": "help",
+    "rule": "exit-only",
+    "same": true,
+    "python_exit": 0,
+    "rust_exit": 0
+  }
+]

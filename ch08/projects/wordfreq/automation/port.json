@@ -1,0 +1,10 @@
+{
+  "name": "wordfreq",
+  "python": "python_src/wordfreq.py",
+  "binary": "wordfreq",
+  "checks": [
+    {"name": "compare", "cmd": ["uv", "run", "python", "automation/compare.py", "--rust", "{bin}"]},
+    {"name": "scenarios", "cmd": ["uv", "run", "python", "automation/scenarios.py", "--rust", "{bin}"]},
+    {"name": "fuzz", "cmd": ["uv", "run", "python", "automation/fuzz.py", "--rust", "{bin}", "--examples", "3000", "--seed", "{seed}"]}
+  ]
+}

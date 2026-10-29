@@ -1,0 +1,26 @@
+{"ts": 1793245920.97, "role": "analyst", "tool": "Glob", "input": "**/*", "decision": "allow", "reason": null}
+{"ts": 1793245922.161, "role": "analyst", "tool": "Glob", "input": "{python_src,contracts,tests,automation,port,rust_app,reports}/**/*", "decision": "allow", "reason": null}
+{"ts": 1793245923.438, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/analyze_stats/contracts/behavior_spec.md", "decision": "allow", "reason": null}
+{"ts": 1793245923.877, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/analyze_stats/python_src/stats.py", "decision": "allow", "reason": null}
+{"ts": 1793245924.36, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/analyze_stats/automation/compare.py", "decision": "allow", "reason": null}
+{"ts": 1793245924.825, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/analyze_stats/tests/cases.json", "decision": "allow", "reason": null}
+{"ts": 1793245925.276, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/analyze_stats/tests/test_stats.py", "decision": "allow", "reason": null}
+{"ts": 1793245925.63, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/analyze_stats/automation/port.json", "decision": "allow", "reason": null}
+{"ts": 1793245927.196, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/analyze_stats/tests/fixtures/decimals.txt", "decision": "allow", "reason": null}
+{"ts": 1793245927.692, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/analyze_stats/tests/fixtures/scientific.txt", "decision": "allow", "reason": null}
+{"ts": 1793245928.202, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/analyze_stats/tests/fixtures/blank_lines.txt", "decision": "allow", "reason": null}
+{"ts": 1793245928.754, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/analyze_stats/tests/fixtures/bad_line.txt", "decision": "allow", "reason": null}
+{"ts": 1793245929.235, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/analyze_stats/tests/fixtures/infinity.txt", "decision": "allow", "reason": null}
+{"ts": 1793245929.682, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/analyze_stats/tests/fixtures/negative.txt", "decision": "allow", "reason": null}
+{"ts": 1793245930.184, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/analyze_stats/tests/fixtures/same_values.txt", "decision": "allow", "reason": null}
+{"ts": 1793245930.744, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/analyze_stats/tests/fixtures/one_number.txt", "decision": "allow", "reason": null}
+{"ts": 1793245931.113, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/analyze_stats/tests/fixtures/integers.txt", "decision": "allow", "reason": null}
+{"ts": 1793245932.844, "role": "analyst", "tool": "Glob", "input": "/usr/lib/python3.12/statistics.py", "decision": "allow", "reason": null}
+{"ts": 1793245935.381, "role": "analyst", "tool": "Grep", "input": "^def (mean|stdev|_sum|_ss|_float_sqrt_of_frac|_integer_sqrt_of_frac_rto|_convert|_exact_ratio|variance)\\b", "decision": "allow", "reason": null}
+{"ts": 1793245936.889, "role": "analyst", "tool": "Read", "input": "/usr/lib/python3.12/statistics.py", "decision": "allow", "reason": null}
+{"ts": 1793245937.422, "role": "analyst", "tool": "Read", "input": "/usr/lib/python3.12/statistics.py", "decision": "allow", "reason": null}
+{"ts": 1793245938.757, "role": "analyst", "tool": "Read", "input": "/usr/lib/python3.12/statistics.py", "decision": "allow", "reason": null}
+{"ts": 1793246080.678, "role": "analyst", "tool": "Glob", "input": "{.venv/pyvenv.cfg,pyproject.toml,*.toml,*.md,.python-version,port/*}", "decision": "allow", "reason": null}
+{"ts": 1793246081.999, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/analyze_stats/.venv/pyvenv.cfg", "decision": "allow", "reason": null}
+{"ts": 1793246082.38, "role": "analyst", "tool": "Read", "input": "/home/dev/work/ch08_ws/analyze_stats/pyproject.toml", "decision": "allow", "reason": null}
+{"ts": 1793246252.646, "role": "analyst", "tool": "StructuredOutput", "input": "", "decision": "allow", "reason": null}

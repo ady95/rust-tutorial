@@ -1,0 +1,12 @@
+[package]
+name = "wordfreq"
+version = "0.2.0"
+edition = "2021"
+description = "Rust port of the wordfreq reference implementation (contract v2)"
+publish = false
+
+[[bin]]
+name = "wordfreq"
+path = "src/main.rs"
+
+[dependencies]

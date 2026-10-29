@@ -1,0 +1,44 @@
+[
+  {
+    "input": "shape A{c}B",
+    "same": true,
+    "rust_exit": 0,
+    "differing_words": 0,
+    "differing_codepoints": 0,
+    "sample": []
+  },
+  {
+    "input": "shape {c}Σ",
+    "same": true,
+    "rust_exit": 0,
+    "differing_words": 0,
+    "differing_codepoints": 0,
+    "sample": []
+  },
+  {
+    "input": "shape Σ{c}",
+    "same": true,
+    "rust_exit": 0,
+    "differing_words": 0,
+    "differing_codepoints": 0,
+    "sample": []
+  },
+  {
+    "input": "shape A{c}Σ",
+    "same": true,
+    "rust_exit": 0,
+    "differing_words": 0,
+    "differing_codepoints": 0,
+    "sample": []
+  },
+  {
+    "input": "u0295_sigma.txt",
+    "same": true,
+    "rust_exit": 0
+  },
+  {
+    "input": "new_letters.txt",
+    "same": true,
+    "rust_exit": 0
+  }
+]

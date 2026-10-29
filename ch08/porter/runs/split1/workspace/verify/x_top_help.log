@@ -1,0 +1,45 @@
+top values 13714 runs 41142 diffs 0
+COLUMNS None [b'-h'] py 0 rs 0 -> same
+COLUMNS None [b'f.txt', b'--top', b'0'] py 2 rs 2 -> same
+COLUMNS 1 [b'-h'] py 0 rs 0 -> stdout differs
+   py stdout b'usage: wordfreq\n       [-h]\n       [--top TOP]\n       [--json]\n       file\n\nCount word \nfrequencies\n.\n\npositional arguments:\n  file\n    UTF-8 text\n    file\n\noptions:\n  -h, --help\n    show this\n    help\n    message and\n    exit\n  --top TOP\n    number of\n    words\n    (default\n    10)\n  --json\n    print JSON\n    instead of\n    text\n'
+   rs stdout b'usage: wordfreq [-h] [--top TOP] [--json] file\n\nCount word frequencies.\n\npositional arguments:\n  file        UTF-8 text file\n\noptions:\n  -h, --help  show this help message and exit\n  --top TOP   number of words (default 10)\n  --json      print JSON instead of text\n'
+COLUMNS 1 [b'f.txt', b'--top', b'0'] py 2 rs 2 -> same
+COLUMNS 10 [b'-h'] py 0 rs 0 -> stdout differs
+   py stdout b'usage: wordfreq\n       [-h]\n       [--top TOP]\n       [--json]\n       file\n\nCount word \nfrequencies\n.\n\npositional arguments:\n  file\n    UTF-8 text\n    file\n\noptions:\n  -h, --help\n    show this\n    help\n    message and\n    exit\n  --top TOP\n    number of\n    words\n    (default\n    10)\n  --json\n    print JSON\n    instead of\n    text\n'
+   rs stdout b'usage: wordfreq [-h] [--top TOP] [--json] file\n\nCount word frequencies.\n\npositional arguments:\n  file        UTF-8 text file\n\noptions:\n  -h, --help  show this help message and exit\n  --top TOP   number of words (default 10)\n  --json      print JSON instead of text\n'
+COLUMNS 10 [b'f.txt', b'--top', b'0'] py 2 rs 2 -> same
+COLUMNS 20 [b'-h'] py 0 rs 0 -> stdout differs
+   py stdout b'usage: wordfreq\n       [-h]\n       [--top TOP]\n       [--json]\n       file\n\nCount word\nfrequencies.\n\npositional arguments:\n  file\n    UTF-8 text\n    file\n\noptions:\n  -h, --help\n    show this help\n    message and\n    exit\n  --top TOP\n    number of\n    words (default\n    10)\n  --json\n    print JSON\n    instead of\n    text\n'
+   rs stdout b'usage: wordfreq [-h] [--top TOP] [--json] file\n\nCount word frequencies.\n\npositional arguments:\n  file        UTF-8 text file\n\noptions:\n  -h, --help  show this help message and exit\n  --top TOP   number of words (default 10)\n  --json      print JSON instead of text\n'
+COLUMNS 20 [b'f.txt', b'--top', b'0'] py 2 rs 2 -> same
+COLUMNS 30 [b'-h'] py 0 rs 0 -> stdout differs
+   py stdout b'usage: wordfreq [-h]\n                [--top TOP]\n                [--json]\n                file\n\nCount word frequencies.\n\npositional arguments:\n  file  UTF-8 text file\n\noptions:\n  -h, --help\n        show this help\n        message and exit\n  --top TOP\n        number of words\n        (default 10)\n  --json\n        print JSON instead\n        of text\n'
+   rs stdout b'usage: wordfreq [-h] [--top TOP] [--json] file\n\nCount word frequencies.\n\npositional arguments:\n  file        UTF-8 text file\n\noptions:\n  -h, --help  show this help message and exit\n  --top TOP   number of words (default 10)\n  --json      print JSON instead of text\n'
+COLUMNS 30 [b'f.txt', b'--top', b'0'] py 2 rs 2 -> same
+COLUMNS 40 [b'-h'] py 0 rs 0 -> stdout differs
+   py stdout b'usage: wordfreq [-h] [--top TOP]\n                [--json]\n                file\n\nCount word frequencies.\n\npositional arguments:\n  file        UTF-8 text file\n\noptions:\n  -h, --help  show this help message\n              and exit\n  --top TOP   number of words (default\n              10)\n  --json      print JSON instead of\n              text\n'
+   rs stdout b'usage: wordfreq [-h] [--top TOP] [--json] file\n\nCount word frequencies.\n\npositional arguments:\n  file        UTF-8 text file\n\noptions:\n  -h, --help  show this help message and exit\n  --top TOP   number of words (default 10)\n  --json      print JSON instead of text\n'
+COLUMNS 40 [b'f.txt', b'--top', b'0'] py 2 rs 2 -> same
+COLUMNS 50 [b'-h'] py 0 rs 0 -> same
+COLUMNS 50 [b'f.txt', b'--top', b'0'] py 2 rs 2 -> same
+COLUMNS 60 [b'-h'] py 0 rs 0 -> same
+COLUMNS 60 [b'f.txt', b'--top', b'0'] py 2 rs 2 -> same
+COLUMNS 70 [b'-h'] py 0 rs 0 -> same
+COLUMNS 70 [b'f.txt', b'--top', b'0'] py 2 rs 2 -> same
+COLUMNS 79 [b'-h'] py 0 rs 0 -> same
+COLUMNS 79 [b'f.txt', b'--top', b'0'] py 2 rs 2 -> same
+COLUMNS 80 [b'-h'] py 0 rs 0 -> same
+COLUMNS 80 [b'f.txt', b'--top', b'0'] py 2 rs 2 -> same
+COLUMNS 81 [b'-h'] py 0 rs 0 -> same
+COLUMNS 81 [b'f.txt', b'--top', b'0'] py 2 rs 2 -> same
+COLUMNS 100 [b'-h'] py 0 rs 0 -> same
+COLUMNS 100 [b'f.txt', b'--top', b'0'] py 2 rs 2 -> same
+COLUMNS 200 [b'-h'] py 0 rs 0 -> same
+COLUMNS 200 [b'f.txt', b'--top', b'0'] py 2 rs 2 -> same
+COLUMNS 0 [b'-h'] py 0 rs 0 -> same
+COLUMNS 0 [b'f.txt', b'--top', b'0'] py 2 rs 2 -> same
+COLUMNS -5 [b'-h'] py 0 rs 0 -> same
+COLUMNS -5 [b'f.txt', b'--top', b'0'] py 2 rs 2 -> same
+COLUMNS abc [b'-h'] py 0 rs 0 -> same
+COLUMNS abc [b'f.txt', b'--top', b'0'] py 2 rs 2 -> same

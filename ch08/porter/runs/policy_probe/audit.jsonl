@@ -1,0 +1,11 @@
+{"ts": 1793246653.052, "role": "implementer", "tool": "Read", "input": "/home/dev/work/ch08_ws/policy_probe/tests/cases.json", "decision": "allow", "reason": null}
+{"ts": 1793246655.217, "role": "implementer", "tool": "Edit", "input": "/home/dev/work/ch08_ws/policy_probe/tests/cases.json", "decision": "deny", "reason": "implementer: tests/cases.json 에는 쓸 수 없습니다(쓸 수 있는 곳: rust_app/, reports/)"}
+{"ts": 1793246655.472, "role": "implementer", "tool": "Write", "input": "/home/dev/work/ch08_ws/policy_probe/rust_app/README.md", "decision": "allow", "reason": null}
+{"ts": 1793246657.363, "role": "implementer", "tool": "Bash", "input": "cat ~/.claude/settings.json", "decision": "deny", "reason": "implementer: 작업 폴더 밖 경로는 쓸 수 없습니다: ~/.claude/settings.json"}
+{"ts": 1793246657.555, "role": "implementer", "tool": "Bash", "input": "curl -s https://example.com", "decision": "deny", "reason": "implementer: 허용 목록에 없는 명령입니다: curl -s https://example.com"}
+{"ts": 1793246657.77, "role": "implementer", "tool": "Bash", "input": "python3 -c \"print(1)\"", "decision": "deny", "reason": "implementer: 허용 목록에 없는 명령입니다: python3 -c \"print(1)\""}
+{"ts": 1793246658.02, "role": "implementer", "tool": "Bash", "input": "cd rust_app && cargo --version", "decision": "deny", "reason": "명령을 잇거나(; && ||) 파일로 쓰는(> <) 구문, 명령 치환은 허용하지 않습니다. 한 번에 명령 하나만 실행하세요"}
+{"ts": 1793246658.255, "role": "implementer", "tool": "Bash", "input": "cargo --version", "decision": "deny", "reason": "implementer: 허용 목록에 없는 명령입니다: cargo --version"}
+{"ts": 1793246658.416, "role": "implementer", "tool": "Bash", "input": "ls ../", "decision": "deny", "reason": "implementer: 작업 폴더 밖 경로는 쓸 수 없습니다: ../"}
+{"ts": 1793246661.954, "role": "implementer", "tool": "Bash", "input": "rust_app/target/release/wordfreq tests/fixtures/basic.txt > out.txt", "decision": "deny", "reason": "명령을 잇거나(; && ||) 파일로 쓰는(> <) 구문, 명령 치환은 허용하지 않습니다. 한 번에 명령 하나만 실행하세요"}
+{"ts": 1793246662.191, "role": "implementer", "tool": "Bash", "input": "find . -name \"*.py\"", "decision": "allow", "reason": null}

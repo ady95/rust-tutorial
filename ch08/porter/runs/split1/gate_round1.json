@@ -1,0 +1,155 @@
+{
+  "ok": true,
+  "fuzz_seed": 65321752,
+  "steps": [
+    {
+      "name": "baseline",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 0.03,
+      "tail": [
+        "baseline OK (18 files)"
+      ]
+    },
+    {
+      "name": "fmt",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 0.06,
+      "tail": []
+    },
+    {
+      "name": "clippy",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 0.04,
+      "tail": [
+        "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.00s"
+      ]
+    },
+    {
+      "name": "test",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 0.72,
+      "tail": [
+        "running 19 tests",
+        "test cli::tests::positive_int_rules ... ok",
+        "test cli::tests::r12_non_utf8_arguments_are_usage_errors ... ok",
+        "test cli::tests::non_utf8_file_argument_is_kept ... ok",
+        "test cli::tests::r4_help ... ok",
+        "test text::tests::dump_unicode_diffs ... ignored",
+        "test output::tests::text_format ... ok",
+        "test cli::tests::r4_argparse_syntax ... ok",
+        "test output::tests::r8_json_escapes ... ok",
+        "test tests::r5_normalize_like_pathlib ... ok",
+        "test text::tests::r11_order_and_truncate ... ok",
+        "test text::tests::r1_whitespace ... ok",
+        "test text::tests::r10_bom_cr_nul ... ok",
+        "test text::tests::r2_lowercase_and_sigma ... ok",
+        "test text::tests::reference_examples ... ok",
+        "test text::tests::rust_unicode_version_is_reported ... ok",
+        "test text::tests::space_table_matches_python ... ok",
+        "test cli::tests::digit_table_matches_python ... ok",
+        "test text::tests::lower_table_matches_python ... ok",
+        "test text::tests::sigma_class_matches_python ... ok",
+        "",
+        "test result: ok. 18 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.64s",
+        "",
+        "",
+        "running 9 tests",
+        "test d1_help_write_failure_is_nonzero ... ok",
+        "test r12_non_utf8_option_values_follow_contract ... ok",
+        "test r9_disk_full_is_an_error ... ok",
+        "test r7_read_errors ... ok",
+        "test r4_help_exits_zero ... ok",
+        "test r4_positional_lookalikes ... ok",
+        "test r5_pathlib_normalization ... ok",
+        "test r4_accepted_forms ... ok",
+        "test r4_usage_errors ... ok",
+        "",
+        "test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s",
+        "",
+        "    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.03s",
+        "     Running unittests src/main.rs (rust_app/target/debug/deps/wordfreq-406f932be0a3770d)",
+        "     Running tests/cli.rs (rust_app/target/debug/deps/cli-a09516296a9d54db)"
+      ]
+    },
+    {
+      "name": "build",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 0.02,
+      "tail": [
+        "    Finished `release` profile [optimized] target(s) in 0.00s"
+      ]
+    },
+    {
+      "name": "compare",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 1.0,
+      "tail": [
+        "OK   basic",
+        "OK   basic-top2",
+        "OK   basic-json",
+        "OK   korean",
+        "OK   korean-json",
+        "OK   punctuation",
+        "OK   ties",
+        "OK   crlf-case",
+        "OK   empty",
+        "OK   empty-json",
+        "OK   missing-file",
+        "OK   invalid-utf8",
+        "OK   directory",
+        "OK   usage-no-file",
+        "OK   usage-top-zero",
+        "OK   usage-top-abc",
+        "OK   usage-unknown-option",
+        "OK   top-leading-zero",
+        "OK   top-huge",
+        "OK   usage-top-fullwidth",
+        "OK   usage-top-underscore",
+        "OK   usage-top-plus",
+        "",
+        "22/22 cases match"
+      ]
+    },
+    {
+      "name": "scenarios",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 1.67,
+      "tail": [
+        "OK   missing-file",
+        "OK   directory",
+        "OK   permission-denied",
+        "OK   non-utf8-filename",
+        "OK   non-utf8-missing",
+        "OK   non-utf8-missing-2",
+        "OK   dash-filename",
+        "OK   double-dash",
+        "OK   top-repeated",
+        "OK   top-fullwidth",
+        "OK   top-huge",
+        "OK   top-zero",
+        "OK   top-equals",
+        "OK   closed-pipe",
+        "OK   disk-full",
+        "",
+        "15/15 scenarios match"
+      ]
+    },
+    {
+      "name": "fuzz",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 6.13,
+      "tail": [
+        "OK   3000 random inputs match"
+      ]
+    }
+  ],
+  "protected_changed": false
+}

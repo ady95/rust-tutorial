@@ -1,0 +1,10 @@
+3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]
+uid 1000 cpus 8
+COLUMNS None
+LANG C.UTF-8
+LC_ALL None
+PYTHONUTF8 None
+PYTHONIOENCODING None
+/dev/full writable: True
+open /dev/full ok
+b'3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0] 15.0.0\n' b''
