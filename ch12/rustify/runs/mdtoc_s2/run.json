@@ -1,0 +1,30 @@
+{
+  "project": "mdtoc",
+  "project_path": "ch12/projects/mdtoc",
+  "baseline_sha256": "718d8b8798d1f85b44b886c10dc403b9c3ec38fc7fabc9f021fe6fdcd58be3ee",
+  "harness_sha256": "83abe98c438d0f22569b11bc0217c0340e12e864584c18c67c551c834722b4a9",
+  "engine": "claude",
+  "model": "sonnet",
+  "from": "mdtoc_s1",
+  "plan": false,
+  "analyze": false,
+  "followup": true,
+  "allow_crates": false,
+  "budget_usd": 4.0,
+  "max_rounds": 5,
+  "max_minutes": null,
+  "started": "2026-10-30T02:20:49+0900",
+  "env": {
+    "os": "Ubuntu 24.04.5 LTS",
+    "kernel": "6.18.33.2-microsoft-standard-WSL2",
+    "cpu": "Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz",
+    "claude_code": "2.1.299 (Claude Code)",
+    "claude_agent_sdk": "0.2.174",
+    "codex": null,
+    "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+    "cargo": "cargo 1.99.1 (5f94df478 2026-08-27)",
+    "python": "Python 3.12.3",
+    "uv": "uv 0.13.6 (x86_64-unknown-linux-gnu)",
+    "hyperfine": "hyperfine 1.18.0"
+  }
+}

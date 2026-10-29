@@ -1,0 +1,11 @@
+[project]
+name = "rustify"
+version = "1.0.0"
+description = "Python to Rust automatic porting system (ch12)"
+requires-python = ">=3.12"
+dependencies = [
+    "claude-agent-sdk==0.2.174",
+]
+
+[tool.uv]
+package = false

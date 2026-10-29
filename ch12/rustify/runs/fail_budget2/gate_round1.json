@@ -1,0 +1,113 @@
+{
+  "ok": false,
+  "fuzz_seed": 1665161870,
+  "steps": [
+    {
+      "name": "baseline",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 0.04,
+      "tail": [
+        "baseline OK (25 files)"
+      ]
+    },
+    {
+      "name": "harness",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 0.0,
+      "tail": []
+    },
+    {
+      "name": "fmt",
+      "ok": false,
+      "exit_code": 1,
+      "seconds": 0.1,
+      "tail": [
+        "Error writing files: failed to resolve mod `wordtab`: /home/dev/work/rustify_ws/fail_budget2/rust_app/src/wordtab.rs does not exist"
+      ]
+    },
+    {
+      "name": "clippy",
+      "ok": false,
+      "exit_code": 101,
+      "seconds": 0.49,
+      "tail": [
+        "    Checking mdtoc v0.1.0 (/home/dev/work/rustify_ws/fail_budget2/rust_app)",
+        "error[E0583]: file not found for module `wordtab`",
+        " --> src/main.rs:1:1",
+        "  |",
+        "1 | mod wordtab;",
+        "  | ^^^^^^^^^^^^",
+        "  |",
+        "  = help: to create the module `wordtab`, create file \"src/wordtab.rs\" or \"src/wordtab/mod.rs\"",
+        "  = note: if there is a `mod wordtab` elsewhere in the crate already, import it with `use crate::...` instead",
+        "",
+        "For more information about this error, try `rustc --explain E0583`.",
+        "error: could not compile `mdtoc` (bin \"mdtoc\") due to 1 previous error",
+        "warning: build failed, waiting for other jobs to finish...",
+        "error: could not compile `mdtoc` (bin \"mdtoc\" test) due to 1 previous error"
+      ]
+    },
+    {
+      "name": "test",
+      "ok": false,
+      "exit_code": 101,
+      "seconds": 0.22,
+      "tail": [
+        "   Compiling mdtoc v0.1.0 (/home/dev/work/rustify_ws/fail_budget2/rust_app)",
+        "error[E0583]: file not found for module `wordtab`",
+        " --> src/main.rs:1:1",
+        "  |",
+        "1 | mod wordtab;",
+        "  | ^^^^^^^^^^^^",
+        "  |",
+        "  = help: to create the module `wordtab`, create file \"src/wordtab.rs\" or \"src/wordtab/mod.rs\"",
+        "  = note: if there is a `mod wordtab` elsewhere in the crate already, import it with `use crate::...` instead",
+        "",
+        "For more information about this error, try `rustc --explain E0583`.",
+        "error: could not compile `mdtoc` (bin \"mdtoc\" test) due to 1 previous error"
+      ]
+    },
+    {
+      "name": "build",
+      "ok": false,
+      "exit_code": 101,
+      "seconds": 0.08,
+      "tail": [
+        "   Compiling mdtoc v0.1.0 (/home/dev/work/rustify_ws/fail_budget2/rust_app)",
+        "error[E0583]: file not found for module `wordtab`",
+        " --> src/main.rs:1:1",
+        "  |",
+        "1 | mod wordtab;",
+        "  | ^^^^^^^^^^^^",
+        "  |",
+        "  = help: to create the module `wordtab`, create file \"src/wordtab.rs\" or \"src/wordtab/mod.rs\"",
+        "  = note: if there is a `mod wordtab` elsewhere in the crate already, import it with `use crate::...` instead",
+        "",
+        "For more information about this error, try `rustc --explain E0583`.",
+        "error: could not compile `mdtoc` (bin \"mdtoc\") due to 1 previous error"
+      ]
+    },
+    {
+      "name": "compare",
+      "ok": false,
+      "exit_code": -1,
+      "seconds": 0.0,
+      "tail": [
+        "빌드 실패로 실행하지 않음"
+      ]
+    },
+    {
+      "name": "fuzz",
+      "ok": false,
+      "exit_code": -1,
+      "seconds": 0.0,
+      "tail": [
+        "빌드 실패로 실행하지 않음"
+      ]
+    }
+  ],
+  "protected_changed": false,
+  "sandboxed": true
+}

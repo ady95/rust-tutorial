@@ -1,0 +1,116 @@
+--- before/python_src/wordfreq.py
++++ after/python_src/wordfreq.py
+@@ -1,3 +1,3 @@
+-"""wordfreq: 텍스트 파일의 단어 빈도를 세는 CLI (기준 구현 2판, 08장).
++"""wordfreq: 텍스트 파일의 단어 빈도를 세는 CLI (기준 구현 3판, 08장·11장 이후 결정 반영).
+ 
+ 동작 계약은 contracts/behavior_spec.md 에 있다. 이 파일이 그 계약의 기준 구현이다.
+@@ -89,5 +89,6 @@
+ 
+ def build_parser() -> argparse.ArgumentParser:
+-    parser = argparse.ArgumentParser(prog="wordfreq", description="Count word frequencies.")
++    # 3판: 옵션 이름 줄여 쓰기(--to)는 받지 않는다(08-2에서 계약에 없던 동작으로 확인)
++    parser = argparse.ArgumentParser(prog="wordfreq", description="Count word frequencies.", allow_abbrev=False)
+     parser.add_argument("file", help="UTF-8 text file")
+     parser.add_argument("--top", type=positive_int, default=10, help="number of words (default 10)")
+@@ -112,5 +113,6 @@
+     # Windows 에서도 출력은 항상 UTF-8, 줄바꿈은 LF 로 고정한다 (계약 3절).
+     sys.stdout.reconfigure(encoding="utf-8", newline="\n")
+-    sys.stderr.reconfigure(encoding="utf-8", newline="\n")
++    # 3판: 인자 오류 메시지에 UTF-8 이 아닌 바이트(서로게이트)가 들어가도 죽지 않도록 backslashreplace(08-2)
++    sys.stderr.reconfigure(encoding="utf-8", errors="backslashreplace", newline="\n")
+ 
+     args = build_parser().parse_args(argv)
+--- before/tests/cases.json
++++ after/tests/cases.json
+@@ -161,4 +161,29 @@
+     ],
+     "usage_error": true
++  },
++  {
++    "name": "usage-abbrev",
++    "args": [
++      "tests/fixtures/basic.txt",
++      "--to",
++      "2"
++    ],
++    "usage_error": true
++  },
++  {
++    "name": "path-trailing-slash",
++    "args": [
++      "tests/fixtures/basic.txt/"
++    ]
++  },
++  {
++    "name": "top-last-wins",
++    "args": [
++      "tests/fixtures/basic.txt",
++      "--top",
++      "1",
++      "--top",
++      "3"
++    ]
+   }
+ ]
+--- before/tests/test_wordfreq.py
++++ after/tests/test_wordfreq.py
+@@ -113,2 +113,25 @@
+     assert out == ""
+     assert err == "wordfreq: error: file not found: gone�.txt\n"
++
++
++# --- 3판(11장 이후 결정 반영) ---
++
++
++def test_option_abbreviation_is_a_usage_error(capsys: pytest.CaptureFixture[str]) -> None:
++    with pytest.raises(SystemExit) as exc:
++        main([str(FIXTURES / "basic.txt"), "--to", "2"])
++    assert exc.value.code == 2
++
++
++@pytest.mark.skipif(sys.platform == "win32", reason="UTF-8 이 아닌 인자는 POSIX 에서만 만들 수 있다")
++def test_non_utf8_top_value_is_a_usage_error_not_a_crash(capsys: pytest.CaptureFixture[str]) -> None:
++    with pytest.raises(SystemExit) as exc:
++        main([str(FIXTURES / "basic.txt"), "--top", os.fsdecode(b"\xff")])
++    assert exc.value.code == 2
++    assert capsys.readouterr().err != ""
++
++
++def test_trailing_slash_path_reads_the_file(capsys: pytest.CaptureFixture[str]) -> None:
++    code, out, _ = run(capsys, str(FIXTURES / "basic.txt") + "/")
++    assert code == 0
++    assert out.startswith("words: 10\n")
+--- before/contracts/behavior_spec.md
++++ after/contracts/behavior_spec.md
+@@ -1,5 +1,5 @@
+ # wordfreq 동작 계약 (behavior spec)
+ 
+-기준 구현: `python_src/wordfreq.py` (2판, 승인일 2026-10-29)
++기준 구현: `python_src/wordfreq.py` (3판, 승인일 2026-10-30)
+ 다른 언어로 재구현할 때 아래 항목은 바이트 단위로 같아야 한다. "비교 안 함"으로 적힌 항목만 예외다.
+ 
+@@ -17,4 +17,10 @@
+ 
+ `N`은 ASCII 숫자(`0`-`9`)로만 이뤄진 문자열이다. 부호(`+`), 공백, 밑줄(`1_0`), 전각 숫자(`２`) 등 그 밖의 글자가 있으면 인자 오류다. 앞의 0은 무시한다(`007`은 7). 값이 단어 수보다 커도 오류가 아니며, 아주 큰 값(19자리 이상)도 그대로 받는다.
++
++옵션 이름을 줄여 쓰면(`--to`, `--js`) 인자 오류다. 같은 옵션을 여러 번 주면 마지막 값을 쓴다. `--` 뒤의 인자는 모두 위치 인자다.
++
++`-h`·`--help`는 도움말을 stdout에 쓰고 종료 코드 0이다. **도움말 문구는 비교하지 않는다**(터미널 폭에 따라 줄바꿈이 달라짐).
++
++FILE은 Python `pathlib.Path`로 정규화한 경로를 연다. 끝의 `/`와 `/.`는 떼고(`basic.txt/`는 `basic.txt`를 읽음), 중간의 `.` 구간은 지우고, 빈 문자열은 `.`(현재 디렉터리)이 되어 "cannot read file"이다. 오류 메시지의 `<FILE>`은 정규화 전의 원래 문자열이다.
+ 
+ ## 2. 단어 규칙
+@@ -61,4 +67,8 @@
+ stdout에 쓰다가 실패하면(읽는 쪽이 파이프를 먼저 닫음, 디스크가 가득 참 등) 종료 코드는 0이 아니어야 한다. stdout에 이미 나간 내용과 stderr 내용은 비교하지 않는다. 기준 구현은 `wordfreq: error: cannot write output`을 쓰고 1로 끝난다. 실행이 멈추는 것(panic, 시그널로 인한 종료)은 허용하지 않는다.
+ 
++## 6. 범위 밖
++
++표준 입력·출력·오류가 닫힌 상태로 실행하는 경우는 비교하지 않는다.
++
+ ## 변경 기록
+ 
+@@ -67,2 +77,3 @@
+ | 1 | 2026-10-28 | 최초 승인(04장) |
+ | 2 | 2026-10-29 | `--top`은 ASCII 숫자만(05-5, 07-3). 파일 이름의 UTF-8이 아닌 바이트는 U+FFFD로(07-3, 1판 기준 구현은 이 경우 비정상 종료). 출력 실패 규칙 추가(07-3) |
++| 3 | 2026-10-30 | 인자 오류 메시지의 UTF-8이 아닌 바이트로 비정상 종료하던 문제 수정(08-2). 옵션 약어 금지, 경로 정규화 규칙 명시, 도움말 문구 비교 안 함, 닫힌 표준 입출력은 범위 밖(08-2, 08-4) |

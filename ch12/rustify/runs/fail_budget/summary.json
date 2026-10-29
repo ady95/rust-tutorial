@@ -1,0 +1,28 @@
+{
+  "run": "fail_budget",
+  "engine": "claude",
+  "stop_reason": "gate_passed",
+  "rounds": 1,
+  "cost_usd": 0.5149,
+  "tokens": {
+    "input_tokens": 54,
+    "cache_creation_input_tokens": 41144,
+    "cache_read_input_tokens": 833488,
+    "output_tokens": 25038
+  },
+  "human_interventions": 0,
+  "confirm_gate_ok": true,
+  "gate_sandboxed": true,
+  "artifacts": {
+    "binary_sha256": "77930590716e16ebab3df53dbac422ed1e796b1134853c6e8d2d8e4e1fc7f75f",
+    "binary_bytes": 593960,
+    "cargo_lock_sha256": "9a449e4215765ce3732254c5f9b3ecd092046e33d8beb891f23dec4d71ca877c",
+    "dropped_large_files": [],
+    "secret_scan": []
+  },
+  "wall_s": 405.1,
+  "warnings": [
+    "마지막 세션이 끝나지 않음(error_max_budget_usd). 게이트 밖의 검증이 남았을 수 있음"
+  ],
+  "warnings_note": "경고 규칙은 이 실행 뒤에 추가했고, 같은 규칙으로 기록에 더함"
+}

@@ -1,0 +1,283 @@
+--- before/python_src/mdtoc.py
++++ after/python_src/mdtoc.py
+@@ -1,6 +1,7 @@
+-"""mdtoc: Markdown 문서의 제목으로 목차를 만든다 (12장 실습 프로젝트, 기준 구현 1판).
++"""mdtoc: Markdown 문서의 제목으로 목차를 만든다 (12장 실습 프로젝트, 기준 구현 2판).
+ 
+     python mdtoc.py README.md
+     python mdtoc.py README.md --min-level 2 --max-level 3
++    python mdtoc.py README.md --numbered
+     cat README.md | python mdtoc.py --json
+ 
+@@ -27,4 +28,5 @@
+     parser.add_argument("--max-level", type=int, choices=range(1, 7), default=6, metavar="N")
+     parser.add_argument("--json", action="store_true", help="print headings as JSON")
++    parser.add_argument("--numbered", action="store_true", help="print a numbered list")
+     args = parser.parse_args(argv)
+     if args.min_level > args.max_level:
+@@ -54,17 +56,24 @@
+ 
+ 
+-def slugify(title: str, seen: dict[str, int]) -> str:
+-    """GitHub 방식에 가까운 앵커: 소문자로 바꾸고, 글자·숫자·_·-·공백만 남기고, 공백을 - 로. 겹치면 -1, -2."""
++def slugify(title: str, counts: dict[str, int], used: set[str]) -> str:
++    """GitHub 방식에 가까운 앵커: 소문자로 바꾸고, 글자·숫자·_·-·공백만 남기고, 공백을 - 로.
++    겹치면 -1, -2, ... 를 붙이되, 이미 쓴 앵커와 겹치지 않을 때까지 번호를 올린다(2판)."""
+     base = re.sub(r"[^\w\- ]", "", title.lower()).replace(" ", "-")
+-    count = seen.get(base, 0)
+-    seen[base] = count + 1
+-    return f"{base}-{count}" if count else base
++    count = counts.get(base, 0)
++    slug = f"{base}-{count}" if count else base
++    while slug in used:
++        count += 1
++        slug = f"{base}-{count}"
++    counts[base] = count + 1
++    used.add(slug)
++    return slug
+ 
+ 
+ def build(text: str, min_level: int, max_level: int) -> list[dict]:
+-    seen: dict[str, int] = {}
++    counts: dict[str, int] = {}
++    used: set[str] = set()
+     entries = []
+     for level, title in headings(text):
+-        slug = slugify(title, seen)  # 걸러 낼 제목도 앵커 번호에는 들어간다(문서 안의 실제 앵커와 같게)
++        slug = slugify(title, counts, used)  # 걸러 낼 제목도 앵커 번호에는 들어간다(문서 안의 실제 앵커와 같게)
+         if min_level <= level <= max_level:
+             entries.append({"level": level, "text": title, "slug": slug})
+@@ -74,4 +83,16 @@
+ def render(entries: list[dict], min_level: int) -> str:
+     return "".join(f"{'  ' * (e['level'] - min_level)}- [{e['text']}](#{e['slug']})\n" for e in entries)
++
++
++def render_numbered(entries: list[dict], min_level: int) -> str:
++    """번호 목록: 깊이마다 1부터 세고, 더 얕은 제목이 나오면 그보다 깊은 번호를 처음으로 되돌린다. 들여쓰기는 깊이당 3칸."""
++    counters = [0] * 6
++    lines = []
++    for e in entries:
++        depth = e["level"] - min_level
++        counters[depth] += 1
++        counters[depth + 1:] = [0] * (5 - depth)
++        lines.append(f"{'   ' * depth}{counters[depth]}. [{e['text']}](#{e['slug']})\n")
++    return "".join(lines)
+ 
+ 
+@@ -98,4 +119,6 @@
+     if args.json:
+         sys.stdout.write(json.dumps(entries, ensure_ascii=False) + "\n")
++    elif args.numbered:
++        sys.stdout.write(render_numbered(entries, args.min_level))
+     else:
+         sys.stdout.write(render(entries, args.min_level))
+--- before/tests/cases.json
++++ after/tests/cases.json
+@@ -218,4 +218,42 @@
+   ],
+   "stdout": "ignore"
++ },
++ {
++  "name": "numbered",
++  "args": [
++   "tests/fixtures/levels.md",
++   "--numbered"
++  ]
++ },
++ {
++  "name": "numbered-jumps",
++  "args": [
++   "tests/fixtures/dupes.md",
++   "--numbered"
++  ]
++ },
++ {
++  "name": "numbered-min-level",
++  "args": [
++   "tests/fixtures/basic.md",
++   "--numbered",
++   "--min-level",
++   "2"
++  ]
++ },
++ {
++  "name": "numbered-json-wins",
++  "args": [
++   "tests/fixtures/basic.md",
++   "--numbered",
++   "--json"
++  ]
++ },
++ {
++  "name": "dupes-json",
++  "args": [
++   "tests/fixtures/dupes.md",
++   "--json"
++  ]
+  }
+ ]
+--- before/tests/make_cases.py
++++ after/tests/make_cases.py
+@@ -28,13 +28,11 @@
+     "unicode.md": (
+         "# Ünïcödé Tïtle\n# İstanbul\n# 한글 제목: 설치\n# ẞ Straße\n# ΣΊΣΥΦΟΣ\n"
+-        "# emoji 🎉 party\n# under_score and-dash\n# Ⅻ roman ½ half\n# x y　z\n"
++        "# emoji 🎉 party\n# under_score and-dash\n# Ⅻ roman ½ half\n# x\xa0y\u3000z\n"
+     ).encode(),
+     "dupes.md": "# A\n## a\n### A!\n# a-1\n## A\n".encode(),
+-    "lines.md": "# one\r\n# two\r# three\x0b# four\x0c# five\x1c# six\x85# seven
+-# eight
+-# nine\n".encode(),
+-    "strip.md": "# \x1fpadded\x1e\n#  em space \n# tail\x85\n".encode(),
++    "lines.md": "# one\r\n# two\r# three\x0b# four\x0c# five\x1c# six\x85# seven\u2028# eight\u2029# nine\n".encode(),
++    "strip.md": "# \x1fpadded\x1e\n# \u2003em space\u2003\n# tail\x85\n".encode(),
+     "json.md": '# quote " and \\ backslash\n# ctrl \x01 \x7f del\n# </script>\n'.encode(),
+-    "bom.md": "﻿# First\n# Second\n".encode(),
++    "bom.md": "\ufeff# First\n# Second\n".encode(),
+     "empty.md": b"",
+     "notext.md": "no headings here\n```\n# code\n```\n".encode(),
+@@ -75,4 +73,10 @@
+     {"name": "usage-not-int", "args": ["--max-level", "two"], "stderr": "nonempty"},
+     {"name": "help", "args": ["--help"], "stdout": "ignore"},
++    # 2판: 번호 목록, 앵커 충돌 방지
++    {"name": "numbered", "args": ["tests/fixtures/levels.md", "--numbered"]},
++    {"name": "numbered-jumps", "args": ["tests/fixtures/dupes.md", "--numbered"]},
++    {"name": "numbered-min-level", "args": ["tests/fixtures/basic.md", "--numbered", "--min-level", "2"]},
++    {"name": "numbered-json-wins", "args": ["tests/fixtures/basic.md", "--numbered", "--json"]},
++    {"name": "dupes-json", "args": ["tests/fixtures/dupes.md", "--json"]},
+ ]
+ 
+--- before/tests/strategies.py
++++ after/tests/strategies.py
+@@ -10,8 +10,7 @@
+ 
+ # 계약 2절·3절에서 Python 동작에 기대는 글자들
+-SPECIAL = ["\t", " ", " ", " ", "　", "\x1c", "\x1f", "\x85", "
+-", "\x0b", "\x0c", "\r",
++SPECIAL = ["\t", " ", "\xa0", "\u2003", "\u3000", "\x1c", "\x1f", "\x85", "\u2028", "\x0b", "\x0c", "\r",
+            "#", "`", "~", "-", "_", "!", "\"", "\\", "\x01", "\x7f", "İ", "ẞ", "Σ", "ς", "Ⅻ", "½", "١", "가", "🎉",
+-           "́", "﻿"]
++           "\u0301", "\ufeff"]
+ 
+ word = st.text(alphabet=st.sampled_from(list("abcXYZ019 _-.") + SPECIAL), min_size=0, max_size=12)
+@@ -27,6 +26,5 @@
+ )
+ 
+-newline = st.sampled_from(["\n", "\n", "\n", "\r\n", "\r", "\x85", "
+-", "\x0b"])
++newline = st.sampled_from(["\n", "\n", "\n", "\r\n", "\r", "\x85", "\u2028", "\x0b"])
+ 
+ 
+@@ -47,4 +45,6 @@
+     if draw(st.booleans()):
+         args.append("--json")
++    if draw(st.booleans()):
++        args.append("--numbered")
+     data = draw(document()).encode("utf-8")
+     if draw(st.integers(0, 19)) == 0:
+--- before/tests/test_mdtoc.py
++++ after/tests/test_mdtoc.py
+@@ -6,5 +6,5 @@
+ import pytest
+ 
+-from mdtoc import build, headings, render, slugify
++from mdtoc import build, headings, render, render_numbered, slugify
+ 
+ ROOT = Path(__file__).resolve().parent.parent
+@@ -46,10 +46,9 @@
+ 
+ def test_splitlines_boundaries() -> None:
+-    assert [t for _, t in headings("# a\x0b# b\x1c# c
+-# d")] == ["a", "b", "c", "d"]
++    assert [t for _, t in headings("# a\x0b# b\x1c# c\u2028# d")] == ["a", "b", "c", "d"]
+ 
+ 
+ def test_strip_is_unicode() -> None:
+-    assert headings("# \x1fx ") == [(1, "x")]
++    assert headings("# \x1fx\u2003") == [(1, "x")]
+ 
+ 
+@@ -60,8 +59,8 @@
+     ("under_score and-dash", "under_score-and-dash"),
+     ("emoji 🎉 party", "emoji--party"),
+-    ("x y", "xy"),
++    ("x\xa0y", "xy"),
+ ])
+ def test_slugify(title: str, slug: str) -> None:
+-    assert slugify(title, {}) == slug
++    assert slugify(title, {}, set()) == slug
+ 
+ 
+@@ -69,4 +68,14 @@
+     entries = build("# A\n## A\n", 2, 6)
+     assert entries == [{"level": 2, "text": "A", "slug": "a-1"}]
++
++
++def test_anchors_never_collide() -> None:
++    assert [e["slug"] for e in build("# A\n## a\n# a-1\n# a\n", 1, 6)] == ["a", "a-1", "a-1-1", "a-2"]
++
++
++def test_numbered() -> None:
++    entries = build("# A\n## B\n## C\n# D\n### E\n## F\n", 1, 6)
++    assert render_numbered(entries, 1) == (
++        "1. [A](#a)\n   1. [B](#b)\n   2. [C](#c)\n2. [D](#d)\n      1. [E](#e)\n   1. [F](#f)\n")
+ 
+ 
+--- before/contracts/behavior_spec.md
++++ after/contracts/behavior_spec.md
+@@ -1,5 +1,5 @@
+ # mdtoc 동작 계약 (behavior spec)
+ 
+-기준 구현: `python_src/mdtoc.py` (1판, 승인일 2026-10-30, Python 3.12)
++기준 구현: `python_src/mdtoc.py` (2판, 승인일 2026-10-30, Python 3.12. 바뀐 점은 7절)
+ 다른 언어로 재구현할 때 아래 항목이 같아야 한다. "비교 안 함"으로 적힌 항목만 예외다.
+ 
+@@ -7,5 +7,5 @@
+ 
+ ```
+-mdtoc [FILE] [--min-level N] [--max-level N] [--json]
++mdtoc [FILE] [--min-level N] [--max-level N] [--json] [--numbered]
+ ```
+ 
+@@ -13,11 +13,10 @@
+ - `--min-level`, `--max-level`: 1~6의 정수, 기본 1과 6. min이 max보다 크면 사용법 오류
+ - 옵션 약어는 받지 않는다(`--json`을 `--js`로 쓰면 사용법 오류). 같은 옵션이 여러 번 오면 마지막 값
++- `--numbered`: 번호 목록으로 출력(4절). `--json`과 함께 오면 `--json`이 우선
+ - `-h`, `--help`: 도움말과 종료 코드 0. 도움말 내용은 비교 안 함
+ 
+ ## 2. 입력 해석
+ 
+-입력 전체를 UTF-8로 해석한다(BOM을 따로 처리하지 않는다. 첫 줄이 BOM으로 시작하면 그 줄은 제목이 아니다). 그다음 Python `str.splitlines()`로 줄을 나눈다. 즉 `\n`, `\r\n`, `\r`뿐 아니라 `\v`, `\f`, `\x1c`, `\x1d`, `\x1e`, `\x85`, `
+-`, `
+-`도 줄 경계다.
++입력 전체를 UTF-8로 해석한다(BOM을 따로 처리하지 않는다. 첫 줄이 BOM으로 시작하면 그 줄은 제목이 아니다). 그다음 Python `str.splitlines()`로 줄을 나눈다. 즉 `\n`, `\r\n`, `\r`뿐 아니라 `\v`, `\f`, `\x1c`, `\x1d`, `\x1e`, `\x85`, `\u2028`, `\u2029`도 줄 경계다.
+ 
+ 각 줄을 위에서부터 본다.
+@@ -38,9 +37,9 @@
+ 2. Python 정규식 `[^\w\- ]`에 맞는 글자를 지운다. `\w`는 Python `re`의 Unicode 단어 글자(글자·숫자·밑줄). 결합 문자(예: 1번에서 생긴 U+0307)는 단어 글자가 아니므로 지워진다(`İstanbul`의 앵커는 `istanbul`)
+ 3. 공백(U+0020)을 `-`로 바꾼다
+-4. 같은 앵커가 앞에 있었으면 `-1`, `-2`, …를 붙인다(같은 기본 앵커가 나온 횟수로 센다)
++4. 겹침 방지: 3번까지의 결과를 기본 앵커라 한다. 기본 앵커마다 번호 n을 기억한다(처음 0). 후보는 n이 0이면 기본 앵커, 아니면 `<기본 앵커>-<n>`. 후보가 이미 만든 앵커(기본 앵커든 번호가 붙은 것이든) 중 하나와 같으면 n을 1 올려 `<기본 앵커>-<n>`을 다시 본다. 정해지면 그 기본 앵커의 n을 정해진 번호 + 1로 둔다
+ 
+ `--min-level`, `--max-level`로 걸러 내는 제목도 4번의 횟수에는 들어간다(문서 안의 실제 앵커 번호와 같게 하려는 것).
+ 
+-4번은 기본 앵커별 횟수만 세므로, 서로 다른 제목이 같은 앵커를 가질 수 있다(예: `# A`, `## a`, `# a-1` 순서면 둘째와 셋째가 모두 `a-1`). 기준 구현의 동작 그대로다.
++그래서 한 문서 안의 앵커는 모두 다르다. 예: `# A`, `## a`, `# a-1`, `# a` 순서면 `a`, `a-1`, `a-1-1`, `a-2`.
+ 
+ ## 4. 출력
+@@ -48,4 +47,5 @@
+ - 기본: 걸러 낸 제목마다 한 줄 `<들여쓰기>- [<제목>](#<앵커>)` 과 `\n`. 들여쓰기는 공백 2칸 × (수준 − `--min-level`). 제목이 없으면 아무것도 출력하지 않는다
+ - `--json`: `[{"level":<수준>,"text":<제목>,"slug":<앵커>}, ...]`를 Python `json.dumps(..., ensure_ascii=False)` 형식(`, `와 `: ` 구분자, ASCII가 아닌 글자는 그대로, 제어 문자는 `\u00XX`)으로 한 줄, 끝에 `\n`. 제목이 없으면 `[]`
++- `--numbered`: 걸러 낸 제목마다 한 줄 `<들여쓰기><번호>. [<제목>](#<앵커>)`과 `\n`. 깊이 = 수준 − `--min-level`, 들여쓰기는 공백 3칸 × 깊이. 번호는 깊이마다 따로 세며 1부터 시작하고, 어떤 깊이의 제목이 나오면 그보다 깊은 모든 깊이의 번호를 0으로 되돌린다(중간 수준이 비어 있어도 그대로 센다. 예: `# D` 다음 `### E`는 깊이 2의 `1.`)
+ - 출력은 UTF-8, 줄바꿈은 `\n`
+ 
+@@ -63,2 +63,9 @@
+ - 표준 입출력이 닫힌 채 실행하는 경우, 쓰기 실패
+ - 입력 크기 한도(메모리에 다 올릴 수 있는 크기까지만)
++
++## 7. 바뀐 점
++
++| 판 | 날짜 | 내용 |
++|---|---|---|
++| 1 | 2026-10-30 | 처음 승인 |
++| 2 | 2026-10-30 | `--numbered` 추가(1·4절). 앵커 겹침 방지(3절 4번. 1판은 서로 다른 제목이 같은 앵커를 가질 수 있었음). 2절의 줄 경계 글자를 이스케이프 표기로 고침(1판 문서에는 U+2028·U+2029 글자 자체가 들어가 보이지 않았음) |

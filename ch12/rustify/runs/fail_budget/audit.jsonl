@@ -1,0 +1,37 @@
+{"ts": 1793295479.387, "role": "implementer", "tool": "Bash", "input": "ls -R . -I target -I __pycache__ | head -80 && cat contracts/behavior_spec.md port/plan.json automation/port.json", "decision": "deny", "reason": "명령을 잇거나(; && ||) 파일로 쓰는(> <) 구문, 명령 치환은 허용하지 않습니다. 한 번에 명령 하나만 실행하세요"}
+{"ts": 1793295480.487, "role": "implementer", "tool": "Bash", "input": "ls -R /home/dev/work/rustify_ws/fail_budget --ignore=target --ignore=__pycache__", "decision": "allow", "reason": null}
+{"ts": 1793295480.837, "role": "implementer", "tool": "Read", "input": "/home/dev/work/rustify_ws/fail_budget/contracts/behavior_spec.md", "decision": "allow", "reason": null}
+{"ts": 1793295481.066, "role": "implementer", "tool": "Read", "input": "/home/dev/work/rustify_ws/fail_budget/automation/port.json", "decision": "allow", "reason": null}
+{"ts": 1793295482.485, "role": "implementer", "tool": "Read", "input": "/home/dev/work/rustify_ws/fail_budget/python_src/mdtoc.py", "decision": "allow", "reason": null}
+{"ts": 1793295482.863, "role": "implementer", "tool": "Bash", "input": "ls -a /home/dev/work/rustify_ws/fail_budget/.rustify /home/dev/work/rustify_ws/fail_budget/port", "decision": "allow", "reason": null}
+{"ts": 1793295503.23, "role": "implementer", "tool": "Bash", "input": "grep -n \"args\\|argv\" /home/dev/work/rustify_ws/fail_budget/.rustify/fuzz_cli.py", "decision": "deny", "reason": "파이프 뒤에는 읽기 전용 필터(head, tail, grep 등)만 쓸 수 있습니다: argv\" /home/dev/work/rustify_ws/fail_bud"}
+{"ts": 1793295503.527, "role": "implementer", "tool": "Bash", "input": "grep -n \"args\" /home/dev/work/rustify_ws/fail_budget/tests/strategies.py", "decision": "allow", "reason": null}
+{"ts": 1793295506.706, "role": "implementer", "tool": "Bash", "input": "python3 -c \"\nimport sys;sys.path.insert(0,'python_src')\nimport mdtoc\nfor a in (['--json','f'],['f','--json'],['--min-level','2','f'],['f','--json','g'],['--json','--','f']):\n    try: print(a, mdtoc.pa", "decision": "deny", "reason": "명령을 잇거나(; && ||) 파일로 쓰는(> <) 구문, 명령 치환은 허용하지 않습니다. 한 번에 명령 하나만 실행하세요"}
+{"ts": 1793295510.803, "role": "implementer", "tool": "Write", "input": "/home/dev/work/rustify_ws/fail_budget/verify/probe_args.py", "decision": "allow", "reason": null}
+{"ts": 1793295511.925, "role": "implementer", "tool": "Bash", "input": "python3 verify/probe_args.py", "decision": "allow", "reason": null}
+{"ts": 1793295524.079, "role": "implementer", "tool": "Write", "input": "/home/dev/work/rustify_ws/fail_budget/verify/gen_tables.py", "decision": "allow", "reason": null}
+{"ts": 1793295524.742, "role": "implementer", "tool": "Write", "input": "/home/dev/work/rustify_ws/fail_budget/rust_app/Cargo.toml", "decision": "allow", "reason": null}
+{"ts": 1793295584.507, "role": "implementer", "tool": "Write", "input": "/home/dev/work/rustify_ws/fail_budget/rust_app/src/main.rs", "decision": "allow", "reason": null}
+{"ts": 1793295587.016, "role": "implementer", "tool": "Edit", "input": "/home/dev/work/rustify_ws/fail_budget/rust_app/src/main.rs", "decision": "allow", "reason": null}
+{"ts": 1793295587.213, "role": "implementer", "tool": "Bash", "input": "python3 verify/gen_tables.py", "decision": "allow", "reason": null}
+{"ts": 1793295588.953, "role": "implementer", "tool": "Bash", "input": "cargo fmt --manifest-path rust_app/Cargo.toml", "decision": "allow", "reason": null}
+{"ts": 1793295590.58, "role": "implementer", "tool": "Bash", "input": "cargo clippy --manifest-path rust_app/Cargo.toml --all-targets -- -D warnings", "decision": "allow", "reason": null}
+{"ts": 1793295592.157, "role": "implementer", "tool": "Bash", "input": "cargo test --manifest-path rust_app/Cargo.toml", "decision": "allow", "reason": null}
+{"ts": 1793295593.894, "role": "implementer", "tool": "Bash", "input": "cargo build --release --manifest-path rust_app/Cargo.toml", "decision": "allow", "reason": null}
+{"ts": 1793295595.815, "role": "implementer", "tool": "Bash", "input": "uv run python .rustify/compare_cli.py --rust rust_app/target/release/mdtoc", "decision": "allow", "reason": null}
+{"ts": 1793295598.391, "role": "implementer", "tool": "Bash", "input": "uv run python .rustify/fuzz_cli.py --rust rust_app/target/release/mdtoc --examples 2000 --seed 777", "decision": "allow", "reason": null}
+{"ts": 1793295669.593, "role": "implementer", "tool": "Write", "input": "/home/dev/work/rustify_ws/fail_budget/verify/all_codepoints.py", "decision": "allow", "reason": null}
+{"ts": 1793295671.944, "role": "implementer", "tool": "Bash", "input": "python3 verify/all_codepoints.py", "decision": "allow", "reason": null}
+{"ts": 1793295683.986, "role": "implementer", "tool": "Write", "input": "/home/dev/work/rustify_ws/fail_budget/verify/diff_codepoints.py", "decision": "allow", "reason": null}
+{"ts": 1793295685.171, "role": "implementer", "tool": "Bash", "input": "python3 verify/diff_codepoints.py", "decision": "allow", "reason": null}
+{"ts": 1793295722.208, "role": "implementer", "tool": "Edit", "input": "/home/dev/work/rustify_ws/fail_budget/verify/gen_tables.py", "decision": "allow", "reason": null}
+{"ts": 1793295724.859, "role": "implementer", "tool": "Edit", "input": "/home/dev/work/rustify_ws/fail_budget/verify/gen_tables.py", "decision": "allow", "reason": null}
+{"ts": 1793295726.78, "role": "implementer", "tool": "Edit", "input": "/home/dev/work/rustify_ws/fail_budget/verify/gen_tables.py", "decision": "allow", "reason": null}
+{"ts": 1793295728.528, "role": "implementer", "tool": "Edit", "input": "/home/dev/work/rustify_ws/fail_budget/rust_app/src/main.rs", "decision": "allow", "reason": null}
+{"ts": 1793295731.359, "role": "implementer", "tool": "Edit", "input": "/home/dev/work/rustify_ws/fail_budget/rust_app/src/main.rs", "decision": "allow", "reason": null}
+{"ts": 1793295732.103, "role": "implementer", "tool": "Edit", "input": "/home/dev/work/rustify_ws/fail_budget/rust_app/src/main.rs", "decision": "allow", "reason": null}
+{"ts": 1793295733.847, "role": "implementer", "tool": "Bash", "input": "python3 verify/gen_tables.py", "decision": "allow", "reason": null}
+{"ts": 1793295736.555, "role": "implementer", "tool": "Bash", "input": "cargo fmt --manifest-path rust_app/Cargo.toml", "decision": "allow", "reason": null}
+{"ts": 1793295738.688, "role": "implementer", "tool": "Bash", "input": "cargo build --release --manifest-path rust_app/Cargo.toml", "decision": "allow", "reason": null}
+{"ts": 1793295740.651, "role": "implementer", "tool": "Bash", "input": "python3 verify/all_codepoints.py", "decision": "allow", "reason": null}
+{"ts": 1793295756.792, "role": "implementer", "tool": "Write", "input": "/home/dev/work/rustify_ws/fail_budget/reports/port_notes.md", "decision": "allow", "reason": null}

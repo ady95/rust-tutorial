@@ -1,0 +1,23 @@
+{
+  "run": "fail_budget2",
+  "engine": "claude",
+  "stop_reason": "budget",
+  "rounds": 1,
+  "cost_usd": 0.1722,
+  "tokens": {
+    "input_tokens": 8,
+    "cache_creation_input_tokens": 12137,
+    "cache_read_input_tokens": 42463,
+    "output_tokens": 4885
+  },
+  "human_interventions": 0,
+  "gate_sandboxed": true,
+  "artifacts": {
+    "binary_sha256": null,
+    "binary_bytes": null,
+    "cargo_lock_sha256": "9a449e4215765ce3732254c5f9b3ecd092046e33d8beb891f23dec4d71ca877c",
+    "dropped_large_files": [],
+    "secret_scan": []
+  },
+  "wall_s": 72.1
+}

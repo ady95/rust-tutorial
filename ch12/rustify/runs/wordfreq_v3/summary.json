@@ -1,0 +1,24 @@
+{
+  "run": "wordfreq_v3",
+  "engine": "claude",
+  "stop_reason": "gate_passed",
+  "rounds": 2,
+  "cost_usd": 0.5937,
+  "tokens": {
+    "input_tokens": 68,
+    "cache_creation_input_tokens": 61250,
+    "cache_read_input_tokens": 1415901,
+    "output_tokens": 20654
+  },
+  "human_interventions": 0,
+  "confirm_gate_ok": true,
+  "gate_sandboxed": true,
+  "artifacts": {
+    "binary_sha256": "2359ef4bd52276f466fef9a2d3ff2f14dae81da2266cd24c6e92a043cf0d0d0c",
+    "binary_bytes": 538488,
+    "cargo_lock_sha256": "ebfb6e53a79053e1fca5192cfc54141dd212c5fc106d452c039f8b294a19a3f9",
+    "dropped_large_files": [],
+    "secret_scan": []
+  },
+  "wall_s": 303.4
+}

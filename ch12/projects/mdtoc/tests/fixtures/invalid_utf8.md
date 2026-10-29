@@ -1,0 +1,2 @@
+# ok
+# bad ÿ byte

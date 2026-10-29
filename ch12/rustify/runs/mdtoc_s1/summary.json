@@ -1,0 +1,25 @@
+{
+  "run": "mdtoc_s1",
+  "engine": "claude",
+  "stop_reason": "gate_passed",
+  "rounds": 2,
+  "cost_usd": 2.5275,
+  "tokens": {
+    "input_tokens": 142,
+    "cache_creation_input_tokens": 172818,
+    "cache_read_input_tokens": 7006073,
+    "output_tokens": 113480
+  },
+  "human_interventions": 0,
+  "confirm_gate_ok": true,
+  "gate_sandboxed": true,
+  "artifacts": {
+    "binary_sha256": "d6f112b7f6786006d5cdea8a1586f785ddc33dcbe474311fc5ae16626d920d47",
+    "binary_bytes": 448888,
+    "cargo_lock_sha256": "9a449e4215765ce3732254c5f9b3ecd092046e33d8beb891f23dec4d71ca877c",
+    "dropped_large_files": [],
+    "secret_scan": []
+  },
+  "wall_s": 2486.6,
+  "cost_note": "처음 기록은 2.262(후속 라운드 비용 계산 오류). sessions.jsonl 의 누적값으로 다시 계산"
+}

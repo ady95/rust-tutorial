@@ -1,0 +1,9 @@
+OK  구성                 필수 파일 6가지
+OK  port.json          검사 compare, fuzz, 성능 측정 있음
+불가  승인(baseline.lock)  baseline: changed: python_src/mdtoc.py
+불가  pytest             6 failed, 17 passed in 0.77s
+OK  비교 케이스             31개(종료 0: 22, 종료 1: 4, 종료 2: 5)
+OK  입력 생성 규칙           tests/strategies.py 의 cases()
+OK  계약                 2539자
+
+mdtoc_tampered: 시작 불가

@@ -1,0 +1,10 @@
+{
+  "run": "fail_input",
+  "engine": "claude",
+  "stop_reason": "input_rejected",
+  "rounds": 0,
+  "cost_usd": 0.0,
+  "tokens": {},
+  "human_interventions": 0,
+  "wall_s": 3.5
+}

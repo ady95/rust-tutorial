@@ -1,0 +1,24 @@
+{
+  "run": "mdtoc_s2",
+  "engine": "claude",
+  "stop_reason": "gate_passed",
+  "rounds": 2,
+  "cost_usd": 0.6009,
+  "tokens": {
+    "input_tokens": 40,
+    "cache_creation_input_tokens": 43963,
+    "cache_read_input_tokens": 773017,
+    "output_tokens": 10140
+  },
+  "human_interventions": 0,
+  "confirm_gate_ok": true,
+  "gate_sandboxed": true,
+  "artifacts": {
+    "binary_sha256": "5e1b1ca9f9c5898770dc1a1e606d0d0e01a8930bf64a2d37d278a061489e430c",
+    "binary_bytes": 453600,
+    "cargo_lock_sha256": "9a449e4215765ce3732254c5f9b3ecd092046e33d8beb891f23dec4d71ca877c",
+    "dropped_large_files": [],
+    "secret_scan": []
+  },
+  "wall_s": 875.0
+}
