@@ -1,0 +1,53 @@
+{
+  "data": "/home/dev/work/rust-tutorial/ch09/logstat/tests/fixtures/empty.csv",
+  "data_bytes": 0,
+  "records": 0,
+  "warmup": 3,
+  "machine": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+  "results": {
+    "py": {
+      "mean_s": 0.04234062409999999,
+      "stddev_s": 0.0007529029175375638,
+      "median_s": 0.042163820000000005,
+      "min_s": 0.041385704,
+      "max_s": 0.043926726,
+      "runs": 30,
+      "records_per_s": 0.0,
+      "max_rss_kb": 14912,
+      "command": "python3 /home/dev/work/rust-tutorial/ch09/logstat/python_src/logstat.py /home/dev/work/rust-tutorial/ch09/logstat/tests/fixtures/empty.csv --top 10"
+    },
+    "ext_v1": {
+      "mean_s": 0.045234227666666675,
+      "stddev_s": 0.00277301347710373,
+      "median_s": 0.0444438235,
+      "min_s": 0.043168029000000004,
+      "max_s": 0.055328503,
+      "runs": 30,
+      "records_per_s": 0.0,
+      "max_rss_kb": 14956,
+      "command": "/home/dev/work/ch08_ws/ch11_partial/ext/logstat_v1 /home/dev/work/rust-tutorial/ch09/logstat/tests/fixtures/empty.csv --top 10"
+    },
+    "ext_v2": {
+      "mean_s": 0.04397140290000001,
+      "stddev_s": 0.0010521211024805,
+      "median_s": 0.0437407945,
+      "min_s": 0.042856235,
+      "max_s": 0.047728035,
+      "runs": 30,
+      "records_per_s": 0.0,
+      "max_rss_kb": 15040,
+      "command": "/home/dev/work/ch08_ws/ch11_partial/ext/logstat_v2 /home/dev/work/rust-tutorial/ch09/logstat/tests/fixtures/empty.csv --top 10"
+    },
+    "rust_full": {
+      "mean_s": 0.0008641903333333333,
+      "stddev_s": 5.045141584584695e-05,
+      "median_s": 0.000848312,
+      "min_s": 0.000820332,
+      "max_s": 0.001038695,
+      "runs": 30,
+      "records_per_s": 0.0,
+      "max_rss_kb": 2164,
+      "command": "/home/dev/work/ch09_bin/logstat_agent /home/dev/work/rust-tutorial/ch09/logstat/tests/fixtures/empty.csv --top 10"
+    }
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "data": "/home/dev/work/ch09_data/logs_1000000.jsonl",
+  "data_bytes": 119474331,
+  "records": 1000000,
+  "warmup": 2,
+  "machine": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+  "results": {
+    "py": {
+      "mean_s": 9.842181287099999,
+      "stddev_s": 0.09882307059638225,
+      "median_s": 9.804961404,
+      "min_s": 9.728939077,
+      "max_s": 10.022002154,
+      "runs": 10,
+      "records_per_s": 101603.49325313537,
+      "max_rss_kb": 861656,
+      "command": "python3 /home/dev/work/rust-tutorial/ch09/logstat/python_src/logstat.py /home/dev/work/ch09_data/logs_1000000.jsonl --top 10"
+    },
+    "ext_v1": {
+      "mean_s": 5.7399387506999995,
+      "stddev_s": 0.024242998761388534,
+      "median_s": 5.739627768,
+      "min_s": 5.703076597,
+      "max_s": 5.788817487,
+      "runs": 10,
+      "records_per_s": 174217.88688564795,
+      "max_rss_kb": 797708,
+      "command": "/home/dev/work/ch08_ws/ch11_partial/ext/logstat_v1 /home/dev/work/ch09_data/logs_1000000.jsonl --top 10"
+    },
+    "ext_v2": {
+      "mean_s": 1.2515916898000001,
+      "stddev_s": 0.02273413410026223,
+      "median_s": 1.2428220915,
+      "min_s": 1.228202631,
+      "max_s": 1.285577436,
+      "runs": 10,
+      "records_per_s": 798982.6140183117,
+      "max_rss_kb": 427976,
+      "command": "/home/dev/work/ch08_ws/ch11_partial/ext/logstat_v2 /home/dev/work/ch09_data/logs_1000000.jsonl --top 10"
+    },
+    "rust_full": {
+      "mean_s": 1.1480338013,
+      "stddev_s": 0.03508182169062301,
+      "median_s": 1.136424758,
+      "min_s": 1.124911878,
+      "max_s": 1.238940944,
+      "runs": 10,
+      "records_per_s": 871054.4923569578,
+      "max_rss_kb": 298420,
+      "command": "/home/dev/work/ch09_bin/logstat_agent /home/dev/work/ch09_data/logs_1000000.jsonl --top 10"
+    }
+  }
+}

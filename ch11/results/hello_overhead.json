@@ -1,0 +1,37 @@
+{
+  "call_ns": {
+    "python_add": 53.27379999999948,
+    "rust_add": 65.71579999999955
+  },
+  "sum_us": {
+    "10": {
+      "python_sum": 0.1489869999999982,
+      "rust_sum_floats(list)": 0.21817000000002196,
+      "numpy_sum(array)": 0.5352010000000007,
+      "numpy_sum(list->array)": 1.055457000000004
+    },
+    "1000": {
+      "python_sum": 6.063399999998609,
+      "rust_sum_floats(list)": 8.883399999998431,
+      "numpy_sum(array)": 0.7893999999986079,
+      "numpy_sum(list->array)": 35.220300000002425
+    },
+    "1000000": {
+      "python_sum": 7383.799999999496,
+      "rust_sum_floats(list)": 10385.799999998113,
+      "numpy_sum(array)": 555.3000000020347,
+      "numpy_sum(list->array)": 36370.20000000035
+    }
+  },
+  "percentile_1m_ms": {
+    "python_sorted": 209.5687919999989,
+    "rust_percentile(list)": 38.133058999996194,
+    "numpy_percentile(array)": 9.179317000004517,
+    "list->Vec conversion only": 8.970866999995053
+  },
+  "gil_4threads_s": {
+    "one_thread": 0.05333029199999828,
+    "detach(4 threads)": 0.07807011599999925,
+    "holding_gil(4 threads)": 0.2032791749999987
+  }
+}

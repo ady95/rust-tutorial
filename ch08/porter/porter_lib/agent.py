@@ -85,7 +85,10 @@ async def run_session(
         output_format={"type": "json_schema", "schema": output_schema} if output_schema else None,
         sandbox=sandbox,  # 셸 명령을 OS 수준에서 가둔다(08-5)
         # 서브에이전트가 또 서브에이전트를 만들지 못하게, 정의하지 않은 기본 서브에이전트(general-purpose)도 끈다
-        env={"CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH": "1", "CLAUDE_AGENT_SDK_DISABLE_BUILTIN_AGENTS": "1"},
+        # VIRTUAL_ENV: 파이프라인을 uv run 으로 띄우면 파이프라인 자신의 가상 환경 경로가 에이전트 셸로 넘어가는데,
+        # 샌드박스는 그 경로를 읽지 못하게 막으므로 PyO3 빌드 등이 실패했다(11-3). 작업 폴더의 가상 환경을 가리키게 한다
+        env={"CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH": "1", "CLAUDE_AGENT_SDK_DISABLE_BUILTIN_AGENTS": "1",
+             "VIRTUAL_ENV": str(workspace / ".venv")},
     )
     result = SessionResult(label=label)
     started = time.monotonic()

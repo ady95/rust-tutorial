@@ -47,6 +47,18 @@ ROLES: dict[str, dict[str, list[str]]] = {
             r"^mkdir -p (rust_app|reports|verify)(/\S*)?$", r"^rm (-f )?(verify|rust_app)/[\w/.-]+$",
         ],
     },
+    # 11장 부분 이식: Python 은 그대로 두고 Rust 확장 모듈(rust_ext/)과 그것을 쓰는 Python 진입점(ext/)을 만든다
+    "implementer_ext": {
+        "write": ["rust_ext/", "ext/", "reports/", "verify/"],
+        "bash": [
+            r"^cargo (build|check|test|clippy|fmt|add|tree|metadata)(\s|$)",
+            r"^(\.venv/bin/)?maturin (develop|build)(\s|$)",
+            r"^(\.venv/bin/python|python3|uv run python) (verify|ext)/[\w/.-]+\.py(\s|$)",
+            r"^(\./)?ext/logstat_v[12](\s|$)",
+            RUN_PYTHON_REF, RUN_CHECKS, READ_ONLY_COMMANDS,
+            r"^mkdir -p (rust_ext|ext|reports|verify)(/\S*)?$", r"^rm (-f )?(verify|ext|rust_ext)/[\w/.-]+$",
+        ],
+    },
     "verifier": {
         "write": ["verify/"],
         "bash": [

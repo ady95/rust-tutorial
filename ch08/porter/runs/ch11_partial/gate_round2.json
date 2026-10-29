@@ -1,0 +1,141 @@
+{
+  "ok": true,
+  "fuzz_seed": 81414236,
+  "steps": [
+    {
+      "name": "baseline",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 0.03,
+      "tail": [
+        "baseline OK (23 files)"
+      ]
+    },
+    {
+      "name": "fmt",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 0.05,
+      "tail": []
+    },
+    {
+      "name": "clippy",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 2.42,
+      "tail": [
+        "   Compiling pyo3-ffi v0.30.1",
+        "   Compiling pyo3 v0.30.1",
+        "    Checking logstat_core v0.1.0 (/home/dev/work/ch08_ws/ch11_partial/rust_ext)",
+        "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.38s"
+      ]
+    },
+    {
+      "name": "maturin",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 5.22,
+      "tail": [
+        "✏️ Setting installed package as editable",
+        "🐍 Found CPython 3.12 at /home/dev/work/ch08_ws/ch11_partial/.venv/bin/python",
+        "🔗 Found pyo3 bindings",
+        "📡 Using build options features from pyproject.toml",
+        "📦 Built wheel for CPython 3.12 to /tmp/.tmp66G4FV/logstat_core-0.1.0-cp312-cp312-linux_x86_64.whl",
+        "🛠 Installed logstat_core-0.1.0"
+      ]
+    },
+    {
+      "name": "compare-v1",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 2.37,
+      "tail": [
+        "OK   basic-csv",
+        "OK   basic-csv-json",
+        "OK   basic-csv-top2",
+        "OK   basic-csv-strict",
+        "OK   basic-jsonl",
+        "OK   basic-jsonl-json",
+        "OK   basic-jsonl-strict",
+        "OK   quoting",
+        "OK   quoting-json",
+        "OK   edge",
+        "OK   edge-json",
+        "OK   edge-strict",
+        "OK   tz",
+        "OK   tz-json",
+        "OK   empty",
+        "OK   empty-json",
+        "OK   header-only",
+        "OK   missing-column",
+        "OK   bom",
+        "OK   bad-utf8",
+        "OK   big-field",
+        "OK   format-override",
+        "OK   missing-file",
+        "OK   usage-unknown-extension",
+        "OK   usage-top-zero",
+        "OK   usage-abbrev",
+        "OK   usage-bad-format",
+        "",
+        "27/27 cases match"
+      ]
+    },
+    {
+      "name": "fuzz-v1",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 51.49,
+      "tail": [
+        "OK   1000 random inputs match"
+      ]
+    },
+    {
+      "name": "compare-v2",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 2.34,
+      "tail": [
+        "OK   basic-csv",
+        "OK   basic-csv-json",
+        "OK   basic-csv-top2",
+        "OK   basic-csv-strict",
+        "OK   basic-jsonl",
+        "OK   basic-jsonl-json",
+        "OK   basic-jsonl-strict",
+        "OK   quoting",
+        "OK   quoting-json",
+        "OK   edge",
+        "OK   edge-json",
+        "OK   edge-strict",
+        "OK   tz",
+        "OK   tz-json",
+        "OK   empty",
+        "OK   empty-json",
+        "OK   header-only",
+        "OK   missing-column",
+        "OK   bom",
+        "OK   bad-utf8",
+        "OK   big-field",
+        "OK   format-override",
+        "OK   missing-file",
+        "OK   usage-unknown-extension",
+        "OK   usage-top-zero",
+        "OK   usage-abbrev",
+        "OK   usage-bad-format",
+        "",
+        "27/27 cases match"
+      ]
+    },
+    {
+      "name": "fuzz-v2",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 51.98,
+      "tail": [
+        "OK   1000 random inputs match"
+      ]
+    }
+  ],
+  "protected_changed": false
+}

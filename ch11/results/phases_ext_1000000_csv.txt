@@ -1,0 +1,7 @@
+rows                                          1000000
+python: parse+validate                           6.852s
+python: summarize                                2.299s
+v1 rust: parse+validate -> Python objects        3.298s
+v2 rust: parse+validate+summarize -> dict        1.021s
+python: format_text                              0.000s
+{"rows": 1000000, "python: parse+validate": 6.852439311000012, "python: summarize": 2.298582045000046, "v1 rust: parse+validate -> Python objects": 3.298351815999979, "v2 rust: parse+validate+summarize -> dict": 1.0206316569999672, "python: format_text": 1.2943000001541805e-05}

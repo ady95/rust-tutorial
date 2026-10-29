@@ -1,0 +1,11 @@
+[package]
+name = "hello_ext"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "hello_ext"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "0.30.1" }

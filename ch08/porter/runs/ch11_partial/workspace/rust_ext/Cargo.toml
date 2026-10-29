@@ -1,0 +1,21 @@
+[package]
+name = "logstat_core"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[lib]
+name = "logstat_core"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+pyo3 = "0.30"
+
+[features]
+# maturin 이 빌드할 때만 켠다(pyproject.toml). cargo test 는 libpython 에 링크해야 해서 끈다
+extension-module = ["pyo3/extension-module"]
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
