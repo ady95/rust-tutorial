@@ -1,0 +1,16 @@
+[project]
+name = "mdtoc"
+version = "1.0.0"
+description = "mdtoc reference implementation (ch12 practice project), contract v1"
+requires-python = ">=3.12"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+    "hypothesis>=6.170",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["python_src", "tests"]
+testpaths = ["tests"]

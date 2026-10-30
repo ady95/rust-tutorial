@@ -30,3 +30,6 @@ ch08/porter/runs/*/artifacts/*
 !ch08/porter/runs/*/artifacts/Cargo.toml
 !ch08/porter/runs/*/artifacts/Cargo.lock
 ch08/porter/runs/*/workspace/verify/data/
+
+# 04-2 헤드리스 실행 기록(작업 폴더 밖)
+ch04/run_logs/

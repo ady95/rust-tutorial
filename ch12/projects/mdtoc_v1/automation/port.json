@@ -1,0 +1,17 @@
+{
+  "name": "mdtoc",
+  "python": "python_src/mdtoc.py",
+  "binary": "mdtoc",
+  "checks": [
+    {"name": "compare", "builtin": "compare"},
+    {"name": "fuzz", "builtin": "fuzz", "examples": 2000}
+  ],
+  "bench": {
+    "generate": ["uv", "run", "python", "automation/gen_bench.py", "{dir}"],
+    "cases": [
+      {"name": "large-doc", "args": ["{dir}/large.md"]},
+      {"name": "large-doc-json", "args": ["{dir}/large.md", "--json"]},
+      {"name": "small-doc", "args": ["tests/fixtures/basic.md"]}
+    ]
+  }
+}

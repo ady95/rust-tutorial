@@ -1,14 +1,15 @@
 # 12장. 사람은 Python만 개발하는 Rust 자동 개발 시스템
 
 - `rustify/` : 최종 도구. 8장 파이프라인(ch08/porter)을 정리하고 입력 검사·범용 비교 하네스·성능 측정·보고서·재현 검사를 더함
-- `projects/mdtoc/` : 이 장의 실습 프로젝트(Markdown 목차). 사람이 Python 으로만 만든 기준 구현·테스트·계약(2판)
+- `projects/mdtoc_v1/` : 이 장의 실습 프로젝트(Markdown 목차) 1판. 사람이 Python 으로만 만든 기준 구현·테스트·계약. mdtoc_s1 의 승인본과 같다(`baseline.lock` SHA-256 이 runs/mdtoc_s1/run.json 과 일치)
+- `projects/mdtoc/` : 같은 프로젝트의 2판(`--numbered` 추가, 앵커 겹침 수정). mdtoc_s2·mdtoc_codex·mdtoc_claude_na·fail_budget·fail_budget2 의 입력
 - `rustify/runs/` : 실측 기록(에이전트 로그는 측정 환경 정보를 지운 사본, 실행 파일은 해시만)
 
 ```bash
 cd ch12/rustify
 uv sync
-uv run python rustify.py check ../projects/mdtoc
-uv run python rustify.py run ../projects/mdtoc --run my_run --model sonnet --budget 6
+uv run python rustify.py check ../projects/mdtoc_v1
+uv run python rustify.py run ../projects/mdtoc_v1 --run my_run --model sonnet --budget 6
 uv run python rustify.py bench --run my_run
 uv run python rustify.py report --run my_run
 uv run python rustify.py replay --run my_run
