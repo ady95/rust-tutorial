@@ -2,13 +2,15 @@
 
 #[pyo3::pymodule]
 mod hello_ext {
-    use pyo3::exceptions::PyValueError;
+    use pyo3::exceptions::{PyOverflowError, PyValueError};
     use pyo3::prelude::*;
 
-    /// 아무 일도 하지 않는 함수. Python → Rust 호출 한 번의 비용을 잰다.
+    /// 거의 아무 일도 하지 않는 함수. Python → Rust 호출 한 번의 비용을 잰다.
+    /// 합이 i64 를 넘으면 값이 한 바퀴 돌지 않게 OverflowError 로 거부한다.
     #[pyfunction]
-    fn add(a: i64, b: i64) -> i64 {
-        a + b
+    fn add(a: i64, b: i64) -> PyResult<i64> {
+        a.checked_add(b)
+            .ok_or_else(|| PyOverflowError::new_err("result does not fit in i64"))
     }
 
     /// Python 리스트를 Vec<f64> 로 바꿔(복사) 더한다. 변환 비용이 계산보다 클 수 있다.
@@ -20,6 +22,9 @@ mod hello_ext {
     /// nearest-rank 백분위수(09장 logstat 과 같은 정의). 정렬 후 ceil(p*n/100)번째 값.
     #[pyfunction]
     fn percentile(mut values: Vec<f64>, p: u32) -> PyResult<f64> {
+        if p > 100 {
+            return Err(PyValueError::new_err("p must be between 0 and 100"));
+        }
         if values.is_empty() {
             return Err(PyValueError::new_err("empty list"));
         }

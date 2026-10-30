@@ -12,6 +12,8 @@ def test_argument_types_are_checked() -> None:
         hello_ext.add("2", 3)  # Python 처럼 문자열을 숫자로 바꿔 주지 않는다
     with pytest.raises(OverflowError):
         hello_ext.add(2**63, 0)  # i64 범위를 넘으면 예외
+    with pytest.raises(OverflowError):
+        hello_ext.add(2**63 - 1, 1)  # 결과가 i64 를 넘어도 예외(값이 한 바퀴 돌지 않음)
 
 
 def test_sum_and_percentile() -> None:
@@ -26,6 +28,10 @@ def test_rust_errors_become_python_exceptions() -> None:
         hello_ext.percentile([], 50)
     with pytest.raises(ValueError, match="NaN"):
         hello_ext.percentile([1.0, float("nan")], 50)
+    with pytest.raises(ValueError, match="between 0 and 100"):
+        hello_ext.percentile([1.0], 101)
+    with pytest.raises(OverflowError):
+        hello_ext.percentile([1.0], -1)  # u32 로 받으므로 음수는 변환 단계에서 거부
 
 
 def test_count_words() -> None:

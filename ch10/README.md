@@ -12,7 +12,7 @@
 | `bench/load.py`, `bench/run_load.py` | 표준 라이브러리만 쓰는 부하 생성기와 서버별 측정 | 10-4 |
 | `bench/results/` | 이 책의 측정 결과 | 10-3, 10-4 |
 
-에이전트가 만든 Rust 코드와 실행 기록은 `ch08/porter/runs/ch10_analyze/`, `ch10_port/`(표준 라이브러리로 HTTP까지 직접 쓴 버전), `ch10_axum/`(HTTP 계층을 axum으로 바꾼 버전)에 있습니다. 저수준 HTTP 비교 스크립트는 `ch10_port/workspace/verify/http_raw.py`(에이전트 작성)입니다.
+에이전트가 만든 Rust 코드와 실행 기록은 `ch08/porter/runs/ch10_analyze/`, `ch10_port/`(표준 라이브러리로 HTTP까지 직접 쓴 버전), `ch10_axum/`(HTTP 계층을 axum으로 바꾼 버전), `ch10_axum2/`(계약을 고친 뒤 다시 맞춘 axum 버전)에 있습니다. 지금의 `stockroom/` 계약(케이스 23개)을 통과하는 것은 `ch10_axum2`뿐입니다. `ch10_port`와 `ch10_axum`은 고치기 전 계약에 맞춘 기록으로, 10-3·10-4의 측정에 쓴 버전입니다. 저수준 HTTP 비교 스크립트는 `ch10_port/workspace/verify/http_raw.py`(에이전트 작성)입니다.
 
 ## 실행
 
