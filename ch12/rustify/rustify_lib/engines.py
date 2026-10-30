@@ -124,9 +124,11 @@ class CodexEngine:
 
     def command(self, workspace: Path, allow_crates: bool, resume: str | None, prompt: str) -> list[str]:
         cmd = [self.cli_path, "exec"]
-        if resume:
-            cmd += ["resume", resume]
-        cmd += ["--json", "--skip-git-repo-check", "--sandbox", "workspace-write", "--cd", str(workspace),
+        if resume:  # resume 은 --sandbox·--cd 를 받지 않는다. 설정 값으로 넘기고 작업 폴더는 cwd 로 정한다
+            cmd += ["resume", resume, "-c", 'sandbox_mode="workspace-write"']
+        else:
+            cmd += ["--sandbox", "workspace-write", "--cd", str(workspace)]
+        cmd += ["--json", "--skip-git-repo-check",
                 "-c", f"sandbox_workspace_write.network_access={'true' if allow_crates else 'false'}"]
         if self.model:
             cmd += ["--model", self.model]

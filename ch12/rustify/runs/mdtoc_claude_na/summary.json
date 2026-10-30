@@ -1,0 +1,24 @@
+{
+  "run": "mdtoc_claude_na",
+  "engine": "claude",
+  "stop_reason": "gate_passed",
+  "rounds": 2,
+  "cost_usd": 0.8901,
+  "tokens": {
+    "input_tokens": 82,
+    "cache_creation_input_tokens": 68235,
+    "cache_read_input_tokens": 2001516,
+    "output_tokens": 41669
+  },
+  "human_interventions": 0,
+  "confirm_gate_ok": true,
+  "gate_sandboxed": true,
+  "artifacts": {
+    "binary_sha256": "6aad1e8175704c94e680c3867af7c0500b2dfc94e915588175c64b2df81c76c9",
+    "binary_bytes": 544568,
+    "cargo_lock_sha256": "9a449e4215765ce3732254c5f9b3ecd092046e33d8beb891f23dec4d71ca877c",
+    "dropped_large_files": [],
+    "secret_scan": []
+  },
+  "wall_s": 930.3
+}

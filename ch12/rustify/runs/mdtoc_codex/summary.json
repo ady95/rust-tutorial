@@ -1,0 +1,48 @@
+{
+  "run": "mdtoc_codex",
+  "engine": "codex",
+  "stop_reason": "gate_passed",
+  "rounds": 2,
+  "cost_usd": 0.0,
+  "tokens": {
+    "input_tokens": 1843816,
+    "cached_input_tokens": 1789568,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 29245,
+    "reasoning_output_tokens": 6308
+  },
+  "human_interventions": 0,
+  "confirm_gate_ok": true,
+  "gate_sandboxed": true,
+  "artifacts": {
+    "binary_sha256": "1eabb466d832402ab8f9b2b518dfd0f53ec477b6f9af864be43e314ed47f3805",
+    "binary_bytes": 603304,
+    "cargo_lock_sha256": "9a449e4215765ce3732254c5f9b3ecd092046e33d8beb891f23dec4d71ca877c",
+    "dropped_large_files": [
+      "verify/level_probe"
+    ],
+    "secret_scan": [
+      {
+        "file": "reports/closed_stdio_results.json",
+        "kind": "홈 경로"
+      },
+      {
+        "file": "reports/edge_results.json",
+        "kind": "홈 경로"
+      },
+      {
+        "file": "reports/edge_results_before.json",
+        "kind": "홈 경로"
+      },
+      {
+        "file": "reports/newline_filename_results.json",
+        "kind": "홈 경로"
+      },
+      {
+        "file": "verify/level_probe.rs",
+        "kind": "홈 경로"
+      }
+    ]
+  },
+  "wall_s": 691.7
+}

@@ -1,0 +1,9 @@
+OK  구성                 필수 파일 6가지
+OK  port.json          검사 compare, fuzz, 성능 측정 있음
+OK  승인(baseline.lock)  baseline OK (25 files)
+OK  pytest             25 passed in 0.25s
+OK  비교 케이스             36개(종료 0: 27, 종료 1: 4, 종료 2: 5)
+OK  입력 생성 규칙           tests/strategies.py 의 cases()
+OK  계약                 3212자
+
+mdtoc: 시작 가능

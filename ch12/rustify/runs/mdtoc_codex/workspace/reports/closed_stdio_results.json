@@ -1,0 +1,50 @@
+[
+  {
+    "case": "stdin",
+    "implementation": "python",
+    "code": 1,
+    "stderr": "Traceback (most recent call last):\n  File \"/home/dev/work/rustify_ws/mdtoc_codex/python_src/mdtoc.py\", line 129, in <module>\n    sys.exit(main())\n             ^^^^^^\n  File \"/home/dev/work/rustify_ws/mdtoc_codex/python_src/mdtoc.py\", line 106, in main\n    data = sys.stdin.buffer.read()\n           ^^^^^^^^^^^^^^^^\nAttributeError: 'NoneType' object has no attribute 'buffer'\n"
+  },
+  {
+    "case": "stdin",
+    "implementation": "rust",
+    "code": 0,
+    "stderr": ""
+  },
+  {
+    "case": "stdout",
+    "implementation": "python",
+    "code": 1,
+    "stderr": "Traceback (most recent call last):\n  File \"/home/dev/work/rustify_ws/mdtoc_codex/python_src/mdtoc.py\", line 129, in <module>\n    sys.exit(main())\n             ^^^^^^\n  File \"/home/dev/work/rustify_ws/mdtoc_codex/python_src/mdtoc.py\", line 100, in main\n    sys.stdout.reconfigure(encoding=\"utf-8\", newline=\"\\n\")\n    ^^^^^^^^^^^^^^^^^^^^^^\nAttributeError: 'NoneType' object has no attribute 'reconfigure'\n"
+  },
+  {
+    "case": "stdout",
+    "implementation": "rust",
+    "code": 0,
+    "stderr": ""
+  },
+  {
+    "case": "stderr",
+    "implementation": "python",
+    "code": 1,
+    "stderr": ""
+  },
+  {
+    "case": "stderr",
+    "implementation": "rust",
+    "code": 2,
+    "stderr": ""
+  },
+  {
+    "case": "broken-pipe",
+    "implementation": "python",
+    "code": 120,
+    "stderr": "Exception ignored in: <_io.TextIOWrapper name='<stdout>' mode='w' encoding='utf-8'>\nBrokenPipeError: [Errno 32] Broken pipe\n"
+  },
+  {
+    "case": "broken-pipe",
+    "implementation": "rust",
+    "code": 101,
+    "stderr": "\nthread 'main' (10) panicked at /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library/std/src/io/stdio.rs:1168:9:\nfailed printing to stdout: Broken pipe (os error 32)\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n"
+  }
+]

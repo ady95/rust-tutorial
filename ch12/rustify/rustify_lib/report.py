@@ -19,10 +19,14 @@ def _jsonl(path: Path) -> list[dict]:
     return [json.loads(line) for line in path.read_text(encoding="utf-8").split("\n") if line.strip()]
 
 
-def uncertain_section(notes: str) -> str:
-    """port_notes.md 에서 '확신하지 못하는' 절을 찾아 돌려준다."""
-    match = re.search(r"^(#+)[^\n]*확신[^\n]*\n(.*?)(?=^\1 |\Z)", notes, re.M | re.S)
-    return match.group(2).strip() if match else ""
+def notes_section(notes: str, keyword: str) -> str | None:
+    """port_notes.md 에서 제목에 keyword 가 든 절을 찾아 돌려준다. 절이 없으면 None(빈 절과 구분한다)."""
+    match = re.search(rf"^(#+)[^\n]*(?:{keyword})[^\n]*\n(.*?)(?=^\1 |\Z)", notes, re.M | re.S)
+    return match.group(2).strip() if match else None
+
+
+NOTE_SECTIONS = [("확신", "에이전트가 확신하지 못한 부분"),
+                 ("사람이 (?:정|결정)", "에이전트가 사람에게 넘긴 결정")]
 
 
 def write_report(out: Path) -> Path:
@@ -101,8 +105,11 @@ def write_report(out: Path) -> Path:
 
     notes_path = out / "workspace" / "reports" / "port_notes.md"
     if notes_path.exists():
-        uncertain = uncertain_section(notes_path.read_text(encoding="utf-8"))
-        lines += ["## 에이전트가 확신하지 못한 부분(검증하지 않은 서술)", "", uncertain or "(없음)", ""]
+        notes = notes_path.read_text(encoding="utf-8")
+        for keyword, title in NOTE_SECTIONS:
+            text = notes_section(notes, keyword)
+            body = "(노트에 이 절이 없음)" if text is None else text or "(비어 있음)"
+            lines += [f"## {title}(검증하지 않은 서술)", "", body, ""]
     path = out / "report.md"
     path.write_text("\n".join(lines), encoding="utf-8")
     return path

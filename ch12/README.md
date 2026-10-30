@@ -25,3 +25,8 @@ Linux·WSL 기준(bubblewrap 필요). 에이전트 인증은 Claude Code 로그�
 | fail_input | 승인 뒤 바뀐 입력(입력 검사에서 멈춤) |
 | fail_budget | 예산 0.5달러, 분석·후속 확인 없음(게이트 통과, 숨긴 평가 실패: hidden_eval.md) |
 | fail_budget2 | 예산 0.15달러(budget 으로 멈춤) |
+| mdtoc_codex | 2판 새 이식, Codex 엔진(`--engine codex`, 분석 없음). 숨긴 평가·교차 탐침·성능 비교: hidden_eval.md |
+| mdtoc_claude_na | 같은 조건의 Claude 엔진(비교 기준) |
+
+Codex 엔진은 Codex CLI 와 같은 릴리스의 `codex-code-mode-host` 가 함께 설치되어 있어야 셸 명령을 실행한다(0.162.1 기준).
+Codex 의 `workspace-write` 샌드박스는 작업 폴더 밖 쓰기와 네트워크를 막지만 읽기는 막지 않는다. 전용 계정에서 실행할 것.

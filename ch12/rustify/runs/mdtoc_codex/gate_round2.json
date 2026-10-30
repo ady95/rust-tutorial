@@ -1,0 +1,119 @@
+{
+  "ok": true,
+  "fuzz_seed": 1181947332,
+  "steps": [
+    {
+      "name": "baseline",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 0.03,
+      "tail": [
+        "baseline OK (25 files)"
+      ]
+    },
+    {
+      "name": "harness",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 0.0,
+      "tail": []
+    },
+    {
+      "name": "fmt",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 0.07,
+      "tail": []
+    },
+    {
+      "name": "clippy",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 0.07,
+      "tail": [
+        "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.03s"
+      ]
+    },
+    {
+      "name": "test",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 0.05,
+      "tail": [
+        "",
+        "running 0 tests",
+        "",
+        "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "",
+        "    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.03s",
+        "     Running unittests src/main.rs (rust_app/target/debug/deps/mdtoc-4f1b5357358075ae)"
+      ]
+    },
+    {
+      "name": "build",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 0.02,
+      "tail": [
+        "    Finished `release` profile [optimized] target(s) in 0.00s"
+      ]
+    },
+    {
+      "name": "compare",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 1.05,
+      "tail": [
+        "OK   basic",
+        "OK   basic-json",
+        "OK   fences",
+        "OK   unclosed-fence",
+        "OK   atx-rules",
+        "OK   unicode",
+        "OK   unicode-json",
+        "OK   dupes",
+        "OK   line-boundaries",
+        "OK   strip-whitespace",
+        "OK   json-escapes",
+        "OK   bom",
+        "OK   empty",
+        "OK   empty-json",
+        "OK   no-headings",
+        "OK   levels-2-3",
+        "OK   levels-filtered-dupes",
+        "OK   levels-last-wins",
+        "OK   levels-equals",
+        "OK   stdin",
+        "OK   stdin-dash",
+        "OK   invalid-utf8",
+        "OK   invalid-utf8-stdin",
+        "OK   missing-file",
+        "OK   directory",
+        "OK   usage-level-range",
+        "OK   usage-min-gt-max",
+        "OK   usage-abbrev",
+        "OK   usage-unknown",
+        "OK   usage-not-int",
+        "OK   help",
+        "OK   numbered",
+        "OK   numbered-jumps",
+        "OK   numbered-min-level",
+        "OK   numbered-json-wins",
+        "OK   dupes-json",
+        "",
+        "36/36 cases match"
+      ]
+    },
+    {
+      "name": "fuzz",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 60.38,
+      "tail": [
+        "2000 random cases match (seed 1181947332)"
+      ]
+    }
+  ],
+  "protected_changed": false,
+  "sandboxed": true
+}

@@ -1,0 +1,118 @@
+{
+  "build": "release",
+  "runs": 10,
+  "warmup": 2,
+  "mem_repeat": 5,
+  "env": {
+    "os": "Ubuntu 24.04.5 LTS",
+    "kernel": "6.18.33.2-microsoft-standard-WSL2",
+    "cpu": "Intel(R) Core(TM) i7-6700K CPU @ 4.00GHz",
+    "claude_code": "2.1.299 (Claude Code)",
+    "claude_agent_sdk": "0.2.174",
+    "codex": "codex-cli 0.162.1",
+    "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+    "cargo": "cargo 1.99.1 (5f94df478 2026-08-27)",
+    "python": "Python 3.12.3",
+    "uv": "uv 0.13.6 (x86_64-unknown-linux-gnu)",
+    "hyperfine": "hyperfine 1.18.0"
+  },
+  "cases": [
+    {
+      "name": "large-doc",
+      "args": [
+        "/home/dev/work/rustify_data/mdtoc/large.md"
+      ],
+      "input_bytes": 19437698,
+      "output_bytes": 2689221,
+      "same_output": true,
+      "time": {
+        "python": {
+          "mean_s": 0.4915292749000001,
+          "stddev_s": 0.0208032675923385,
+          "median_s": 0.48276831800000003,
+          "min_s": 0.47645773,
+          "max_s": 0.543060713,
+          "runs": 10
+        },
+        "rust": {
+          "mean_s": 0.22522476140000003,
+          "stddev_s": 0.0018692160450248872,
+          "median_s": 0.22575862400000002,
+          "min_s": 0.22006507700000003,
+          "max_s": 0.226428809,
+          "runs": 10
+        }
+      },
+      "max_rss_kb": {
+        "python": 126816,
+        "rust": 33280
+      },
+      "speedup": 2.18
+    },
+    {
+      "name": "large-doc-json",
+      "args": [
+        "/home/dev/work/rustify_data/mdtoc/large.md",
+        "--json"
+      ],
+      "input_bytes": 19437698,
+      "output_bytes": 3969274,
+      "same_output": true,
+      "time": {
+        "python": {
+          "mean_s": 0.5258147074,
+          "stddev_s": 0.023679837978092887,
+          "median_s": 0.519564849,
+          "min_s": 0.49871049900000003,
+          "max_s": 0.572853772,
+          "runs": 10
+        },
+        "rust": {
+          "mean_s": 0.19615356379999999,
+          "stddev_s": 0.0028947363708480695,
+          "median_s": 0.195418475,
+          "min_s": 0.19216283,
+          "max_s": 0.20126000100000002,
+          "runs": 10
+        }
+      },
+      "max_rss_kb": {
+        "python": 126816,
+        "rust": 44672
+      },
+      "speedup": 2.68
+    },
+    {
+      "name": "small-doc",
+      "args": [
+        "tests/fixtures/basic.md"
+      ],
+      "input_bytes": 63,
+      "output_bytes": 116,
+      "same_output": true,
+      "time": {
+        "python": {
+          "mean_s": 0.026317310500000003,
+          "stddev_s": 0.00042131499757261284,
+          "median_s": 0.026270165,
+          "min_s": 0.025839874000000002,
+          "max_s": 0.027163764,
+          "runs": 10
+        },
+        "rust": {
+          "mean_s": 0.0009068939,
+          "stddev_s": 7.998021858691753e-05,
+          "median_s": 0.0008739155,
+          "min_s": 0.0008316860000000001,
+          "max_s": 0.001076043,
+          "runs": 10
+        }
+      },
+      "max_rss_kb": {
+        "python": 12324,
+        "rust": 2144
+      },
+      "speedup": 29.02
+    }
+  ]
+}

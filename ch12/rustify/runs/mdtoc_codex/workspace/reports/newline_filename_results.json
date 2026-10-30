@@ -1,0 +1,14 @@
+[
+  {
+    "implementation": "python",
+    "code": 1,
+    "stderr": "mdtoc: error: cannot read /home/dev/work/rustify_ws/mdtoc_codex/verify/tmp_p0sd05e/missing\nname: No such file or directory\n",
+    "newline_count": 2
+  },
+  {
+    "implementation": "rust",
+    "code": 1,
+    "stderr": "mdtoc: error: cannot read /home/dev/work/rustify_ws/mdtoc_codex/verify/tmp_p0sd05e/missing\nname: No such file or directory (os error 2)\n",
+    "newline_count": 2
+  }
+]
