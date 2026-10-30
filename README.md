@@ -1,5 +1,7 @@
 # rust-tutorial
 
+<a href="https://wikidocs.net/book/21893"><img src="assets/book-cover.png" alt="AI 에이전트로 Python 개발·Rust 배포 따라하기 표지" width="300"></a>
+
 위키독스 책 「AI 에이전트로 Python 개발·Rust 배포 따라하기」의 예제 코드 저장소입니다.
 
 - 책: https://wikidocs.net/book/21893
